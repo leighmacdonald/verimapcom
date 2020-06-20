@@ -1,0 +1,175 @@
+{{define "content"}}
+    <div class="grid-container">
+        <div class="grid-x secondary_background">
+            <div class="cell" id="header_gallery">
+                <div class="orbit" role="region" aria-label="Favorite Space Pictures" data-orbit>
+                    <div class="orbit-wrapper">
+                        <div class="orbit-controls">
+                            <button class="orbit-previous"><span class="show-for-sr">Previous Slide</span><i
+                                        class="fi-arrow-left"></i></button>
+                            <button class="orbit-next"><span class="show-for-sr">Next Slide</span><i
+                                        class="fi-arrow-right"></i></button>
+                        </div>
+                        <ul class="orbit-container">
+                            {{ range $i, $s := .showcases }}
+                                {{if eq $i 0 }}
+                                    <li class="is-active orbit-slide">
+                                {{ else }}
+                                    <li class="orbit-slide">
+                                {{ end }}
+                                <figure class="orbit-figure">
+                                    <img class="orbit-image" src="https://cms.verimap.com/{{ $s.Image.URL }}"
+                                         alt="{{ $s.Title }}">
+                                </figure>
+                                </li>
+                            {{end}}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-container">
+        <div class="grid-x grid-padding-x" style="padding-top: 20px">
+            <div class="cell">
+                <h1 class="text-center">Remote Sensing Professionals - Wildfire Mapping Experts</h1>
+                <hr>
+            </div>
+            <div class="cell">
+                <div class="grid-x grid-padding-x">
+                    <div class="cell">
+                        <p>Verimap has 26 years of thermal IR experience.</p>
+                        <p>
+                            Having worked with <a href="https://www.alberta.ca/forestry.aspx">Alberta Forestry</a> in
+                            fire-mapping since 2003, and setting
+                            speed-of-capture
+                            records with our hybrid sensor in 2009, we continue to advance the technology. In 2019,
+                            VeriMap, with Special Projects Inc., demonstrated a real-time hot-spot detection service
+                            for daytime operations. Using image analysis with AI/machine learning in real-time lets
+                            us find information in imagery not found with the human eye.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-container services_grid bottom_spacer">
+        <div class="grid-x grid-padding-x ">
+            <div class="cell">
+                <h1 class="text-center text-uppercase"><a style="color: inherit" href="/services/wildfire">Wildfire
+                        Services</a></h1>
+                <hr>
+            </div>
+        </div>
+        <div class="grid-x grid-padding-x" data-equalizer id="test-eq">
+            <div class="cell medium-4">
+                <a href="/services/wildfire">
+                    <div class="callout text-center" data-equalizer-watch>
+                        <img src="/dist/assets/badge_area.png" alt="">
+                        <h3 class="subheader font_med">Large Area Survey</h3>
+                        <p>High speed and accuracy flyovers at high-altitude.</p>
+                        <p>Flown at any time day or night, active fire is easily picked up with our thermal imaging
+                            system.</p>
+                    </div>
+                </a>
+            </div>
+            <div class="cell medium-4">
+                <a href="/services/wildfire">
+                    <div class="callout text-center" data-equalizer-watch>
+                        <img src="/dist/assets/badge_hotspot.png" alt="">
+                        <h3 class="subheader font_med">Hotspot Patrol</h3>
+                        <p>Low altitude flyover - high resolution and accuracy for precision discovery and surveillance
+                            of smouldering areas and hotspots.</p>
+                    </div>
+                </a>
+            </div>
+            <div class="cell medium-4">
+                <a href="/services/wildfire">
+                    <div class="callout text-center" data-equalizer-watch>
+                        <img src="/dist/assets/badge_perimeter.png" alt="">
+                        <h3 class="subheader font_med">Perimeter Mapping</h3>
+                        <p>Map and monitor fire fronts to update an accurate perimeter for improved planning and asset
+                            distribution.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-container">
+        <div class="grid-x grid-padding-x">
+            <div class="cell">
+                <h1 class="text-center text-uppercase">The Verimap System Excels In Multiple Mission Profiles</h1>
+                <hr>
+            </div>
+        </div>
+        <div class="grid-x grid-padding-x" style="margin-top: 20px; margin-bottom: 20px">
+            <div class="cell">
+                <img alt="Industries" src="/dist/assets/triangles.png" style="width: 100%">
+            </div>
+        </div>
+    </div>
+
+
+    <div class="grid-container">
+        <div class="grid-x grid-padding-x ">
+            <div class="cell">
+                <h1 class="text-center">Additional Services</h1>
+                <hr>
+                <h4 class="subheader text-center text-uppercase">Verimap Captures Thermal IR and Colour Imagery
+                    Simultaneously</h4>
+                <p>High resolution and high precision mapping of fires, rail tracks, environmental assets, road
+                    systems, utility corridors, pipeline routes or right of ways. Let us know your needs.</p>
+            </div>
+        </div>
+        <div class="grid-x grid-padding-x">
+            {{ with .read_more }}
+                {{ range $r := . }}
+                    <div class="cell large-4 medium-6 readmore_block {{ $r.Key }}">
+                        <a href="{{ $r.URL }}" style="font-weight: inherit">
+                            <div class="grid-x grid-padding-x shader">
+                                <div class="cell" style="padding-top: 2rem">
+                                    <span><i class="{{ $r.Icon }} heading_size"></i></span>
+                                </div>
+                                <div class="cell" style="text-transform: uppercase;">
+                                    <h3 class="text-uppercase" style="font-weight: 700">{{ $r.Title }}</h3>
+                                </div>
+
+                                <div class="cell">
+                                    <p class="font_med" style="text-align: justify;">{{ $r.Desc }}</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {{end}}
+            {{end}}
+        </div>
+    </div>
+
+    <div class="grid-container" style="background-color: #DBDBDB">
+        <div class="grid-x grid-padding-x">
+            <div class="callout home_foot_box">
+                <h2>Unparalleled Coverage</h2>
+                <p>VeriMap aerial imaging systems are based on proven hybrid sensor technology we
+                    developed 14 years ago, providing a unique and efficient method of coverage.
+                    Image swath widths are 3 to 5 times that of conventional single-frame optic
+                    systems, at comparable and better resolutions.​ For high-altitude large-area
+                    fire surveys, we map up to 1-million acres (~400,000 hectares) per hour, at
+                    greater than 150cm/px effective ground resolution.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-container" style="margin-bottom: 0; margin-top: 0">
+        <div class="grid-x grid-padding-x" style="margin-bottom: 0; margin-top: 0">
+            <img alt="Hyper Spectral Water" src="/dist/assets/home_footer_12_2.png">
+        </div>
+    </div>
+{{end}}
+
+{{define "title"}}
+    Home
+{{end}}

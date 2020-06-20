@@ -1,0 +1,6 @@
+tmp
+venv
+node_modules
+.idea
+dist
+assets

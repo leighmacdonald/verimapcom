@@ -1,0 +1,40 @@
+{{define "content"}}
+
+    {{template "page_header" .header }}
+
+    <div class="grid-container bottom_spacer">
+        <div class="grid-x grid-padding-x">
+            <div class="cell">
+
+                <div class="grid-container">
+                    <div class="grid-x grid-padding-x" style="width: 100%;">
+
+                        <div class="cell medium-8">
+                            <h1>{{ .example.Name }}</h1>
+                            <p>{{ .example.Description }}</p>
+                        </div>
+                        <div class="cell medium-4">
+                            <table>
+                                {{ range $k, $v := .example.StatsMap }}
+                                    <tr>
+                                        <td> {{ $k }}</td>
+                                        <td style="font-weight: 700">{{ $v }}</td>
+                                    </tr>
+                                {{end}}
+                            </table>
+                        </div>
+
+                        <div class="cell">
+                            <div class="map" style="height: 600px; width: 100%" id="map"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{{end}}
+
+{{define "title"}}
+    Example Image Set
+{{end}}

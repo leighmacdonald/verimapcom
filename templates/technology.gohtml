@@ -1,0 +1,128 @@
+{{define "content"}}
+
+    {{ template "page_header" .header }}
+
+    <div class="grid-container">
+        <div class="grid-x grid-padding-x">
+            <div class="cell large-6">
+                <p>VeriMap sensor systems are designed using our proprietary hybrid sensor technology
+                    which we have proven and advanced since 2008. This system provides a unique and
+                    efficient wide-angle field-of-view (FOV), creating the capability to image extreme
+                    swath widths of terrestrial data while retaining high-resolution 14bit data.</p>
+                <p>Our systems are designed to be smaller and lighter in order to integrate into
+                    light aircraft and Long-Range UAV platforms.</p>
+            </div>
+            <div class="cell large-6">
+                {{ img "/dist/assets/our-technology-04.jpg" "" false }}
+            </div>
+        </div>
+
+        <div class="grid-x grid-padding-x">
+            <div class="cell large-8">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Altitude</th>
+                        <th>Pixel Size</th>
+                        <th>Coverage Width <br>Nadir only</th>
+                        <th>Coverage Width <br>100&deg;FOV</th>
+                        <th>Production at 50m/s</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td><strong>100 m</strong></td>
+                        <td>3 cm</td>
+                        <td>17 m</td>
+                        <td>238 m</td>
+                        <td>42 km^2/hr</td>
+                    </tr>
+                    <tr>
+                        <td><strong>500 m</strong></td>
+                        <td>17cm</td>
+                        <td>87 m</td>
+                        <td>1191 m</td>
+                        <td>214 km^2/hr</td>
+                    </tr>
+                    <tr>
+                        <td><strong>1000 m</strong></td>
+                        <td>34 cm</td>
+                        <td>174 m</td>
+                        <td>2383 m</td>
+                        <td>429 km^2/hr</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2000 m</strong></td>
+                        <td>67 cm</td>
+                        <td>349 m</td>
+                        <td>4767 m</td>
+                        <td>858 km^2/hr</td>
+                    </tr>
+                    <tr>
+                        <td><strong>5000 m</strong></td>
+                        <td>101 cm</td>
+                        <td>524 m</td>
+                        <td>7150 m</td>
+                        <td>1287 km^2/hr</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="cell large-4">
+                <p>Data and image ortho-processing techniques were developed specifically to accommodate
+                    fast delivery for wildfire thermal mapping services for Western Canadian forestry
+                    management organizations.</p>
+            </div>
+        </div>
+
+        <div class="grid-x grid-padding-x">
+            <div class="cell bottom_spacer">
+                {{ img "/dist/assets/our-technology-07new.jpg" "" false }}
+            </div>
+            <div class="cell large-6">
+                <h2>Adaptable to Multi-Aerial Platform</h2>
+                <p>VeriMap's adaptable design and small footprint create a significant opportunity to
+                    integrate onto many aerial platforms and adapt the technology to configure into
+                    multi-spectral , color, UV and Hyper-Spectral imaging products.</p>
+            </div>
+            <div class="cell large-6">
+                <h2>Auto-Tracking Capable</h2>
+                <p>
+                    The latest VeriMap systems perform corridor mapping using a laser-guided auto-tracking
+                    system allowing pilots to concentrate on flight control while images retain full
+                    seamless capture.
+                </p>
+                <ul>
+                    <li>No data capture gaps</li>
+                    <li>No corridor re-alignment aerial loops required</li>
+                    <li>50% less air time for data acquisitions</li>
+                    <li>15% less image processing</li>
+                    <li>Cleaner data sets</li>
+                </ul>
+            </div>
+        </div>
+
+
+        <div class="grid-x grid-padding-x">
+            <div class="cell">
+                <h2 class="subheader text-center">VeriMap Technical Advantages</h2>
+            </div>
+            <div class="cell info_block small-12 large-offset-3">
+                <ul>
+                    <li>Compact footprint, light-weight</li>
+                    <li>Easy to transport, no border restrictions</li>
+                    <li>Collects and processes large areas fast</li>
+                    <li>High resolution and high spatial accuracy</li>
+                    <li>Geo-referenced image delivery approaching real-time</li>
+                    <li>Real time image analysis</li>
+                    <li>Versatile, applicable to multi-spectral applications</li>
+                    <li>Auto-Tracking capable for easy no gap data</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{{end}}
+
+{{define "title"}}
+    Our Background
+{{end}}

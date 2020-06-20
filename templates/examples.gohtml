@@ -1,0 +1,28 @@
+{{define "content"}}
+
+    {{template "page_header" .header }}
+
+    <div class="grid-container bottom_spacer">
+        <div class="grid-x grid-padding-x">
+            <div class="grid-x grid-padding-x" data-equalizer id="test-eq">
+
+                {{ range .examples }}
+                    <div class="cell medium-4">
+                        <a href="/example/{{ .ID }}">
+                            <div class="callout text-center" data-equalizer-watch>
+                                <h3 class="subheader font_med">{{ .Name }}</h3>
+                                <p>{{ md .Description }} </p>
+                            </div>
+                        </a>
+                    </div>
+                {{end}}
+
+            </div>
+        </div>
+    </div>
+
+{{end}}
+
+{{define "title"}}
+    Example Image Sets
+{{end}}

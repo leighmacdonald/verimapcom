@@ -1,0 +1,31 @@
+{{define "content"}}
+
+    {{ template "page_header" .header }}
+
+    <div class="grid-container">
+        <div class="grid-x grid-margin-x" data-equalizer id="test-eq">
+            {{ range .partners }}
+                <div class="cell medium-6 large-4 company_block">
+                    <a href="http://{{ .URL }}">
+                        <div class="callout" data-equalizer-watch>
+                            <div class="grid-y">
+                                <div class="cell">
+                                    <figure>
+                                        <img src="/dist/assets/{{ .Img }}">
+                                        <h4>{{ .Name }}</h4>
+                                        <hr>
+                                        <p>{{ .Desc }}</p>
+                                    </figure>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {{end}}
+        </div>
+    </div>
+{{end}}
+
+{{define "title"}}
+    Our Partners
+{{end}}

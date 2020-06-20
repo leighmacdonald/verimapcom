@@ -1,0 +1,38 @@
+{{define "content"}}
+
+    {{template "page_header" .header }}
+
+    <div class="grid-container bottom_spacer">
+        <div class="grid-x grid-padding-x">
+            <div class="cell text-center">
+                <h3 class="subheader">Fire is a natural and crucial part of life.
+                    See maps and follow the links below for articles of interest</h3>
+            </div>
+        </div>
+
+        {{ range .firewatches }}
+            <div class="grid-x grid-padding-x">
+                <div class="cell">
+                    <div class="grid-x grid-padding-x ">
+                        <div class="cell medium-8">
+                            <h2>{{ .Title }}</h2>
+                            <h6 class="subheader">{{ .Published }} - {{ .User.Username }}</h6>
+                            {{ md .Body }}
+                            <a href="{{ .LinkURL }}" class="button">{{ .LinkText }}</a>
+                        </div>
+                        <div class="cell medium-4">
+                            {{ img (print "https://cms.verimap.com"  .Thumbnail.URL) "" false }}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        {{end}}
+
+    </div>
+
+{{end}}
+
+{{define "title"}}
+    Fire Tracker
+{{end}}

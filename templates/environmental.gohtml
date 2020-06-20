@@ -1,0 +1,51 @@
+{{define "content"}}
+
+    {{template "page_header" .header }}
+
+    <div class="grid-container">
+        <div class="grid-x grid-padding-x">
+            <div class="cell large-7">
+                <h1>Environmental Services</h1>
+                <p>With climate change and industrial development creating a constant flux in Earth's
+                    delicate ecosystems, there is an increasing need to monitor and track changes
+                    in large geographic environments. VeriMap solutions-based services can be applied
+                    to various environmental applications:</p>
+                <ul>
+                    <li>Precision Commercial Agriculture and Farming
+                        <ul class="dash">
+                            <li>Crop inspection data</li>
+                            <li>Normalized Difference Vegetation Index (NDVI) imaging</li>
+                            <li>Livestock monitoring</li>
+                            <li>Agriculture Inventory Ortho-Imagery Service</li>
+                            <li>Irrigation assessment</li>
+                        </ul>
+                    </li>
+                    <li>Pollution Assessment</li>
+                    <li>Ecosystem Rehabilitation Monitoring</li>
+                    <li>Forestry Services
+                        <ul class="dash">
+                            <li>Inventory and Health Monitoring</li>
+                            <li>Oil/Gas, Utility-Corridor Vegetation Mapping</li>
+                            <li>Forestry Protection</li>
+                            <li>Mountain Pine Beetle management</li>
+                        </ul>
+                    </li>
+                    <li>Coastline and Floodplain Mapping</li>
+                    <li>Anti-poaching Surveillance
+                        <ul class="dash">
+                            <li>Illegal Fisheries</li>
+                            <li>Endangered species monitoring</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="cell large-5">
+                img("/dist/assets/enviro_small.png")
+            </div>
+        </div>
+    </div>
+{{end}}
+
+{{define "title"}}
+    Environmental Services
+{{end}}

@@ -1,0 +1,40 @@
+{{define "content"}}
+    {{with .header }}
+        {{template "page_header" . }}
+    {{end}}
+
+    <div class="grid-container">
+        <div class="grid-x grid-padding-x">
+            <div class="cell">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Mission Name</th>
+                        <th>Agency</th>
+                        <th>State</th>
+                        <th>Creator</th>
+                        <th>Created On</th>
+                        <th>Updated On</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{range .missions }}
+                        <tr>
+                            <td>{{ .MissionName }}</td>
+                            <td>{{ .Agency }}</td>
+                            <td>{{ .State }}</td>
+                            <td>{{ .Creator }}</td>
+                            <td>{{ .CreatedOn }}</td>
+                            <td>{{ .UpdatedOn }}</td>
+                        </tr>
+                    {{end}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{{end}}
+
+{{define "title"}}
+    Agency Missions
+{{end}}

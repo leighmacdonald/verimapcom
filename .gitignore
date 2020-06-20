@@ -1,0 +1,8 @@
+venv
+node_modules/*
+.vscode
+.DS_Store
+*.pyc
+.idea
+dist/
+tmp/

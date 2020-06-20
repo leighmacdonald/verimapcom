@@ -1,0 +1,33 @@
+{{define "content"}}
+
+    {{template "page_header" .header }}
+
+    <div class="grid-container">
+        <div class="grid-x grid-padding-x">
+
+            {{ range .read_more}}
+                <div class="cell large-4 medium-6 readmore_block {{ .Key }}">
+                    <a href="{{ .URL }}" style="font-weight: inherit">
+                        <div class="grid-x grid-padding-x shader">
+                            <div class="cell" style="padding-top: 2rem">
+                                <span><i class="{{ .Icon }} heading_size"></i></span>
+                            </div>
+                            <div class="cell" style="text-transform: uppercase;">
+                                <h3 class="text-uppercase" style="font-weight: 700">{{ .Title }}</h3>
+                            </div>
+
+                            <div class="cell">
+                                <p class="font_med" style="text-align: justify;">{{ .Desc }}</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {{end}}
+
+        </div>
+    </div>
+{{end}}
+
+{{define "title"}}
+    Our Background
+{{end}}

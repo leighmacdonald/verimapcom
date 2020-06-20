@@ -1,0 +1,41 @@
+{{define "content"}}
+    {{with .header }}
+        {{template "page_header" . }}
+    {{end}}
+
+    <div class="grid-container">
+        <div class="grid-x grid-padding-x">
+            <div class="cell medium-6">
+                <h1>Agencies Admin</h1>
+            </div>
+            <div class="cell">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>First</th>
+                        <th>Last</th>
+                        <th>Email</th>
+                        <th>Agency</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{range .people }}
+                        <tr>
+                            <td>{{ .PersonID }}</td>
+                            <td>{{ .FirstName }}</td>
+                            <td>{{ .LastName }}</td>
+                            <td>{{ .Email }}</td>
+                            <td>{{ .Agency.AgencyName }}</td>
+                        </tr>
+                    {{end}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{{- end}}
+
+{{define "title"}}
+    Agency Missions
+{{end}}

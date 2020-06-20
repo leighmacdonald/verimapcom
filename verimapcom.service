@@ -1,0 +1,16 @@
+[Unit]
+Description=uWSGI instance to serve verimap.com
+After=network.target
+
+[Service]
+User=verimapcom
+Group=www-data
+WorkingDirectory=/home/verimapcom/verimap.com
+Environment="PATH=/home/verimapcom/verimap.com/venv/bin"
+Environment="STRAPI_HOST=http://localhost:1337"
+Environment=STRAPI_TOKEN=
+Environment=FLASK_ENV=production
+ExecStart=/home/verimapcom/verimap.com/venv/bin/uwsgi --ini uwsgi.ini
+
+[Install]
+WantedBy=multi-user.target

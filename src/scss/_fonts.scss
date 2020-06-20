@@ -1,0 +1,48 @@
+@font-face {
+    font-family: 'Eras Bold ITC';
+    src: url('/dist/fonts/ErasITC-Bold.eot');
+    src: local('Eras Bold ITC'), local('ErasITC-Bold'),
+    url('/dist/fonts/ErasITC-Bold.eot?#iefix') format('embedded-opentype'),
+    url('/dist/fonts/ErasITC-Bold.woff2') format('woff2'),
+    url('/dist/fonts/ErasITC-Bold.woff') format('woff'),
+    url('/dist/fonts/ErasITC-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Eras Demi ITC';
+    src: url('/dist/fonts/ErasITC-Demi.eot');
+    src: local('Eras Demi ITC'), local('ErasITC-Demi'),
+    url('/dist/fonts/ErasITC-Demi.eot?#iefix') format('embedded-opentype'),
+    url('/dist/fonts/ErasITC-Demi.woff2') format('woff2'),
+    url('/dist/fonts/ErasITC-Demi.woff') format('woff'),
+    url('/dist/fonts/ErasITC-Demi.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Eras Medium ITC';
+    src: url('/dist/fonts/ErasITC-Medium.eot');
+    src: local('Eras Medium ITC'), local('ErasITC-Medium'),
+    url('/dist/fonts/ErasITC-Medium.eot?#iefix') format('embedded-opentype'),
+    url('/dist/fonts/ErasITC-Medium.woff2') format('woff2'),
+    url('/dist/fonts/ErasITC-Medium.woff') format('woff'),
+    url('/dist/fonts/ErasITC-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Eras Light ITC';
+    src: url('/dist/fonts/ErasITC-Light.eot');
+    src: local('Eras Light ITC'), local('ErasITC-Light'),
+    url('/dist/fonts/ErasITC-Light.eot?#iefix') format('embedded-opentype'),
+    url('/dist/fonts/ErasITC-Light.woff2') format('woff2'),
+    url('/dist/fonts/ErasITC-Light.woff') format('woff'),
+    url('/dist/fonts/ErasITC-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+
