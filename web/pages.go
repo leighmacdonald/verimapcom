@@ -1,29 +1,30 @@
-package main
+package web
 
 import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/leighmacdonald/verimapcom/web/store"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"strconv"
 )
 
-func simple(page pageName) gin.HandlerFunc {
+func (w *Web) simple(page pageName) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		render(c, page, defaultM(c, page))
+		w.render(c, page, w.defaultM(c, page))
 	}
 }
 
-func getLogout(c *gin.Context) {
+func (w *Web) getLogout(c *gin.Context) {
 	session := sessions.Default(c)
 	v := session.Get("person_id")
 	if v == nil {
-		c.Redirect(http.StatusFound, pages[login].Path)
+		c.Redirect(http.StatusFound, w.route(login))
 		return
 	}
 	_, ok := v.(int)
 	if !ok {
-		c.Redirect(http.StatusFound, pages[login].Path)
+		c.Redirect(http.StatusFound, w.route(login))
 		return
 	}
 	session.Clear()
@@ -33,7 +34,7 @@ func getLogout(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/")
 }
 
-func postLogin(c *gin.Context) {
+func (w *Web) postLogin(c *gin.Context) {
 	session := sessions.Default(c)
 	v := session.Get("person_id")
 	if v != nil {
@@ -42,42 +43,43 @@ func postLogin(c *gin.Context) {
 	}
 	email := c.PostForm("email")
 	password := c.PostForm("password")
-	var p Person
-	if err := loadPersonByEmail(email, &p); err != nil {
-		session.AddFlash("Invalid username or password")
-		c.Redirect(http.StatusFound, pages[login].Path)
+	var p store.Person
+	if err := store.LoadPersonByEmail(w.ctx, w.db, email, &p); err != nil {
+		abortFlashErr(c, "Invalid username or password", w.route(login), err)
 		return
 	}
 	if !CheckPasswordHash(password, p.PasswordHash) {
-		session.AddFlash("Invalid username or password")
-		c.Redirect(http.StatusFound, pages[login].Path)
+		abortFlash(c, "Invalid username or password", w.route(login))
 		return
 	}
 	session.Set("person_id", p.PersonID)
-	session.AddFlash("Logged in successfully")
+	session.AddFlash(Flash{
+		Level:   lSuccess,
+		Message: "Logged in successfully",
+	})
 	if err := session.Save(); err != nil {
 		log.Error("Failed to save session login value: %v", err)
 	}
 	c.Redirect(http.StatusFound, "/")
 }
 
-func getLogin(c *gin.Context) {
-	render(c, login, defaultM(c, login))
+func (w *Web) getLogin(c *gin.Context) {
+	w.render(c, login, w.defaultM(c, login))
 }
 
-func getFireTracker(c *gin.Context) {
-	fw, err := apiGetFireWatches(10)
+func (w *Web) getFireTracker(c *gin.Context) {
+	fw, err := apiGetFireWatches(w.ctx, w.client, 10)
 	if err != nil {
 		log.Error(err)
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
-	m := defaultM(c, firetracker)
+	m := w.defaultM(c, firetracker)
 	m["firewatces"] = fw
-	render(c, firetracker, m)
+	w.render(c, firetracker, m)
 }
 
-func getExample(c *gin.Context) {
+func (w *Web) getExample(c *gin.Context) {
 	idStr := c.Param("example_id")
 	if idStr == "" {
 		c.AbortWithStatus(http.StatusNotFound)
@@ -88,26 +90,26 @@ func getExample(c *gin.Context) {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
-	ex, err := apiGetExample(int(id))
+	ex, err := apiGetExample(w.ctx, w.client, int(id))
 	if err != nil {
 		log.Errorf("Failed to fetch examples: %v", err)
 	}
-	m := defaultM(c, example)
+	m := w.defaultM(c, example)
 	m["example"] = ex
-	render(c, example, m)
+	w.render(c, example, m)
 }
 
-func getExamples(c *gin.Context) {
-	exs, err := apiGetExamples()
+func (w *Web) getExamples(c *gin.Context) {
+	exs, err := apiGetExamples(w.ctx, w.client)
 	if err != nil {
 		log.Errorf("Failed to fetch examples: %v", err)
 	}
-	m := defaultM(c, examples)
+	m := w.defaultM(c, examples)
 	m["examples"] = exs
-	render(c, examples, m)
+	w.render(c, examples, m)
 }
 
-func getPartners(c *gin.Context) {
+func (w *Web) getPartners(c *gin.Context) {
 	type Partner struct {
 		Name string
 		Desc string
@@ -135,12 +137,12 @@ func getPartners(c *gin.Context) {
 			"www.marcflightservices.com",
 			"marcinc-project-1024x683.png",
 		}}
-	m := defaultM(c, partners)
+	m := w.defaultM(c, partners)
 	m["partners"] = partnerBlocks
-	render(c, partners, m)
+	w.render(c, partners, m)
 }
 
-func getHome(c *gin.Context) {
+func (w *Web) getHome(c *gin.Context) {
 	type ReadMore struct {
 		Title string
 		Icon  string
@@ -177,52 +179,80 @@ func getHome(c *gin.Context) {
 			"infrastructure",
 		},
 	}
-	showcases, err := apiGetShowcases()
+	showcases, err := apiGetShowcases(w.ctx, w.client)
 	if err != nil {
 		log.Error(err)
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
-	m := defaultM(c, home)
+	m := w.defaultM(c, home)
 	m["showcases"] = showcases
 	m["read_more"] = readMoreBlocks
-	render(c, home, m)
+	w.render(c, home, m)
 }
 
-func getAdminAgencies(c *gin.Context) {
-	agencies, err := getAgencies()
-	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
-		return
-	}
-	m := defaultM(c, adminAgencies)
-	m["agencies"] = agencies
-	render(c, adminAgencies, m)
+func (w *Web) getProfile(c *gin.Context) {
+	m := w.defaultM(c, profile)
+	w.render(c, profile, m)
 }
 
-func getAdminMissions(c *gin.Context) {
-	person, found := c.Get("person")
-	if !found {
-		c.Redirect(http.StatusUnauthorized, "/login")
-		return
+func (w *Web) updateUserFromForm(c *gin.Context, p *store.Person, emptyPasswordOk bool) bool {
+	p.FirstName = c.PostForm("first_name")
+	if p.FirstName == "" {
+		abortFlash(c, "All fields are required", w.route(adminPeople))
+		return false
 	}
-	missions, err := dbGetMissions(person.(Person).AgencyID)
+	p.LastName = c.PostForm("last_name")
+	if p.LastName == "" {
+		abortFlash(c, "All fields are required", w.route(adminPeople))
+		return false
+	}
+	p.Email = c.PostForm("email")
+	if p.Email == "" {
+		abortFlash(c, "All fields are required", w.route(adminPeople))
+		return false
+	}
+	id, err := strconv.ParseInt(c.PostForm("agency_id"), 10, 64)
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
-		return
+		abortFlashErr(c, "Invalid Agency ID", w.route(adminPeople), err)
+		return false
 	}
-	m := defaultM(c, adminMissions)
-	m["missions"] = missions
-	render(c, adminMissions, m)
+	p.AgencyID = int(id)
+	if p.AgencyID == 0 {
+		abortFlash(c, "All fields are required", w.route(adminPeople))
+		return false
+	}
+	pw := c.PostForm("password")
+	pwV := c.PostForm("password_verify")
+	if pw != "" && pwV != "" {
+		hash, err := HashPassword(pw)
+		if err != nil {
+			abortFlashErr(c, "Passwords do not match", w.route(adminPeople), err)
+			return false
+		}
+		p.PasswordHash = hash
+	} else if pw != "" || pwV != "" {
+		abortFlash(c, "Passwords must match", w.route(adminPeople))
+		return false
+	} else if pw == "" && pwV == "" && !emptyPasswordOk {
+		abortFlash(c, "Passwords cannot be empty", w.route(adminPeople))
+		return false
+	}
+	if err := store.SavePerson(w.ctx, w.db, p); err != nil {
+		abortFlashErr(c, "Failed to save user", w.route(adminPeopleEdit), err)
+		return false
+	}
+	return true
 }
 
-func getAdminPeople(c *gin.Context) {
-	people, err := getPeople()
-	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+func (w *Web) postProfile(c *gin.Context) {
+	m := w.defaultM(c, profile)
+	var p store.Person
+	if err := store.LoadPersonByID(w.ctx, w.db, m["person"].(store.Person).PersonID, &p); err != nil {
+		abortFlashErr(c, "Error loading person data", w.route(profile), err)
 		return
 	}
-	m := defaultM(c, adminPeople)
-	m["people"] = people
-	render(c, adminPeople, m)
+	if w.updateUserFromForm(c, &p, true) {
+		successFlash(c, "Updated profile successfully", w.route(profile))
+	}
 }

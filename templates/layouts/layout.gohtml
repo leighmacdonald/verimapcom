@@ -1,16 +1,26 @@
 {{define "alert"}}
-    {{ if ne nil . }}
-        <div class="grid-container">
-            <div class="grid-x grid-padding-x">
-                {{range .}}
-                    <div data-alert class="alert-box info radius">
-                        {{ . }}
-                        <a href="#" class="close">&times;</a>
+    <div class="grid-container">
+        <div class="grid-x grid-padding-x">
+            {{range .}}
+                <div class="cell" style="margin-top: 0.5em" >
+                    <div class="callout {{ .Level }}" data-closable>
+                        <h5>{{ .Level }}</h5>
+                        <p>{{ .Message }}</p>
+                        <button class="close-button" style="color: black" aria-label="Dismiss alert" type="button"
+                                data-close>
+                            &times;
+                        </button>
                     </div>
-                {{end}}
-            </div>
+                </div>
+            {{end}}
         </div>
-    {{end}}
+    </div>
+{{end}}
+
+{{define "admin_header"}}
+    <div class="cell">
+        <h1 class="admin_header_h1">{{.}}</h1>
+    </div>
 {{end}}
 
 {{define "layout"}}
@@ -46,11 +56,11 @@
                     <div class="cell small-6 text-right">
                         <div class="grid-x grid-padding-x align-center-middle text-right">
                             <div class="cell">
-                                <a href="tel:14032027343" class="mail meta_color"><i class="fi-telephone"></i> +1 (403)
+                                <a href="tel:14032027343" class="mail meta_color">{{ icon "fi-telephone" }} +1 (403)
                                     202-7343</a>
                             </div>
                             <div class="cell">
-                                <a class="mail meta_color" href="mailto:info@verimap.com"><i class="fi-mail"></i>
+                                <a class="mail meta_color" href="mailto:info@verimap.com">{{ icon "fi-mail" }}
                                     info@verimap.com</a>
                             </div>
                         </div>
@@ -109,13 +119,14 @@
                                 <li><a class="link" href="/login">Client Login</a></li>
                             {{else}}
                                 <li>
-                                    <a class="link" href="/services">{{.person.FirstName}}
+                                    <a class="link" href="/profile">{{.person.FirstName}}
                                         ({{.person.Agency.AgencyName}})</a>
                                     <ul class="menu vertical vertical_shadow">
                                         <li><a class="link" href="/missions">Missions</a></li>
                                         {{if eq .person.Agency.AgencyID 1}}
-                                            <li><a class="link" href="/admin/agencies">Agencies</a></li>
-                                            <li><a class="link" href="/admin/people">People</a></li>
+                                            <li><a class="link" href="/admin/missions">Missions Admin</a></li>
+                                            <li><a class="link" href="/admin/agencies">Agencies Admin</a></li>
+                                            <li><a class="link" href="/admin/people">People Admin</a></li>
                                         {{end}}
                                         <li><a class="link" href="/logout">Logout</a></li>
                                     </ul>
@@ -143,9 +154,9 @@
                             about your needs.</p>
                         <h4>Contact Us</h4>
                         <ul>
-                            <li>icon("fi-marker") 516 Hurricane Dr, Calgary, AB, Canada T3Z 3S8</li>
-                            <li>icon("fi-telephone") (403) 202-7343</li>
-                            <li>icon("fi-mail") <a class="email" href="mailto:info@verimap.com">info@verimap
+                            <li>{{ icon "fi-marker" }} 516 Hurricane Dr, Calgary, AB, Canada T3Z 3S8</li>
+                            <li>{{ icon "fi-telephone" }} (403) 202-7343</li>
+                            <li>{{ icon "fi-mail" }} <a class="email" href="mailto:info@verimap.com">info@verimap
                                     .com</a></li>
                         </ul>
                     </div>
@@ -187,7 +198,7 @@
                         </ul>
                     </div>
                     <div class="cell">
-                        <p class="copyright">Copyright &copy; 1993 - now.year , VeriMap Plus Inc. | All rights
+                        <p class="copyright">Copyright &copy; 1993 - {{ currentYear }} , VeriMap Plus Inc. | All rights
                             reserved</p>
                     </div>
                 </div>

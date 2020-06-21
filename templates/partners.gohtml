@@ -1,6 +1,7 @@
 {{define "content"}}
 
-    {{ template "page_header" .header }}
+    {{template "page_header" .header }}
+    {{template "alert" .alerts}}
 
     <div class="grid-container">
         <div class="grid-x grid-margin-x" data-equalizer id="test-eq">

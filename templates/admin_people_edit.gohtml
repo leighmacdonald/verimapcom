@@ -2,51 +2,14 @@
 
     {{template "alert" .alerts}}
 
-    <div class="grid-container">
-        <div class="grid-x grid-padding-x">
-            {{template "admin_header" "People Admin"}}
-            <div class="cell">
-                <table>
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>First</th>
-                        <th>Last</th>
-                        <th>Email</th>
-                        <th>Agency</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {{range .people }}
-                        <tr>
-                            <td>{{ .PersonID }}</td>
-                            <td>{{ .FirstName }}</td>
-                            <td>{{ .LastName }}</td>
-                            <td>{{ .Email }}</td>
-                            <td>{{ .Agency.AgencyName }}</td>
-                            <td>
-                                <div class="expanded button-group">
-                                <a class="button warning" href="/admin/people/{{ .PersonID }}">Edit</a>
-                                <a><form action="/admin/people_delete/{{ .PersonID }}" method="post"
-                                         enctype="application/x-www-form-urlencoded">
-                                        <input class="button small alert" type="submit" value="Delete">
-                                    </form></a>
-                                </div>
-                            </td>
-                        </tr>
-                    {{end}}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    <form action="/admin/people" method="post" enctype="multipart/form-data">
+    <form action="/admin/people/{{ .subject.PersonID}}" method="post" enctype="multipart/form-data">
         <div class="grid-container">
-            <div class="grid-x grid-padding-x">
-                <div class="cell medium-9 small-12">
-                    <h2>Create New Person</h2>
+            <div class="grid-x grid-padding">
+                <div class="cell medium-6">
                     <div class="grid-x grid-padding-x">
+                        <div class="cell">
+                            <h1>Person Editor - {{ .subject.LastName  }}, {{ .subject.FirstName  }}</h1>
+                        </div>
                         <div class="cell">
                             <label>First Name
                                 <input type="text" placeholder="John" value="{{ .subject.FirstName }}"
@@ -66,9 +29,11 @@
                         </div>
                         <div class="cell">
                             <label>Agency
+                                {{$ag := .subject.AgencyID }}
                                 <select name="agency_id">
                                     {{range .agencies }}
-                                        <option value="{{ .AgencyID }}">{{ .AgencyName }}</option>
+                                        <option {{if eq .AgencyID $ag }}selected{{end}}
+                                                value="{{ .AgencyID }}">{{ .AgencyName }}</option>
                                     {{end}}
                                 </select>
                             </label>
@@ -99,5 +64,5 @@
 {{end}}
 
 {{define "title"}}
-    Agency Missions
+    Admin - Person Editor
 {{end}}

@@ -1,7 +1,7 @@
 {{define "content"}}
 
     {{template "page_header" .header}}
-
+    {{template "alert" .alerts}}
 
     <div class="grid-container bottom_spacer">
         <div class="grid-x grid-padding-x">
@@ -28,7 +28,7 @@
                 <p><strong>David Stonehouse</strong>, Founder/CEO<br>
                     Certified Thermographer<br>
                     Business Development<br>
-                    <a href="mailto:dstonehouse@verimap.com"><i class="fi-mail"></i> Contact</a>
+                    <a href="mailto:dstonehouse@verimap.com">{{ icon "fi-mail" }} Contact</a>
                 </p>
                 <p><strong>Paul Canizaro</strong>, Managing Director<br>
                     Business Strategy, Development, Operations<br>

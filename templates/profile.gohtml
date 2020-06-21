@@ -1,0 +1,68 @@
+{{define "content"}}
+
+    {{template "page_header" .header }}
+    {{template "alert" .alerts}}
+
+    <div class="grid-container">
+        <div class="grid-x grid-padding-x">
+            <div class="cell text-center">
+                <form name="profile" action="/profile" method="post">
+                    <div class="grid-container">
+                        <div class="grid-x grid-padding-x">
+
+                            <div class="cell medium-6">
+                                <div class="cell">
+                                    <h1>User Profile</h1>
+                                </div>
+                                <div class="grid-container">
+                                    <div class="grid-x grid-padding-x">
+                                        <div class="cell">
+                                            <label>First Name
+                                                <input type="text" placeholder="" name="first_name"
+                                                       value="{{ .person.FirstName }}">
+                                            </label>
+                                        </div>
+                                        <div class="cell">
+                                            <label>Last Name
+                                                <input type="text" placeholder="" name="last_name"
+                                                       value="{{ .person.LastName }}">
+                                            </label>
+                                        </div>
+                                        <div class="cell">
+                                            <label>Email Address
+                                                <input type="email" placeholder="" name="email"
+                                                       value="{{ .person.Email }}">
+                                            </label>
+                                        </div>
+                                        <input type="hidden" placeholder="" name="agency_id"
+                                               value="{{ .person.AgencyID}}">
+                                        <div class="cell">
+                                            <label>Password
+                                                <input type="password" placeholder="" name="password">
+                                            </label>
+                                        </div>
+                                        <div class="cell">
+                                            <label>Password Verify
+                                                <input type="password" placeholder="" name="password_verify">
+                                            </label>
+                                        </div>
+                                        <div class="cell">
+                                            <div class="input-group-button">
+                                                <input type="submit" class="button large" value="Update Profile"
+                                                       name="submit">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{{end}}
+
+{{define "title"}}
+    Login
+{{end}}

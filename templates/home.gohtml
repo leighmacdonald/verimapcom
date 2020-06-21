@@ -1,14 +1,17 @@
 {{define "content"}}
+
+    {{template "alert" .alerts}}
+
     <div class="grid-container">
         <div class="grid-x secondary_background">
             <div class="cell" id="header_gallery">
                 <div class="orbit" role="region" aria-label="Favorite Space Pictures" data-orbit>
                     <div class="orbit-wrapper">
                         <div class="orbit-controls">
-                            <button class="orbit-previous"><span class="show-for-sr">Previous Slide</span><i
-                                        class="fi-arrow-left"></i></button>
-                            <button class="orbit-next"><span class="show-for-sr">Next Slide</span><i
-                                        class="fi-arrow-right"></i></button>
+                            <button class="orbit-previous"><span class="show-for-sr">Previous Slide</span>
+                                {{ icon "fi-arrow-left" }}</button>
+                            <button class="orbit-next"><span
+                                        class="show-for-sr">Next Slide</span>{{ icon "fi-arrow-right" }}</button>
                         </div>
                         <ul class="orbit-container">
                             {{ range $i, $s := .showcases }}

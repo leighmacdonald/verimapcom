@@ -1,14 +1,13 @@
 {{define "content"}}
 
     {{template "page_header" .header }}
+    {{template "alert" .alerts}}
 
     <div class="grid-container bottom_spacer">
         <div class="grid-x grid-padding-x">
             <div class="cell">
-
                 <div class="grid-container">
                     <div class="grid-x grid-padding-x" style="width: 100%;">
-
                         <div class="cell medium-8">
                             <h1>{{ .example.Name }}</h1>
                             <p>{{ .example.Description }}</p>

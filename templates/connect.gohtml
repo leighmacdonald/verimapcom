@@ -1,14 +1,14 @@
 {{define "content"}}
-    {{with .header }}
-        {{template "page_header" . }}
-    {{end}}
+
+    {{template "page_header" .header }}
+    {{template "alert" .alerts}}
 
     <div class="grid-container">
         <div class="grid-x grid-padding-x">
             <div class="cell large-4 medium-4">
                 <div class="grid-x grid-padding-x">
                     <div class="cell large-2">
-                        <i class="fi-marker icon_lg"></i>
+                        {{ icon "fi-marker icon_lg" }}">
                     </div>
                     <div class="cell large-10">
                         <h4>Mail</h4>
@@ -21,7 +21,7 @@
             <div class="cell large-4 medium-4">
                 <div class="grid-x grid-padding-x">
                     <div class="cell large-2">
-                        <i class="fi-telephone icon_lg"></i>
+                        {{ icon "fi-telephone icon_lg" }}">
                     </div>
                     <div class="cell large-10">
                         <h4>Phone</h4>
@@ -32,7 +32,7 @@
             <div class="cell large-4 medium-4">
                 <div class="grid-x grid-padding-x">
                     <div class="cell large-2">
-                        <i class="fi-mail icon_lg"></i>
+                        {{ icon "fi-mail icon_lg" }}">
                     </div>
                     <div class="cell large-10">
                         <h4>Email</h4>
@@ -68,7 +68,8 @@
                             </label>
                         </div>
                         <div class="cell">
-                            <a class="button secondary expanded"><i class="fi-mail icon_pad_right"></i><strong>Send
+                            <a class="button secondary expanded">{{ icon "fi-mail icon_pad_right" }}"><i
+                                        class=""></i><strong>Send
                                     Message</strong></a>
                         </div>
                     </div>

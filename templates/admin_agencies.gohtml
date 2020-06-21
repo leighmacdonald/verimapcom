@@ -1,13 +1,10 @@
 {{define "content"}}
-    {{with .header }}
-        {{template "page_header" . }}
-    {{end}}
+
+    {{template "alert" .alerts}}
 
     <div class="grid-container">
         <div class="grid-x grid-padding-x">
-            <div class="cell medium-6">
-                <h1>Agencies Admin</h1>
-            </div>
+            {{template "admin_header" "Agencies Admin" }}
             <div class="cell">
                 <table>
                     <thead>
@@ -29,9 +26,38 @@
                 </table>
             </div>
         </div>
-
     </div>
-
+    <form action="/admin/agencies" method="post" enctype="multipart/form-data">
+        <div class="grid-container">
+            <div class="grid-x grid-padding-x">
+                <div class="cell">
+                    <h2>Create New Person</h2>
+                </div>
+                <div class="cell medium-9 small-12">
+                    <div class="grid-x grid-padding-x">
+                        <div class="cell">
+                            <label>First Name
+                                <input type="text" placeholder="John" value=""
+                                       name="agency_name">
+                            </label>
+                        </div>
+                        <div class="cell">
+                            <p>Slots determine the max number of users that can be a part of an agency</p>
+                            <label>People Slots
+                                <input type="text" placeholder="10" value="10"
+                                       name="agency_slots">
+                            </label>
+                        </div>
+                        <div class="medium-6 cell">
+                            <label>
+                                <input class="button" type="submit" value="Submit" name="submit">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 {{end}}
 
 {{define "title"}}
