@@ -497,8 +497,12 @@ type HTTPOpts struct {
 
 // DefaultHTTPOpts returns a default set of options for http.Server instances
 func DefaultHTTPOpts() *HTTPOpts {
+	addr, found := os.LookupEnv("LISTEN")
+	if !found {
+		addr = ":8080"
+	}
 	return &HTTPOpts{
-		ListenAddr:     ":8080",
+		ListenAddr:     addr,
 		UseTLS:         false,
 		Handler:        nil,
 		ReadTimeout:    10 * time.Second,
