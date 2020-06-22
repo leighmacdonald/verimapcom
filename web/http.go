@@ -21,6 +21,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -189,6 +190,14 @@ type Flash struct {
 	Message string `json:"message"`
 }
 
+func formFloatDefault(c *gin.Context, field string, def float64) float64 {
+	f, err := strconv.ParseFloat(c.PostForm(field), 64)
+	if err != nil {
+		return def
+	}
+	return f
+}
+
 func flash(c *gin.Context, level Level, msg string) {
 	s := sessions.Default(c)
 	s.AddFlash(Flash{
@@ -319,6 +328,7 @@ const (
 	infrastructure    pageName = "infrastructure"
 	login             pageName = "login"
 	logout            pageName = "logout"
+	mission           pageName = "mission"
 	missions          pageName = "missions"
 	missionsCreate    pageName = "missions_create"
 	partners          pageName = "partners"
@@ -450,6 +460,10 @@ func (w *Web) newTmpl(files ...string) *template.Template {
 		},
 		"datetime": func(t time.Time) template.HTML {
 			return template.HTML(t.Format(time.RFC822))
+		},
+		"fmtFloat": func(f float64, size int) template.HTML {
+			ft := fmt.Sprintf("%%.%df", size)
+			return template.HTML(fmt.Sprintf(ft, f))
 		},
 	}
 	tmpl, err := template.New("layout").Funcs(tFuncMap).ParseFiles(files...)
@@ -660,6 +674,7 @@ func (w *Web) makePagesHeaders() {
 		infrastructure:  {Name: "infrastructure", Path: "/services/infrastructure"},
 		login:           {Name: "login", Path: "/login", Handler: w.getLogin},
 		logout:          {Name: "logout", Path: "/logout", Handler: w.getLogout},
+		mission:         {Name: "mission", Path: "/mission/:mission_id", Handler: w.getMission},
 		missions:        {Name: "missions", Path: "/missions", Handler: w.getMissions},
 		missionsCreate:  {Name: "missions_create", Path: "/missions/create", Handler: w.getMissionsCreate},
 		partners:        {Name: "partners", Path: "/about/partners", Handler: w.getPartners},

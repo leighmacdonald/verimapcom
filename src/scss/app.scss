@@ -4,17 +4,38 @@
 @import '~foundation-sites/scss/components/dropdown-menu';
 @import '~foundation-sites/scss/components/dropdown';
 @import '~foundation-sites/scss/components/menu';
+@import '~foundation-sites/scss/xy-grid/xy-grid';
 @import '~foundation-sites/scss/components/callout';
 @import './navbar';
 @import "~motion-ui/motion-ui";
 @import "icons";
 
 
+#live_chat {
+    min-height: 10em;
+    background-color: darken($body-background, 10%);
+    overflow-y:scroll;
+}
+
+.top-grid-container {
+    @include xy-grid-container;
+
+    &.fluid {
+        @include xy-grid-container(100%);
+    }
+
+    &.full {
+        @include xy-grid-container(100%, 0);
+    }
+    margin-top: 1em;
+}
 .admin_header_h1 {
     background-image: url('/dist/assets/contours_12_1.png');
     color: white;
     font-weight: 700;
     text-align: right;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: black;
     padding: 0.1em 0.5em 0.1em 0.1em;
 }
 

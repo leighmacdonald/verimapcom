@@ -3,33 +3,36 @@
     {{template "admin_header" "Downloads" }}
     {{template "alert" .alerts}}
 
-    <div class="grid-container">
+    <div class="top-grid-container">
         <div class="grid-x grid-padding-x">
-            <table>
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th>Size</th>
-                    <th>Updated</th>
-                </tr>
-                </thead>
-                <tbody>
-                {{range .files }}
+            <div class="cell">
+                <table class="hover">
+                    <thead>
                     <tr>
-                        <td>{{ .FileID }}</td>
-                        <td>{{ .FileName }}</td>
-                        <td>{{ .FileType }}</td>
-                        <td>{{ human .FileSize }}</td>
-                        <td>{{ datetime .UpdatedOn }}</td>
-                        <td>
-                            <a class="button" href="/download/{{ .FileID }}">Download</a>
-                        </td>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Size</th>
+                        <th>Updated</th>
+                        <th>Download</th>
                     </tr>
-                {{end}}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    {{range .files }}
+                        <tr>
+                            <td>{{ .FileID }}</td>
+                            <td>{{ .FileName }}</td>
+                            <td>{{ .FileType }}</td>
+                            <td style="width: 6em">{{ human .FileSize }}</td>
+                            <td style="width: 12em">{{ datetime .UpdatedOn }}</td>
+                            <td style="width: 5em">
+                                <a style="margin-bottom: 0" class="button" href="/download/{{ .FileID }}">Download</a>
+                            </td>
+                        </tr>
+                    {{end}}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 

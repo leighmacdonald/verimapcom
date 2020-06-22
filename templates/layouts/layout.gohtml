@@ -2,7 +2,7 @@
     <div class="grid-container">
         <div class="grid-x grid-padding-x">
             {{range .}}
-                <div class="cell" style="margin-top: 0.5em" >
+                <div class="cell" style="margin-top: 0.5em">
                     <div class="callout {{ .Level }}" data-closable>
                         <h5>{{ .Level }}</h5>
                         <p>{{ .Message }}</p>
@@ -18,8 +18,12 @@
 {{end}}
 
 {{define "admin_header"}}
-    <div class="cell">
-        <h1 class="admin_header_h1">{{.}}</h1>
+    <div class="grid-container">
+        <div class="grid-x grid-padding-x">
+            <div class="cell">
+                <h1 class="admin_header_h1">{{.}}</h1>
+            </div>
+        </div>
     </div>
 {{end}}
 

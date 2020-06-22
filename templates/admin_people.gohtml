@@ -1,12 +1,11 @@
 {{define "content"}}
 
+    {{template "admin_header" "People Admin"}}
     {{template "alert" .alerts}}
-
-    <div class="grid-container">
+    <div class="top-grid-container">
         <div class="grid-x grid-padding-x">
-            {{template "admin_header" "People Admin"}}
             <div class="cell">
-                <table>
+                <table class="hover">
                     <thead>
                     <tr>
                         <th>ID</th>
@@ -26,12 +25,16 @@
                             <td>{{ .Email }}</td>
                             <td>{{ .Agency.AgencyName }}</td>
                             <td>
-                                <div class="expanded button-group">
-                                <a class="button warning" href="/admin/people/{{ .PersonID }}">Edit</a>
-                                <a><form action="/admin/people_delete/{{ .PersonID }}" method="post"
-                                         enctype="application/x-www-form-urlencoded">
-                                        <input class="button small alert" type="submit" value="Delete">
-                                    </form></a>
+                                <div style="margin-bottom: 0" class="expanded button-group">
+                                    <a style="margin-bottom: 0" class="button warning"
+                                       href="/admin/people/{{ .PersonID }}">Edit</a>
+                                    <a>
+                                        <form action="/admin/people_delete/{{ .PersonID }}" method="post"
+                                              enctype="application/x-www-form-urlencoded">
+                                            <input style="margin-bottom: 0" class="button small alert" type="submit"
+                                                   value="Delete">
+                                        </form>
+                                    </a>
                                 </div>
                             </td>
                         </tr>

@@ -1,9 +1,9 @@
 {{define "content"}}
-
+    {{template "admin_header" "Admin Edit Person"}}
     {{template "alert" .alerts}}
 
     <form action="/admin/people/{{ .subject.PersonID}}" method="post" enctype="multipart/form-data">
-        <div class="grid-container">
+        <div class="top-grid-container">
             <div class="grid-x grid-padding">
                 <div class="cell medium-6">
                     <div class="grid-x grid-padding-x">

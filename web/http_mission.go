@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v4"
 	"github.com/leighmacdonald/verimapcom/web/store"
+	"strconv"
 	"time"
 )
 
@@ -12,10 +13,14 @@ func (w *Web) postMission(c *gin.Context) {
 	m := w.defaultM(c, missionsCreate)
 	u := m["person"].(store.Person)
 	mission.AgencyID = u.AgencyID
-	mission.MissionState = store.StateCreated
+	mission.MissionState = int(store.StateCreated)
 	mission.PersonID = u.PersonID
 	mission.CreatedOn = time.Now()
 	mission.UpdatedOn = mission.CreatedOn
+	mission.BoundingBox.LatUL = formFloatDefault(c, "lat_ul", 0)
+	mission.BoundingBox.LongUL = formFloatDefault(c, "lon_ul", 0)
+	mission.BoundingBox.LatLR = formFloatDefault(c, "lat_lr", 0)
+	mission.BoundingBox.LongLR = formFloatDefault(c, "lon_lr", 0)
 	name := c.PostForm("mission_name")
 	if name == "" {
 		abortFlash(c, "Invalid mission name, cannot be empty", w.route(missionsCreate))
@@ -38,6 +43,34 @@ func (w *Web) getMissionsCreate(c *gin.Context) {
 	}
 	m["agencies"] = agencies
 	w.render(c, missionsCreate, m)
+}
+
+func (w *Web) getMission(c *gin.Context) {
+	missionID, err := strconv.ParseInt(c.Param("mission_id"), 10, 64)
+	if err != nil {
+		abortFlash(c, "Invalid mission", referer(c))
+		return
+	}
+	mis, err := store.GetMission(w.ctx, w.db, int(missionID))
+	if err != nil {
+		abortFlashErr(c, "Failed to load mission", referer(c), err)
+		return
+	}
+	files, err := store.FileGetAllMission(w.ctx, w.db, mis.MissionID)
+	if err != nil {
+		abortFlashErr(c, "Failed to load mission files", referer(c), err)
+		return
+	}
+	flights, err := store.FlightsByMissionID(w.ctx, w.db, mis.MissionID)
+	if err != nil {
+		abortFlashErr(c, "Failed to load flights", referer(c), err)
+		return
+	}
+	m := w.defaultM(c, mission)
+	m["mission"] = mis
+	m["files"] = files
+	m["flights"] = flights
+	w.render(c, mission, m)
 }
 
 func (w *Web) getMissions(c *gin.Context) {

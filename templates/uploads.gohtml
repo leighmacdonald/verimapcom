@@ -1,14 +1,15 @@
 {{define "content"}}
-
+    {{template "admin_header" "Uploads" }}
     {{template "alert" .alerts}}
-    <div class="grid-container">
+
+    <div class="top-grid-container">
         <div class="grid-x grid-padding-x">
-            {{template "admin_header" "Uploads" }}
+
             <div class="cell">
                 <a href="/upload" class="button large success">Upload File</a>
             </div>
             <div class="cell">
-            <table>
+            <table class="hover">
                 <thead>
                 <tr>
                     <th>ID</th>
@@ -25,10 +26,10 @@
                         <td>{{ .FileID }}</td>
                         <td>{{ .FileName }}</td>
                         <td>{{ .FileType }}</td>
-                        <td>{{ human .FileSize }}</td>
-                        <td>{{ datetime .UpdatedOn }}</td>
-                        <td>
-                            <a class="button" href="/download/{{ .FileID }}">Download</a>
+                        <td style="width: 6em">{{ human .FileSize }}</td>
+                        <td style="width: 12em">{{ datetime .UpdatedOn }}</td>
+                        <td  style="width: 5em">
+                            <a style="margin-bottom: 0" class="button" href="/download/{{ .FileID }}">Download</a>
                         </td>
                     </tr>
                 {{end}}

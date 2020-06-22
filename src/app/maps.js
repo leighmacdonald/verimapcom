@@ -6,7 +6,7 @@ import TileWMS from "ol/source/TileWMS";
 import BingMaps from "ol/source/BingMaps";
 import XYZ from "ol/source/XYZ";
 import OSM from "ol/source/OSM";
-
+import ExtentInteraction from 'ol/interaction/Extent';
 const BASE_URL = "http://maps.verimap.com/geoserver";
 const DEFAULT_SRS = "EPSG:4326";
 const DEFAULT_FMT = "image/png";
@@ -75,6 +75,84 @@ function create_vector_layer(layer, srs = DEFAULT_SRS, fmt = DEFAULT_FMT) {
     // });
     // return new VectorLayer({source: vectorSource});
 }
+export function map_select_coord(target_id, on_update) {
+    let view = new View({
+        center: fromLonLat([-114.07, 51.05]),
+        zoom: 10,
+        maxZoom: 16
+    });
+    const esri = new TileLayer({
+        source: new XYZ({
+            url: 'https://server.arcgisonline.com/ArcGIS/rest/services/' +
+                'World_Imagery/MapServer/tile/{z}/{y}/{x}'
+        })
+    });
+    const layers = {
+        'esri': esri
+    };
+    const map = new Map({
+        layers: [layers['esri']],
+        target: target_id,
+        view: view
+    });
+    let extent = new ExtentInteraction();
+    map.addInteraction(extent);
+    extent.setActive(false);
+
+    //Enable interaction by holding shift
+    window.addEventListener('keydown', function(event) {
+        if (event.keyCode === 16) {
+            extent.setActive(true);
+        }
+    });
+    window.addEventListener('keyup', function(event) {
+        if (event.keyCode === 16) {
+            extent.setActive(false);
+        }
+        on_update(extent, map, view);
+    });
+
+    return {
+        'extent': extent,
+        'map': map,
+        'layers': layers,
+        'view': view,
+    };
+}
+export function map_view_mission(target_id, mission_id, lat, lon, srs = DEFAULT_SRS) {
+    const projection = getProjection(srs);
+    const vector_layers = [];
+    let view = new View({
+        center: fromLonLat([lon, lat]),
+        zoom: 10,
+        maxZoom: 16
+    });
+    const esri = new TileLayer({
+        source: new XYZ({
+            url: 'https://server.arcgisonline.com/ArcGIS/rest/services/' +
+                'World_Imagery/MapServer/tile/{z}/{y}/{x}'
+        })
+    });
+    const layers = {
+        'esri': esri,
+        'bing': new TileLayer({
+            source: new BingMaps({
+                imagerySet: 'Aerial',
+                key: `AgmK4-v3LIF5w4UD0u-_y2Sw393klUG9_mXoENnRVC1XGTO393VWfi9yv5uceXq7`
+            })
+        })
+    };
+    const map = new Map({
+        layers: [layers['esri'], ...vector_layers],
+        target: target_id,
+        view: view
+    });
+    return {
+        'map': map,
+        'layers': layers,
+        'view': view,
+    };
+}
 
 export function map_create_example(example, srs = DEFAULT_SRS) {
     const projection = getProjection(srs);
@@ -93,6 +171,7 @@ export function map_create_example(example, srs = DEFAULT_SRS) {
     if (example['zoom_max'] && example['zoom_max'] > 0) {
         zoom_max = example['zoom_max'];
     }
+
     let view = new View({
         center: fromLonLat([example.longitude, example.latitude]),
         zoom: example.zoom,

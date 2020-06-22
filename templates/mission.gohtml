@@ -1,0 +1,140 @@
+{{define "content"}}
+
+    {{template "alert" .alerts}}
+
+    {{template "admin_header" .mission.MissionName }}
+
+    <form action="/missions/create" method="post" enctype="application/x-www-form-urlencoded">
+        <div class="top-grid-container">
+            <div class="grid-x grid-padding-x">
+                <div class="cell medium-3">
+                    <h1>Mission Summary</h1>
+                    <hr>
+                    <dl>
+                        <dt>Creator</dt>
+                        <dd><a href="/profile/{{ .mission.PersonID }}">{{ .mission.PersonName }}</a></dd>
+                        <dt>Agency</dt>
+                        <dd>{{ .mission.AgencyName }}</dd>
+                        <dt>Created On</dt>
+                        <dd>{{ datetime .mission.CreatedOn }}</dd>
+                        <dt>Updated On</dt>
+                        <dd>{{ datetime .mission.UpdatedOn }}</dd>
+                        <dt>Mission State</dt>
+                        <dd>{{ .mission.MissionState }}</dd>
+                    </dl>
+                    <h5>Area Bounding Box</h5>
+                    <div class="grid-container">
+                        <div class="grid-x grid-padding-x">
+                            <div class="cell">
+                                <div class="cell medium-6">
+                                    <span>{{ fmtFloat .mission.BoundingBox.LatUL 5}}</span>
+                                </div>
+                                <div class="cell medium-6">
+                                    <span>{{ fmtFloat .mission.BoundingBox.LongUL 5 }}</span>
+                                </div>
+                            </div>
+                            <div class="cell">
+                                <div class="cell medium-6">
+                                    <span>{{ fmtFloat .mission.BoundingBox.LatLR 5 }}</span>
+                                </div>
+                                <div class="cell medium-6">
+                                    <span>{{ fmtFloat .mission.BoundingBox.LongLR 5 }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h5>Flights Summary ({{ len .flights }})</h5>
+                    {{range .flights }}
+                        {{if eq .Summary "" }}
+                            <p>None</p>
+                        {{else}}
+                            <p>{{ .Summary }}</p>
+                        {{end}}
+                    {{end}}
+                </div>
+                <div class="cell medium-9">
+                    <div class="grid-container">
+                        <div class="grid-y grid-padding-y">
+                            <div class="cell">
+                                <ul class="tabs" data-tabs id="example-tabs">
+                                    <li class="tabs-title is-active">
+                                        <a style="margin-bottom: 0; font-size: 125%;" href="#panel1"
+                                           aria-selected="true" class="button">Live Map</a>
+                                    </li>
+                                    <li class="tabs-title">
+                                        <a style="margin-bottom: 0; font-size: 125%;" data-tabs-target="panel2"
+                                           href="#panel2" class="button">Downloads</a>
+                                    </li>
+                                </ul>
+                                <div class="tabs-content" data-tabs-content="example-tabs">
+                                    <div class="tabs-panel is-active" id="panel1">
+                                        <div id="map"
+                                             data-lat_ul="{{ .mission.BoundingBox.LatUL }}"
+                                             data-lon_ul="{{ .mission.BoundingBox.LongUL }}"
+                                             data-lat_lr="{{ .mission.BoundingBox.LatLR }}"
+                                             data-lon_lr="{{ .mission.BoundingBox.LongLR }}"
+                                        ></div>
+                                    </div>
+                                    <div class="tabs-panel" id="panel2">
+                                        <table class="hover">
+                                            <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Size</th>
+                                                <th>Updated</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {{range .files }}
+                                                <tr>
+                                                    <td>{{ .FileName }}</td>
+                                                    <td>{{ human .FileSize }}</td>
+                                                    <td>{{ datetime .UpdatedOn }}</td>
+                                                    <td>
+                                                        <a class="button" href="/download/{{ .FileID }}">Download</a>
+                                                    </td>
+                                                </tr>
+                                            {{end}}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="cell">
+
+                                    <div class="grid-y grid-padding-y">
+                                        <div class="cell" id="live_chat">
+
+                                        </div>
+                                        <div class="cell" id="chat_input_container">
+                                            <label>
+                                                Message & System Log
+                                                <form>
+                                                    <div class="grid-x">
+                                                        <div class="cell medium-10">
+                                                            <input type="text" name="message">
+                                                        </div>
+                                                        <div class="cell medium-2">
+                                                            <input style="margin-bottom: 0" class="button expanded" type="submit"
+                                                                   value="Send">
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </label>
+                                        </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+{{end}}
+
+{{define "title"}}
+    Agency Missions
+{{end}}

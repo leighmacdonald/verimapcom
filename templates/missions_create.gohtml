@@ -1,12 +1,15 @@
 {{define "content"}}
-
+    {{template "admin_header" "Create Mission"}}
     {{template "alert" .alerts}}
     <form action="/missions/create" method="post" enctype="application/x-www-form-urlencoded">
-        <div class="grid-container">
+        <div class="top-grid-container">
             <div class="grid-x grid-padding-x">
-                {{template "admin_header" "Create Mission"}}
-                <div class="cell medium-6">
+
+                <div class="cell medium-4">
                     <div class="grid-x grid-padding-x">
+                        <div class="cell">
+                            <h2>Mission Details</h2>
+                        </div>
                         <div class="cell">
                             <label>Agency
                                 <select name="agency_id">
@@ -33,11 +36,41 @@
                                 <input type="text" placeholder="EWF001" name="mission_name" value="">
                             </label>
                         </div>
-
+                        <div class="cell">
+                        <p>
+                            Select the bounding box of the area you wish to cover. This is only used for getting
+                            rough location info for initial planning. <span class="font_bold">Hold shift and draw a
+                            box with your mouse on the map to automatically fill this</span>
+                        </p>
+                        </div>
+                        <div class="cell">
+                            <label>Latitude UL
+                                <input type="text" placeholder="0" name="lat_ul" value="0.0" id="lat_ul">
+                            </label>
+                        </div>
+                        <div class="cell">
+                            <label>Longitude UL
+                                <input type="text" placeholder="0" name="lon_ul" value="0.0" id="lon_ul">
+                            </label>
+                        </div>
+                        <div class="cell">
+                            <label>Latitude LR
+                                <input type="text" placeholder="0" name="lat_lr" value="0.0" id="lat_lr">
+                            </label>
+                        </div>
+                        <div class="cell">
+                            <label>Longitude LR
+                                <input type="text" placeholder="0" name="lon_lr" value="0.0" id="lon_lr">
+                            </label>
+                        </div>
                         <div class="cell">
                             <input type="submit" class="button medium success" value="Create Mission">
                         </div>
                     </div>
+                </div>
+                <div class="cell medium-8">
+                    <h2>Select Location</h2>
+                    <div id="map"></div>
                 </div>
             </div>
         </div>

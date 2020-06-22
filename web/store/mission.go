@@ -2,6 +2,7 @@ package store
 
 import (
 	"context"
+	"github.com/jackc/pgtype"
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"time"
@@ -17,17 +18,26 @@ const (
 	StatePublished  MissionState = 4
 )
 
-type Mission struct {
-	MissionID    int
-	PersonID     int
-	AgencyID     int
-	MissionName  string
-	MissionState MissionState
-	CreatedOn    time.Time
-	UpdatedOn    time.Time
+type BoundingBox struct {
+	LatUL  float64
+	LongUL float64
+	LatLR  float64
+	LongLR float64
+}
 
-	AgencyName string
-	PersonName string
+type Mission struct {
+	MissionID          int
+	PersonID           int
+	AgencyID           int
+	MissionName        string
+	MissionState       int
+	ScheduledStartDate pgtype.Timestamp
+	ScheduledEndDate   pgtype.Timestamp
+	CreatedOn          time.Time
+	UpdatedOn          time.Time
+	BoundingBox        BoundingBox
+	AgencyName         string
+	PersonName         string
 }
 
 func (m *Mission) NewFlight() Flight {
@@ -38,38 +48,22 @@ func (m *Mission) NewFlight() Flight {
 	}
 }
 
-func LoadMission(ctx context.Context, db *pgxpool.Pool, missionID int, m *Mission) error {
-	const q = `
-		SELECT 
-		    m.mission_id, m.person_id, m.agency_id, m.mission_name, m.mission_state, m.created_on, m.updated_on,
-		       a.agency_name, CONCAT(p.first_name, ' ' , p.last_name) as name
-		FROM 
-		    mission m
-		LEFT JOIN agency a on a.agency_id = m.agency_id
-		left join person p on m.person_id = p.person_id
-		WHERE 
-		    m.mission_id = $1`
-	if err := db.QueryRow(ctx, q, missionID).
-		Scan(&m.MissionID, &m.PersonID, &m.AgencyID, &m.MissionName,
-			&m.MissionState, &m.CreatedOn, &m.UpdatedOn,
-			&m.AgencyName, &m.PersonName); err != nil {
-		return err
-	}
-	return nil
-}
-
 func InsertMission(ctx context.Context, db *pgxpool.Pool, m *Mission) error {
 	m.CreatedOn = time.Now()
 	m.UpdatedOn = time.Now()
 	const q = `
 		INSERT INTO mission (
-		   person_id, agency_id, mission_name, mission_state, created_on, updated_on
+		   person_id, agency_id, mission_name, mission_state, created_on, updated_on,
+			bbox_ul, bbox_lr
 		) VALUES (
-		    $1, $2, $3, $4, $5, $6
+		    $1, $2, $3, $4, $5, $6, 
+		      CONCAT('SRID=4326;POINT(', $8::float8, ' ', $7::float8, ')'),
+		    CONCAT('SRID=4326;POINT(', $10::float8,' ', $9::float8, ')')
 		) RETURNING mission_id`
 
 	err := db.QueryRow(ctx, q, m.PersonID, m.AgencyID, m.MissionName,
-		m.MissionState, m.CreatedOn, m.UpdatedOn).Scan(&m.MissionID)
+		m.MissionState, m.CreatedOn, m.UpdatedOn, m.BoundingBox.LatUL, m.BoundingBox.LongUL,
+		m.BoundingBox.LatLR, m.BoundingBox.LongLR).Scan(&m.MissionID)
 	if err != nil {
 		return err
 	}
@@ -82,12 +76,17 @@ func UpdateMission(ctx context.Context, db *pgxpool.Pool, m *Mission) error {
 		UPDATE 
 		    mission
 		SET 
-		    person_id = $2, agency_id = $3, mission_name = $4, mission_state = $5, updated_on = $6
+		    person_id = $2, agency_id = $3, mission_name = $4, mission_state = $5, updated_on = $6,
+			bbox_ul = CONCAT('SRID=4326;POINT(', $8, ' ', $7, ')'),
+		    bbox_lr = CONCAT('SRID=4326;POINT(', $10,' ', $9, ')'), 
+		    scheduled_start_date = $11, scheduled_end_date = $12
 		WHERE
 			mission_id = $1`
 
 	if _, err := db.Exec(ctx, q, m.MissionID, m.PersonID, m.AgencyID,
-		m.MissionName, m.MissionState, m.UpdatedOn); err != nil {
+		m.MissionName, m.MissionState, m.UpdatedOn, m.BoundingBox.LatUL, m.BoundingBox.LongUL,
+		m.BoundingBox.LatLR, m.BoundingBox.LongLR, m.ScheduledStartDate,
+		m.ScheduledEndDate); err != nil {
 		return err
 	}
 	return nil
@@ -100,11 +99,33 @@ func SaveMission(ctx context.Context, db *pgxpool.Pool, m *Mission) error {
 	return InsertMission(ctx, db, m)
 }
 
+func GetMission(ctx context.Context, db *pgxpool.Pool, missionID int) (Mission, error) {
+	const q = `
+		SELECT 
+		    m.mission_id, m.person_id, m.agency_id, m.mission_name, m.mission_state, m.created_on, m.updated_on,
+		    a.agency_name, CONCAT(p.first_name, ' ' , p.last_name) as name,
+		    ST_Y(bbox_ul), ST_X(bbox_ul), ST_Y(bbox_lr),ST_X(bbox_lr), m.scheduled_start_date, m.scheduled_end_date
+		FROM 
+		    mission m
+		LEFT JOIN agency a on a.agency_id = m.agency_id
+		LEFT JOIN person p on m.person_id = p.person_id
+		WHERE m.mission_id = $1`
+	var m Mission
+	if err := db.QueryRow(ctx, q, missionID).Scan(&m.MissionID, &m.PersonID, &m.AgencyID, &m.MissionName,
+		&m.MissionState, &m.CreatedOn, &m.UpdatedOn, &m.AgencyName, &m.PersonName, &m.BoundingBox.LatUL, &m.BoundingBox.LongUL,
+		&m.BoundingBox.LatLR, &m.BoundingBox.LongLR, &m.ScheduledStartDate,
+		&m.ScheduledEndDate); err != nil {
+		return m, err
+	}
+	return m, nil
+}
+
 func GetMissions(ctx context.Context, db *pgxpool.Pool, agencyID int) ([]Mission, error) {
 	const q = `
 		SELECT 
 		    m.mission_id, m.person_id, m.agency_id, m.mission_name, m.mission_state, m.created_on, m.updated_on,
-		    a.agency_name, CONCAT(p.first_name, ' ' , p.last_name) as name
+		    a.agency_name, CONCAT(p.first_name, ' ' , p.last_name) as name,
+		    ST_Y(bbox_ul), ST_X(bbox_ul), ST_Y(bbox_lr),ST_X(bbox_lr), m.scheduled_start_date, m.scheduled_end_date
 		FROM 
 		    mission m
 		LEFT JOIN agency a on a.agency_id = m.agency_id
@@ -128,7 +149,10 @@ func GetMissions(ctx context.Context, db *pgxpool.Pool, agencyID int) ([]Mission
 	for rows.Next() {
 		var m Mission
 		if err := rows.Scan(&m.MissionID, &m.PersonID, &m.AgencyID, &m.MissionName,
-			&m.MissionState, &m.CreatedOn, &m.UpdatedOn, &m.AgencyName, &m.PersonName); err != nil {
+			&m.MissionState, &m.CreatedOn, &m.UpdatedOn, &m.AgencyName, &m.PersonName,
+			&m.BoundingBox.LatUL, &m.BoundingBox.LongUL,
+			&m.BoundingBox.LatLR, &m.BoundingBox.LongLR,
+			&m.ScheduledStartDate, &m.ScheduledEndDate); err != nil {
 			return nil, err
 		}
 		missions = append(missions, m)

@@ -191,6 +191,30 @@ func FileRead(dir string, f *File) error {
 	return nil
 }
 
+func FileGetAllMission(ctx context.Context, db *pgxpool.Pool, missionID int) ([]*File, error) {
+	const q = `
+		SELECT 
+			f.file_id, f.person_id, f.file_name, f.file_type, f.file_size, f.hash_256, f.created_on, f.updated_on 
+		FROM 
+		     file f
+		LEFT JOIN mission_file mf on f.file_id = mf.file_id
+		WHERE
+			mf.mission_id = $1`
+	var files []*File
+	rows, err := db.Query(ctx, q, missionID)
+	if err != nil {
+		return nil, errors.Wrapf(err, "Failed to query mission files")
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var f File
+		if err := rows.Scan(&f.FileID, &f.PersonID, &f.FileName, &f.FileType,
+			&f.FileSize, &f.Hash256, &f.CreatedOn, &f.UpdatedOn); err != nil {
+			return nil, errors.Wrapf(err, "Failed to scan file row")
+		}
+	}
+	return files, nil
+}
 func FileGet(ctx context.Context, db *pgxpool.Pool, fileID int) (*File, error) {
 	const q = `
 		SELECT 

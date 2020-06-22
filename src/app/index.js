@@ -21,7 +21,15 @@ import 'foundation-sites/dist/js/plugins/foundation.responsiveToggle';
 import 'jquery'
 import 'what-input'
 
-import {get_map, get_maps, map_create_connect, map_create_example} from "./maps";
+import {
+    get_map,
+    get_maps,
+    map_create_connect,
+    map_create_example,
+    map_select_coord,
+    map_view_mission
+} from "./maps";
+import {fromLonLat, transform} from "ol/proj";
 
 let map_sets = [];
 
@@ -42,6 +50,28 @@ function init_examples() {
     });
 }
 
+function page_mission(mission_id) {
+    const map_div = document.getElementById("map");
+    map_view_mission("map", mission_id, map_div.dataset.lat_ul, map_div.dataset.lon_ul)
+}
+
+function page_missions_create() {
+    const lat_ul = document.getElementById("lat_ul");
+    const lon_ul = document.getElementById("lon_ul");
+    const lat_lr = document.getElementById("lat_lr");
+    const lon_lr = document.getElementById("lon_lr");
+
+    map_select_coord("map", function (extent, map, view) {
+        let lonlat_ul = transform([extent.extent_[0], extent.extent_[1]], 'EPSG:3857', 'EPSG:4326')
+        lon_ul.value = lonlat_ul[0];
+        lat_ul.value = lonlat_ul[1];
+        let lonlat_lr = transform([extent.extent_[2], extent.extent_[3]], 'EPSG:3857', 'EPSG:4326')
+        lon_lr.value = lonlat_lr[0];
+        lat_lr.value = lonlat_lr[1];
+    })
+}
+
+
 function main() {
     jQuery(document).foundation();
     const path = window.location.pathname.toLowerCase();
@@ -50,7 +80,13 @@ function main() {
         return;
     }
     if (path === "/missions/create") {
+        page_missions_create();
     }
+    let m = path.match(/\/mission\/(\d+)/)
+    if (m) {
+        page_mission(m[1]);
+    }
+
     let match = path.match(/\/example\/(\d+)/);
     if (match) {
         get_map(match[1], map_create_example);
