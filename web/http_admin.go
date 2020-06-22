@@ -53,22 +53,6 @@ func (w *Web) postAdminAgenciesCreate(c *gin.Context) {
 	successFlash(c, fmt.Sprintf("Created agency successfully: %s", name), w.route(adminAgencies))
 }
 
-func (w *Web) getAdminMissions(c *gin.Context) {
-	person, found := c.Get("person")
-	if !found {
-		c.Redirect(http.StatusUnauthorized, w.route(login))
-		return
-	}
-	missions, err := store.GetMissions(w.ctx, w.db, person.(store.Person).AgencyID)
-	if err != nil {
-		abortFlashErr(c, "Error loading missions", w.route(adminMissions), err)
-		return
-	}
-	m := w.defaultM(c, adminMissions)
-	m["missions"] = missions
-	w.render(c, adminMissions, m)
-}
-
 func (w *Web) getAdminPeople(c *gin.Context) {
 	people, err := store.GetPeople(w.ctx, w.db)
 	if err != nil {

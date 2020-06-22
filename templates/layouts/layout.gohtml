@@ -27,6 +27,22 @@
     </div>
 {{end}}
 
+{{define "display_state"}}
+    {{if eq . 0}}
+        <span>Deleted</span>
+    {{else if eq . 1}}
+        <span>Created</span>
+    {{else if eq . 2}}
+        <span>Live</span>
+    {{else if eq . 3}}
+        <span>Processing</span>
+    {{else if eq . 4}}
+        <span>Published</span>
+    {{else}}
+        <span>Unknown: {{. }}</span>
+    {{end}}
+{{end}}
+
 {{define "layout"}}
     <!doctype html>
     <html class="no-js" lang="en">
@@ -130,7 +146,6 @@
                                         <li><a class="link" href="/downloads">Downloads</a></li>
                                         <li><a class="link" href="/uploads">Uploads</a></li>
                                         {{if eq .person.Agency.AgencyID 1}}
-                                            <li><a class="link" href="/admin/missions">Missions Admin</a></li>
                                             <li><a class="link" href="/admin/agencies">Agencies Admin</a></li>
                                             <li><a class="link" href="/admin/people">People Admin</a></li>
                                         {{end}}

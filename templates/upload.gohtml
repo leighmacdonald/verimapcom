@@ -13,11 +13,11 @@
                         </div>
                         <div class="cell">
                             <label>Mission
-
                                 <select name="mission_id">
                                     <option value="0">None</option>
-                                    {{range .missions }}
-                                        <option value="{{ .MissionID }}">{{ .MissionName }}</option>
+                                    {{$query_mission_id := .query_id }}
+                                    {{range .missions}}
+                                        <option {{if eq .MissionID $query_mission_id}}selected{{end}} value="{{ .MissionID }}">{{ .MissionName }}</option>
                                     {{end}}
                                 </select>
                             </label>

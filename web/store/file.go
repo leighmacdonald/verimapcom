@@ -212,6 +212,7 @@ func FileGetAllMission(ctx context.Context, db *pgxpool.Pool, missionID int) ([]
 			&f.FileSize, &f.Hash256, &f.CreatedOn, &f.UpdatedOn); err != nil {
 			return nil, errors.Wrapf(err, "Failed to scan file row")
 		}
+		files = append(files, &f)
 	}
 	return files, nil
 }

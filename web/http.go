@@ -310,7 +310,6 @@ type pageName string
 const (
 	about             pageName = "about"
 	adminAgencies     pageName = "admin_agencies"
-	adminMissions     pageName = "admin_missions"
 	adminPeople       pageName = "admin_people"
 	adminPeopleDelete pageName = "admin_people_delete"
 	adminPeopleEdit   pageName = "admin_people_edit"
@@ -661,7 +660,6 @@ func New(ctx context.Context) *Web {
 func (w *Web) makePagesHeaders() {
 	pages := map[pageName]*Page{
 		adminAgencies:   {Name: "admin_agencies", Path: "/admin/agencies", Admin: true, Handler: w.getAdminAgencies},
-		adminMissions:   {Name: "admin_missions", Path: "/admin/missions", Admin: true, Handler: w.getAdminMissions},
 		adminPeople:     {Name: "admin_people", Path: "/admin/people", Admin: true, Handler: w.getAdminPeople},
 		adminPeopleEdit: {Name: "admin_people_edit", Path: "/admin/people/:person_id", Admin: true, Handler: w.getAdminPeopleEdit},
 		about:           {Name: "about", Path: "/about"},

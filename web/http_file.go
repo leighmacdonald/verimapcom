@@ -97,7 +97,25 @@ func (w *Web) getFile(c *gin.Context) {
 }
 
 func (w *Web) getUpload(c *gin.Context) {
-	w.render(c, upload, w.defaultM(c, upload))
+	var missionId = 0
+	missionIDStr, found := c.GetQuery("mission_id")
+	if found {
+		missionId64, err := strconv.ParseInt(missionIDStr, 10, 64)
+		if err != nil {
+			abortFlashErr(c, "Failed to parse mission_id", w.route(home), err)
+			return
+		}
+		missionId = int(missionId64)
+	}
+	m := w.defaultM(c, upload)
+	mis, err := store.GetMissions(w.ctx, w.db, 1)
+	if err != nil {
+		abortFlashErr(c, "Failed to load missions", w.route(home), err)
+		return
+	}
+	m["missions"] = mis
+	m["query_id"] = missionId
+	w.render(c, upload, m)
 }
 
 func (w *Web) getUploads(c *gin.Context) {

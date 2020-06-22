@@ -3,7 +3,7 @@
     {{template "alert" .alerts}}
 
     <div class="top-grid-container">
-        <div class="grid-x grid-padding-x">
+        <div class="grid-y grid-padding-y">
 
             <div class="cell">
                 <a class="button large success" href="/missions/create">New Mission</a>
@@ -36,22 +36,6 @@
             </div>
         </div>
     </div>
-{{end}}
-
-{{define "display_state"}}
-    {{if eq . 0}}
-        <span>Deleted</span>
-    {{else if eq . 1}}
-        <span>Created</span>
-    {{else if eq . 2}}
-        <span>Live</span>
-    {{else if eq . 3}}
-        <span>Processing</span>
-    {{else if eq . 4}}
-        <span>Published</span>
-    {{else}}
-        <span>Unknown: {{. }}</span>
-    {{end}}
 {{end}}
 
 {{define "title"}}
