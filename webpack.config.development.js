@@ -2,7 +2,9 @@ const webpack = require('webpack');
 const path = require('path');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const WebpackShellPlugin = require('webpack-shell-plugin');
 
 module.exports = {
     target: "web",
@@ -49,13 +51,21 @@ module.exports = {
                 ],
             },
             {
-                test: /\.(jpe?g|png|gif|svg|tga|gltf|babylon|mtl|pcb|pcd|prwm|obj|mat|mp3|ogg)$/i,
+                test: /\.(jpg|png|gif|svg)$/,
+                loader: 'image-webpack-loader',
+                // Specify enforce: 'pre' to apply the loader
+                // before url-loader/svg-url-loader
+                // and not duplicate it in rules with them
+                enforce: 'pre'
+            },
+            {
+                test: /\.(jpe?g|png|gif)$/i,
                 use: [
                     {
-                        loader: 'file-loader',
+                        loader: 'url-loader',
                         options: {
                             limit: 10000,
-                            name: "assets/[name].[ext]"
+                            name: "images/[name].[ext]"
                         },
                     }
                 ]
@@ -71,23 +81,24 @@ module.exports = {
             $: 'jquery',
             jQuery: 'jquery',
         }),
-
-        //new BundleAnalyzerPlugin(),
-
         new MiniCssExtractPlugin({
             filename: '[name].css',
             chunkFilename: '[id].css'
+        }),
+        new OptimizeCssAssetsPlugin({
+            cssProcessorPluginOptions: {
+                preset: ['default', { discardComments: { removeAll: true } }]
+            }
         }),
         new CopyWebpackPlugin([
             {
                 from: 'src/public/fonts',
                 to: 'fonts'
-            },
-            {
-                from: 'src/public/images',
-                to: 'assets'
             }
-        ])
+        ]),
+        new WebpackShellPlugin({
+            //onBuildStart:['echo "Webpack Start"'],
+            onBuildEnd:['bash compress.sh']})
     ]
 
 };
