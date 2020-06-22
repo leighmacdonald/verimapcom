@@ -600,7 +600,7 @@ func (w *Web) Close() {
 func New(ctx context.Context) *Web {
 	redisHost, found := os.LookupEnv("REDIS_HOST")
 	if !found {
-		redisHost = "172.16.1.4:6379"
+		redisHost = "localhost:6379"
 	}
 	s, err := redis.NewStoreWithDB(10, "tcp",
 		redisHost, "", "5", []byte("temp"))
