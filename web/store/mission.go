@@ -25,6 +25,9 @@ type Mission struct {
 	MissionState MissionState
 	CreatedOn    time.Time
 	UpdatedOn    time.Time
+
+	AgencyName string
+	PersonName string
 }
 
 func (m *Mission) NewFlight() Flight {
@@ -38,14 +41,18 @@ func (m *Mission) NewFlight() Flight {
 func LoadMission(ctx context.Context, db *pgxpool.Pool, missionID int, m *Mission) error {
 	const q = `
 		SELECT 
-		    mission_id, person_id, agency_id, mission_name, mission_state, created_on, updated_on
+		    m.mission_id, m.person_id, m.agency_id, m.mission_name, m.mission_state, m.created_on, m.updated_on,
+		       a.agency_name, CONCAT(p.first_name, ' ' , p.last_name) as name
 		FROM 
-		    mission
+		    mission m
+		LEFT JOIN agency a on a.agency_id = m.agency_id
+		left join person p on m.person_id = p.person_id
 		WHERE 
-		    mission_id = $1`
+		    m.mission_id = $1`
 	if err := db.QueryRow(ctx, q, missionID).
 		Scan(&m.MissionID, &m.PersonID, &m.AgencyID, &m.MissionName,
-			&m.MissionState, &m.CreatedOn, &m.UpdatedOn); err != nil {
+			&m.MissionState, &m.CreatedOn, &m.UpdatedOn,
+			&m.AgencyName, &m.PersonName); err != nil {
 		return err
 	}
 	return nil
@@ -94,10 +101,14 @@ func SaveMission(ctx context.Context, db *pgxpool.Pool, m *Mission) error {
 }
 
 func GetMissions(ctx context.Context, db *pgxpool.Pool, agencyID int) ([]Mission, error) {
-	const q = `SELECT 
-		    mission_id, person_id, agency_id, mission_name, mission_state, created_on, updated_on
+	const q = `
+		SELECT 
+		    m.mission_id, m.person_id, m.agency_id, m.mission_name, m.mission_state, m.created_on, m.updated_on,
+		    a.agency_name, CONCAT(p.first_name, ' ' , p.last_name) as name
 		FROM 
-		    mission `
+		    mission m
+		LEFT JOIN agency a on a.agency_id = m.agency_id
+		LEFT JOIN person p on m.person_id = p.person_id`
 	query := q
 	var (
 		missions []Mission
@@ -109,7 +120,7 @@ func GetMissions(ctx context.Context, db *pgxpool.Pool, agencyID int) ([]Mission
 		query += " WHERE agency_id = $1"
 		args = append(args, agencyID)
 	}
-	rows, err = db.Query(ctx, "", args...)
+	rows, err = db.Query(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -117,10 +128,30 @@ func GetMissions(ctx context.Context, db *pgxpool.Pool, agencyID int) ([]Mission
 	for rows.Next() {
 		var m Mission
 		if err := rows.Scan(&m.MissionID, &m.PersonID, &m.AgencyID, &m.MissionName,
-			&m.MissionState, &m.CreatedOn, &m.UpdatedOn); err != nil {
+			&m.MissionState, &m.CreatedOn, &m.UpdatedOn, &m.AgencyName, &m.PersonName); err != nil {
 			return nil, err
 		}
 		missions = append(missions, m)
 	}
 	return missions, nil
+}
+
+func MissionAttachFile(ctx context.Context, db *pgxpool.Pool, missionID int, fileID int) error {
+	const q = `
+		INSERT INTO mission_file (
+		    mission_id, file_id, created_on
+		) VALUES ($1, $2, $3)`
+	if _, err := db.Exec(ctx, q, missionID, fileID, time.Now()); err != nil {
+		return err
+	}
+	return nil
+}
+
+func MissionDetachFile(ctx context.Context, db *pgxpool.Pool, missionID int, fileID int) error {
+	const q = `
+		DELETE FROM  mission_file WHERE mission_id = $1 AND file_id = $2`
+	if _, err := db.Exec(ctx, q, missionID, fileID); err != nil {
+		return err
+	}
+	return nil
 }

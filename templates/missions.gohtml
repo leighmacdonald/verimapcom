@@ -6,7 +6,7 @@
         <div class="grid-x grid-padding-x">
             {{template "admin_header" "Missions Overview"}}
             <div class="cell">
-                <a class="button medium success" href="/missions/create">New Mission</a>
+                <a class="button large success" href="/missions/create">New Mission</a>
             </div>
             <div class="cell">
                 <table>
@@ -23,12 +23,12 @@
                     <tbody>
                     {{range .missions }}
                         <tr>
-                            <td>{{ .MissionName }}</td>
-                            <td>{{ .Agency }}</td>
-                            <td>{{ .State }}</td>
-                            <td>{{ .Creator }}</td>
-                            <td>{{ .CreatedOn }}</td>
-                            <td>{{ .UpdatedOn }}</td>
+                            <td><a href="/mission/{{.MissionID}}">{{ .MissionName }}</a></td>
+                            <td><a href="/agency/{{.AgencyID }}">{{ .AgencyName }}</a></td>
+                            <td>{{template "display_state" .MissionState }}</td>
+                            <td><a href="/profile/{{ .PersonID }}">{{ .PersonName }}</a></td>
+                            <td>{{ datetime .CreatedOn }}</td>
+                            <td>{{ datetime .UpdatedOn }}</td>
                         </tr>
                     {{end}}
                     </tbody>
@@ -36,6 +36,22 @@
             </div>
         </div>
     </div>
+{{end}}
+
+{{define "display_state"}}
+    {{if eq . 0}}
+        <span>Deleted</span>
+    {{else if eq . 1}}
+        <span>Created</span>
+    {{else if eq . 2}}
+        <span>Live</span>
+    {{else if eq . 3}}
+        <span>Processing</span>
+    {{else if eq . 4}}
+        <span>Published</span>
+    {{else}}
+        <span>Unknown: {{. }}</span>
+    {{end}}
 {{end}}
 
 {{define "title"}}

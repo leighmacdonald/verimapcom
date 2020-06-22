@@ -2,25 +2,45 @@
 
     {{template "alert" .alerts}}
     <form action="/missions/create" method="post" enctype="application/x-www-form-urlencoded">
-    <div class="grid-container">
-        <div class="grid-x grid-padding-x">
-            {{template "admin_header" "Create Mission"}}
+        <div class="grid-container">
+            <div class="grid-x grid-padding-x">
+                {{template "admin_header" "Create Mission"}}
+                <div class="cell medium-6">
+                    <div class="grid-x grid-padding-x">
+                        <div class="cell">
+                            <label>Agency
+                                <select name="agency_id">
+                                    {{ $pid := .person.AgencyID }}
+                                    {{range .agencies }}
+                                        <option {{if eq $pid .AgencyID }}selected{{end }}
+                                                value="{{ .AgencyID }}">{{ .AgencyName}}</option>
+                                    {{end}}
+                                </select>
+                            </label>
+                        </div>
+                        <div class="cell">
+                            <label>Start Time
+                                <input type="text" placeholder="" name="scheduled_start_date" id="date_start">
+                            </label>
+                        </div>
+                        <div class="cell">
+                            <label>End Time
+                                <input type="text" placeholder="" name="scheduled_end_date" id="date_end">
+                            </label>
+                        </div>
+                        <div class="cell">
+                            <label>Mission Name
+                                <input type="text" placeholder="EWF001" name="mission_name" value="">
+                            </label>
+                        </div>
 
-            <div class="cell">
-                <label>Mission Name
-                    <input type="text" placeholder="" name="mission_name" value="EWF001">
-                </label>
-            </div>
-            <div class="cell">
-                <label>Mission Start Date
-                    <input type="datetime-local" placeholder="" name="scheduled_start_date" value="">
-                </label>
-            </div>
-            <div class="cell">
-                <input type="submit" class="button medium success" value="Create Mission">
+                        <div class="cell">
+                            <input type="submit" class="button medium success" value="Create Mission">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
     </form>
 {{end}}
 

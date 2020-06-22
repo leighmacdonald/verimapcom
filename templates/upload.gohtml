@@ -1,0 +1,43 @@
+{{define "content"}}
+
+    {{template "alert" .alerts}}
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <div class="grid-container">
+            <div class="grid-x grid-padding-x">
+                {{template "admin_header" "Upload File"}}
+                <div class="cell medium-6">
+                    <div class="grid-x grid-padding-x">
+                        <div class="cell">
+                            <label>Description
+                                <input type="text" placeholder="" name="description" value="">
+                            </label>
+                        </div>
+                        <div class="cell">
+                            <label>Mission
+
+                                <select name="mission_id">
+                                    <option value="0">None</option>
+                                    {{range .missions }}
+                                        <option value="{{ .MissionID }}">{{ .MissionName }}</option>
+                                    {{end}}
+                                </select>
+                            </label>
+                        </div>
+                        <div class="cell">
+                            <label>File
+                                <input type="file" placeholder="" name="file">
+                            </label>
+                        </div>
+                        <div class="cell">
+                            <input type="submit" class="button medium success" value="Upload File">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{{end}}
+
+{{define "title"}}
+    Agency Missions
+{{end}}

@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v4"
 	"github.com/leighmacdonald/verimapcom/web/store"
-	log "github.com/sirupsen/logrus"
 	"time"
 )
 
@@ -30,11 +29,23 @@ func (w *Web) postMission(c *gin.Context) {
 	successFlash(c, "Create mission successfully", w.route(missions))
 }
 
+func (w *Web) getMissionsCreate(c *gin.Context) {
+	m := w.defaultM(c, missionsCreate)
+	agencies, err := store.GetAgencies(w.ctx, w.db)
+	if err != nil {
+		abortFlashErr(c, "Failed to get agencies", w.route(home), err)
+		return
+	}
+	m["agencies"] = agencies
+	w.render(c, missionsCreate, m)
+}
+
 func (w *Web) getMissions(c *gin.Context) {
 	m := w.defaultM(c, missions)
 	userMissions, err := store.GetMissions(w.ctx, w.db, m["person"].(store.Person).AgencyID)
 	if err != nil && err.Error() != pgx.ErrNoRows.Error() {
-		log.Errorf("Failed to fetch user missions: %v", err)
+		abortFlashErr(c, "Failed to get missions", w.route(home), err)
+		return
 	}
 	m["missions"] = userMissions
 	w.render(c, missions, m)

@@ -307,6 +307,8 @@ const (
 	adminPeopleEdit   pageName = "admin_people_edit"
 	background        pageName = "background"
 	connect           pageName = "connect"
+	download          pageName = "download"
+	downloads         pageName = "downloads"
 	emergency         pageName = "emergency"
 	environmental     pageName = "environmental"
 	err               pageName = "error"
@@ -323,6 +325,8 @@ const (
 	profile           pageName = "profile"
 	services          pageName = "services"
 	technology        pageName = "technology"
+	upload            pageName = "upload"
+	uploads           pageName = "uploads"
 	wildfire          pageName = "wildfire"
 )
 
@@ -341,13 +345,25 @@ type Page struct {
 
 type M map[string]interface{}
 
-func (w *Web) defaultM(c *gin.Context, page pageName) M {
+var ErrInvalidUser = errors.New("Invalid user")
+
+func (w *Web) currentPerson(c *gin.Context) (store.Person, error) {
 	p, found := c.Get("person")
 	if !found {
-		p = store.Person{FirstName: "Guest"}
+		return store.Person{FirstName: "Guest"}, ErrInvalidUser
 	}
+	person, ok := p.(store.Person)
+	if !ok {
+		log.Warnf("Count not cast store.Person from session")
+		return store.Person{FirstName: "Guest"}, ErrInvalidUser
+	}
+	return person, nil
+}
+
+func (w *Web) defaultM(c *gin.Context, page pageName) M {
+	p, _ := w.currentPerson(c)
 	m := M{
-		"person": p.(store.Person),
+		"person": p,
 	}
 	headers, found := w.headers[page]
 	if found {
@@ -402,6 +418,20 @@ func md(data string) template.HTML {
 	return template.HTML(out)
 }
 
+func ByteCountSI(b int64) string {
+	const unit = 1000
+	if b < unit {
+		return fmt.Sprintf("%d B", b)
+	}
+	div, exp := int64(unit), 0
+	for n := b / unit; n >= unit; n /= unit {
+		div *= unit
+		exp++
+	}
+	return fmt.Sprintf("%.1f %cB",
+		float64(b)/float64(div), "kMGTPE"[exp])
+}
+
 func (w *Web) newTmpl(files ...string) *template.Template {
 	var tFuncMap = template.FuncMap{
 		"img": img,
@@ -414,6 +444,12 @@ func (w *Web) newTmpl(files ...string) *template.Template {
 		},
 		"currentYear": func() template.HTML {
 			return template.HTML(fmt.Sprintf("%d", time.Now().UTC().Year()))
+		},
+		"human": func(size int64) template.HTML {
+			return template.HTML(ByteCountSI(size))
+		},
+		"datetime": func(t time.Time) template.HTML {
+			return template.HTML(t.Format(time.RFC822))
 		},
 	}
 	tmpl, err := template.New("layout").Funcs(tFuncMap).ParseFiles(files...)
@@ -490,16 +526,22 @@ func NewHTTPServer(opts *HTTPOpts) *http.Server {
 }
 
 type Web struct {
-	Handler http.Handler
-	db      *pgxpool.Pool
-	ctx     context.Context
-	client  *http.Client
-	tmpl    map[pageName]*template.Template
-	pages   map[pageName]*Page
-	headers map[pageName]*Header
+	Handler    http.Handler
+	db         *pgxpool.Pool
+	ctx        context.Context
+	client     *http.Client
+	uploadPath string
+	tmpl       map[pageName]*template.Template
+	pages      map[pageName]*Page
+	headers    map[pageName]*Header
 }
 
 func (w *Web) Setup() error {
+	if !store.Exists(w.uploadPath) {
+		if err := os.MkdirAll(w.uploadPath, 0755); err != nil {
+			log.Fatalf("Failed to create upload directory: %v", err)
+		}
+	}
 	var a0 store.Agency
 	var p0 store.Person
 	if err := store.LoadAgency(w.ctx, w.db, 1, &a0); err != nil {
@@ -556,6 +598,7 @@ func New(ctx context.Context) *Web {
 		&http.Client{
 			Timeout: time.Second * 20,
 		},
+		"./uploads",
 		make(map[pageName]*template.Template),
 		make(map[pageName]*Page),
 		make(map[pageName]*Header),
@@ -588,6 +631,8 @@ func New(ctx context.Context) *Web {
 			sesh.GET(p.Path, p.Handler)
 		}
 	}
+	sesh.GET("/download/:file_id", w.getFile)
+	sesh.POST(w.route(upload), w.postUpload)
 	sesh.POST(w.route(login), w.postLogin)
 	sesh.POST(w.route(profile), w.postProfile)
 	sesh.POST(w.route(missionsCreate), w.postMission)
@@ -604,6 +649,7 @@ func (w *Web) makePagesHeaders() {
 		about:           {Name: "about", Path: "/about"},
 		background:      {Name: "background", Path: "/about/background"},
 		connect:         {Name: "connect", Path: "/connect"},
+		downloads:       {Name: "downloads", Path: "/downloads", Handler: w.getDownloads},
 		emergency:       {Name: "emergency", Path: "/services/emergency"},
 		environmental:   {Name: "environmental", Path: "/services/environmental"},
 		err:             {Name: "error", Path: "/error"},
@@ -615,11 +661,13 @@ func (w *Web) makePagesHeaders() {
 		login:           {Name: "login", Path: "/login", Handler: w.getLogin},
 		logout:          {Name: "logout", Path: "/logout", Handler: w.getLogout},
 		missions:        {Name: "missions", Path: "/missions", Handler: w.getMissions},
-		missionsCreate:  {Name: "missions_create", Path: "/missions/create"},
+		missionsCreate:  {Name: "missions_create", Path: "/missions/create", Handler: w.getMissionsCreate},
 		partners:        {Name: "partners", Path: "/about/partners", Handler: w.getPartners},
 		profile:         {Name: "profile", Path: "/profile", Handler: w.getProfile},
 		services:        {Name: "services", Path: "/services"},
 		technology:      {Name: "technology", Path: "/innovation/technology"},
+		upload:          {Name: "upload", Path: "/upload", Handler: w.getUpload},
+		uploads:         {Name: "uploads", Path: "/uploads", Handler: w.getUploads},
 		wildfire:        {Name: "wildfire", Path: "/services/wildfire"},
 	}
 	w.pages = pages

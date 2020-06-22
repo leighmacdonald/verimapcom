@@ -1,0 +1,40 @@
+{{define "content"}}
+
+    {{template "admin_header" "Downloads" }}
+    {{template "alert" .alerts}}
+
+    <div class="grid-container">
+        <div class="grid-x grid-padding-x">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Size</th>
+                    <th>Updated</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{range .files }}
+                    <tr>
+                        <td>{{ .FileID }}</td>
+                        <td>{{ .FileName }}</td>
+                        <td>{{ .FileType }}</td>
+                        <td>{{ human .FileSize }}</td>
+                        <td>{{ datetime .UpdatedOn }}</td>
+                        <td>
+                            <a class="button" href="/download/{{ .FileID }}">Download</a>
+                        </td>
+                    </tr>
+                {{end}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+{{end}}
+
+{{define "title"}}
+    Your Downloads
+{{end}}

@@ -49,6 +49,8 @@ function main() {
         map_create_connect("map");
         return;
     }
+    if (path === "/missions/create") {
+    }
     let match = path.match(/\/example\/(\d+)/);
     if (match) {
         get_map(match[1], map_create_example);
