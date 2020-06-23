@@ -5,6 +5,7 @@ import (
 	"github.com/jackc/pgtype"
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/pkg/errors"
 	"time"
 )
 
@@ -178,4 +179,54 @@ func MissionDetachFile(ctx context.Context, db *pgxpool.Pool, missionID int, fil
 		return err
 	}
 	return nil
+}
+
+type MissionEvent struct {
+	MissionEventID int         `json:"mission_event_id"`
+	MissionID      int         `json:"mission_id"`
+	EventType      int         `json:"event_type"`
+	Payload        interface{} `json:"payload"`
+	CreatedOn      time.Time   `json:"created_on"`
+}
+
+func NewMissionEvent(evt int, payload interface{}) MissionEvent {
+	return MissionEvent{
+		EventType: evt,
+		Payload:   payload,
+		CreatedOn: time.Now(),
+	}
+}
+
+func MissionEventAdd(ctx context.Context, db *pgxpool.Pool, e *MissionEvent) error {
+	const q = `
+		INSERT INTO mission_event 
+		    (mission_id, event_type, payload, created_on) 
+		VALUES 
+		    ($1, $2, $3, $4) 
+		RETURNING 
+		    mission_event_id`
+	if err := db.QueryRow(ctx, q, e.MissionID, e.EventType, e.Payload, e.CreatedOn).Scan(&e.MissionEventID); err != nil {
+		return errors.Wrapf(err, "failed to insert mission event")
+	}
+	return nil
+}
+
+func MissionEventGetAll(ctx context.Context, db *pgxpool.Pool, missionID int) ([]MissionEvent, error) {
+	const q = `
+		SELECT mission_event_id, mission_id, event_type, payload, created_on 
+		FROM mission_event
+		WHERE mission_id = $1`
+	rows, err := db.Query(ctx, q, missionID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var events []MissionEvent
+	for rows.Next() {
+		var e MissionEvent
+		if err := rows.Scan(&e.MissionEventID, &e.MissionID, &e.EventType, &e.Payload, &e.CreatedOn); err != nil {
+			return nil, err
+		}
+	}
+	return events, nil
 }

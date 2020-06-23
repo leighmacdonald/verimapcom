@@ -5,12 +5,11 @@ import (
 	"context"
 	"crypto/tls"
 	"encoding/gob"
-	"encoding/json"
 	"fmt"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/redis"
 	"github.com/gin-gonic/gin"
-	"github.com/gomarkdown/markdown"
+	"github.com/gorilla/websocket"
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/leighmacdonald/verimapcom/web/store"
@@ -18,196 +17,11 @@ import (
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
 	"html/template"
-	"io/ioutil"
 	"net/http"
 	"os"
-	"strconv"
-	"strings"
+	"sync"
 	"time"
 )
-
-type exampleKML struct {
-	ID               int         `json:"id"`
-	Name             string      `json:"name"`
-	Hash             string      `json:"hash"`
-	Sha256           string      `json:"sha256"`
-	Ext              string      `json:"ext"`
-	Mime             string      `json:"mime"`
-	Size             string      `json:"size"`
-	URL              string      `json:"url"`
-	Provider         string      `json:"provider"`
-	ProviderMetadata interface{} `json:"provider_metadata"`
-	CreatedAt        time.Time   `json:"created_at"`
-	UpdatedAt        time.Time   `json:"updated_at"`
-}
-
-type examplePage struct {
-	ID           int               `json:"id"`
-	Name         string            `json:"name"`
-	Description  string            `json:"description"`
-	Latitude     float64           `json:"latitude"`
-	Longitude    float64           `json:"longitude"`
-	Zoom         int               `json:"zoom"`
-	Public       bool              `json:"public"`
-	Stats        string            `json:"stats"`
-	StatsMap     map[string]string `json:"-"`
-	CreatedAt    time.Time         `json:"created_at"`
-	UpdatedAt    time.Time         `json:"updated_at"`
-	Layer        string            `json:"layer"`
-	ZoomMin      int               `json:"zoom_min"`
-	ZoomMax      int               `json:"zoom_max"`
-	VectorLayers interface{}       `json:"vector_layers"`
-	Kml          exampleKML        `json:"kml,omitempty"`
-}
-
-type Showcase struct {
-	ID        int       `json:"id"`
-	Title     string    `json:"title"`
-	Body      string    `json:"body"`
-	LinkText  string    `json:"link_text"`
-	LinkURL   string    `json:"link_url"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
-	Order     int       `json:"order"`
-	Image     struct {
-		ID               int         `json:"id"`
-		Name             string      `json:"name"`
-		Hash             string      `json:"hash"`
-		Sha256           string      `json:"sha256"`
-		Ext              string      `json:"ext"`
-		Mime             string      `json:"mime"`
-		Size             string      `json:"size"`
-		URL              string      `json:"url"`
-		Provider         string      `json:"provider"`
-		ProviderMetadata interface{} `json:"provider_metadata"`
-		CreatedAt        time.Time   `json:"created_at"`
-		UpdatedAt        time.Time   `json:"updated_at"`
-	} `json:"image"`
-}
-
-type FireWatch struct {
-	ID        int       `json:"id"`
-	Title     string    `json:"title"`
-	Published time.Time `json:"published"`
-	Body      string    `json:"body"`
-	User      struct {
-		ID        int       `json:"id"`
-		Username  string    `json:"username"`
-		Email     string    `json:"email"`
-		Provider  string    `json:"provider"`
-		Confirmed bool      `json:"confirmed"`
-		Blocked   bool      `json:"blocked"`
-		Role      int       `json:"role"`
-		CreatedAt time.Time `json:"created_at"`
-		UpdatedAt time.Time `json:"updated_at"`
-	} `json:"user"`
-	CreatedAt time.Time   `json:"created_at"`
-	UpdatedAt time.Time   `json:"updated_at"`
-	LinkText  string      `json:"link_text"`
-	LinkURL   interface{} `json:"link_url"`
-	Thumbnail struct {
-		ID               int         `json:"id"`
-		Name             string      `json:"name"`
-		Hash             string      `json:"hash"`
-		Sha256           string      `json:"sha256"`
-		Ext              string      `json:"ext"`
-		Mime             string      `json:"mime"`
-		Size             string      `json:"size"`
-		URL              string      `json:"url"`
-		Provider         string      `json:"provider"`
-		ProviderMetadata interface{} `json:"provider_metadata"`
-		CreatedAt        time.Time   `json:"created_at"`
-		UpdatedAt        time.Time   `json:"updated_at"`
-	} `json:"thumbnail"`
-	Gallery []interface{} `json:"gallery"`
-}
-
-func apiGetFireWatches(ctx context.Context, client *http.Client, count int) ([]FireWatch, error) {
-	var resp []FireWatch
-	u := fmt.Sprintf("https://cms.verimap.com/firewatches?_sort=published:desc&_limit=%d", count)
-	if err := get(ctx, client, u, &resp); err != nil {
-		return nil, errors.Wrapf(err, "Failed to make get request")
-	}
-	return resp, nil
-}
-
-func apiGetShowcases(ctx context.Context, client *http.Client) ([]Showcase, error) {
-	var resp []Showcase
-	if err := get(ctx, client, "https://cms.verimap.com/showcases?_sort=order", &resp); err != nil {
-		return nil, errors.Wrapf(err, "Failed to make get request")
-	}
-	return resp, nil
-}
-
-func apiGetExample(ctx context.Context, client *http.Client, ID int) (examplePage, error) {
-	var resp []examplePage
-	url := fmt.Sprintf("https://cms.verimap.com/examples?public=true&id=%d", ID)
-	if err := get(ctx, client, url, &resp); err != nil {
-		return examplePage{}, errors.Wrapf(err, "Failed to make get request")
-	}
-	for _, page := range resp {
-		m := make(map[string]string)
-		for _, row := range strings.Split(page.Stats, "\n") {
-			cols := strings.SplitN(row, "|", 2)
-			if len(cols) == 2 {
-				m[cols[0]] = cols[1]
-			}
-		}
-		page.StatsMap = m
-		return page, nil
-	}
-	return examplePage{}, errors.New("Unknown result")
-}
-
-func apiGetExamples(ctx context.Context, client *http.Client) ([]examplePage, error) {
-	var resp []examplePage
-	if err := get(ctx, client, "https://cms.verimap.com/examples?public=true", &resp); err != nil {
-		return nil, errors.Wrapf(err, "Failed to make get request")
-	}
-	for i, page := range resp {
-		m := make(map[string]string)
-		for _, row := range strings.Split(page.Stats, "\n") {
-			cols := strings.SplitN(row, "|", 2)
-			if len(cols) == 2 {
-				m[cols[0]] = cols[1]
-			}
-		}
-		resp[i].StatsMap = m
-	}
-	return resp, nil
-}
-
-type Level string
-
-const (
-	lSuccess Level = "success"
-	lWarning Level = "warning"
-	lError   Level = "alert"
-)
-
-type Flash struct {
-	Level   Level  `json:"level"`
-	Message string `json:"message"`
-}
-
-func formFloatDefault(c *gin.Context, field string, def float64) float64 {
-	f, err := strconv.ParseFloat(c.PostForm(field), 64)
-	if err != nil {
-		return def
-	}
-	return f
-}
-
-func flash(c *gin.Context, level Level, msg string) {
-	s := sessions.Default(c)
-	s.AddFlash(Flash{
-		Level:   level,
-		Message: msg,
-	})
-	if err := s.Save(); err != nil {
-		log.Errorf("failed to save flash")
-	}
-}
 
 func successFlash(c *gin.Context, msg string, path string) {
 	flash(c, lSuccess, msg)
@@ -230,27 +44,6 @@ func (w *Web) route(name pageName) string {
 		return "/"
 	}
 	return r.Path
-}
-
-func get(ctx context.Context, client *http.Client, url string, recv interface{}) error {
-	c, cancel := context.WithTimeout(ctx, time.Second*30)
-	defer cancel()
-	req, err := http.NewRequestWithContext(c, "GET", url, nil)
-	if err != nil {
-		return errors.Wrapf(err, "Failed to create request")
-	}
-	resp, err := client.Do(req)
-	if err != nil {
-		return errors.Wrapf(err, "Failed to perform request")
-	}
-	b, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return errors.Wrapf(err, "Failed to read response body")
-	}
-	if err := json.Unmarshal(b, recv); err != nil {
-		return errors.Wrapf(err, "Failed to decode json response")
-	}
-	return nil
 }
 
 func HashPassword(password string) (string, error) {
@@ -339,21 +132,6 @@ const (
 	wildfire          pageName = "wildfire"
 )
 
-type Header struct {
-	Img         string
-	Name        string
-	Breadcrumbs []*Page
-}
-
-type Page struct {
-	Name    string
-	Path    string
-	Handler gin.HandlerFunc
-	Admin   bool
-}
-
-type M map[string]interface{}
-
 var ErrInvalidUser = errors.New("Invalid user")
 
 func (w *Web) currentPerson(c *gin.Context) (store.Person, error) {
@@ -395,50 +173,6 @@ func (w *Web) defaultM(c *gin.Context, page pageName) M {
 		}
 	}
 	return m
-}
-
-func img(src, alt string, trans bool) template.HTML {
-	var s strings.Builder
-	if trans {
-		s.WriteString(`<div class="callout_trans">`)
-	} else {
-		s.WriteString(`<div class="callout">`)
-	}
-	s.WriteString(fmt.Sprintf(`
-	<figure>
-	    <img src="%s" alt="%s">
-	</figure>
-	</div>`, src, alt))
-	return template.HTML(s.String())
-}
-
-func (w *Web) urlFor(page string) template.HTML {
-	for _, r := range w.pages {
-		if page == r.Name {
-			return template.HTML(r.Path)
-		}
-	}
-	log.Panicf("Unknown Page path: %s", page)
-	return "#"
-}
-
-func md(data string) template.HTML {
-	out := markdown.ToHTML([]byte(data), nil, nil)
-	return template.HTML(out)
-}
-
-func ByteCountSI(b int64) string {
-	const unit = 1000
-	if b < unit {
-		return fmt.Sprintf("%d B", b)
-	}
-	div, exp := int64(unit), 0
-	for n := b / unit; n >= unit; n /= unit {
-		div *= unit
-		exp++
-	}
-	return fmt.Sprintf("%.1f %cB",
-		float64(b)/float64(div), "kMGTPE"[exp])
 }
 
 func (w *Web) newTmpl(files ...string) *template.Template {
@@ -543,14 +277,18 @@ func NewHTTPServer(opts *HTTPOpts) *http.Server {
 }
 
 type Web struct {
-	Handler    http.Handler
-	db         *pgxpool.Pool
-	ctx        context.Context
-	client     *http.Client
-	uploadPath string
-	tmpl       map[pageName]*template.Template
-	pages      map[pageName]*Page
-	headers    map[pageName]*Header
+	Handler        http.Handler
+	db             *pgxpool.Pool
+	ctx            context.Context
+	client         *http.Client
+	uploadPath     string
+	tmpl           map[pageName]*template.Template
+	pages          map[pageName]*Page
+	headers        map[pageName]*Header
+	wsHandler      map[wsEvent]wsEventHandler
+	wsClient       map[*websocket.Conn]*wsClient
+	wsMissionConns map[int][]*wsClient
+	wsClientMu     *sync.RWMutex
 }
 
 func (w *Web) Setup() error {
@@ -619,8 +357,12 @@ func New(ctx context.Context) *Web {
 		make(map[pageName]*template.Template),
 		make(map[pageName]*Page),
 		make(map[pageName]*Header),
+		make(map[wsEvent]wsEventHandler),
+		make(map[*websocket.Conn]*wsClient),
+		make(map[int][]*wsClient),
+		&sync.RWMutex{},
 	}
-	w.makePagesHeaders()
+	w.setup()
 
 	r.Static("/dist", "dist")
 	r.StaticFile("/favicon.ico", "./resources/favicon.ico")
@@ -653,11 +395,17 @@ func New(ctx context.Context) *Web {
 	sesh.POST(w.route(login), w.postLogin)
 	sesh.POST(w.route(profile), w.postProfile)
 	sesh.POST(w.route(missionsCreate), w.postMission)
-
+	sesh.GET("/ws", w.serveWs)
 	return w
 }
 
-func (w *Web) makePagesHeaders() {
+func (w *Web) setup() {
+	w.wsHandler = map[wsEvent]wsEventHandler{
+		evtMessage:    w.wsOnMessage,
+		evtSetMission: w.wsOnSetMission,
+		evtPing:       w.wsOnPing,
+	}
+
 	pages := map[pageName]*Page{
 		adminAgencies:   {Name: "admin_agencies", Path: "/admin/agencies", Admin: true, Handler: w.getAdminAgencies},
 		adminPeople:     {Name: "admin_people", Path: "/admin/people", Admin: true, Handler: w.getAdminPeople},
@@ -691,78 +439,78 @@ func (w *Web) makePagesHeaders() {
 
 	headers := map[pageName]*Header{
 		services: {
-			Img:         "/dist/assets/golden_gate_shore.png",
+			Img:         "/dist/images/golden_gate_shore.png",
 			Name:        "Services",
 			Breadcrumbs: []*Page{pages[home], pages[services]},
 		},
 		wildfire: {
-			Img:         "/dist/assets/fire_fighters_12_2.png",
+			Img:         "/dist/images/fire_fighters_12_2.png",
 			Name:        "Wildfire Mapping Services",
 			Breadcrumbs: []*Page{pages[home], pages[services], pages[wildfire]},
 		},
 		emergency: {
-			Img:         "/dist/assets/header_emergency.png",
+			Img:         "/dist/images/header_emergency.png",
 			Name:        "Emergency Response Management",
 			Breadcrumbs: []*Page{pages[home], pages[services], pages[emergency]},
 		},
 		environmental: {
-			Img:         "/dist/assets/false_colour_dem.png",
+			Img:         "/dist/images/false_colour_dem.png",
 			Name:        "Environmental",
 			Breadcrumbs: []*Page{pages[home], pages[services], pages[environmental]},
 		},
 		infrastructure: {
-			Img:         "/dist/assets/barrels.png",
+			Img:         "/dist/images/barrels.png",
 			Name:        "Infrastructure",
 			Breadcrumbs: []*Page{pages[home], pages[services], pages[infrastructure]},
 		},
 
 		technology: {
-			Img:         "/dist/assets/contours.png",
+			Img:         "/dist/images/contours.png",
 			Name:        "Technology",
 			Breadcrumbs: []*Page{pages[home], pages[technology]},
 		},
 		examples: {
-			Img:         "/dist/assets/header_solar.png",
+			Img:         "/dist/images/header_solar.png",
 			Name:        "Example Datasets",
 			Breadcrumbs: []*Page{pages[home], pages[examples]},
 		},
 		example: {
-			Img:         "/dist/assets/header_solar.png",
+			Img:         "/dist/images/header_solar.png",
 			Name:        "Example Dataset",
 			Breadcrumbs: []*Page{pages[home], pages[examples], pages[example]},
 		},
 		firetracker: {
-			Img:         "/dist/assets/fire_fighters_12_2.png",
+			Img:         "/dist/images/fire_fighters_12_2.png",
 			Name:        "Global Fire Tracker",
 			Breadcrumbs: []*Page{pages[home], pages[firetracker]},
 		},
 		background: {
-			Img:         "/dist/assets/header_emergency.png",
+			Img:         "/dist/images/header_emergency.png",
 			Name:        "Background",
 			Breadcrumbs: []*Page{pages[home], pages[about], pages[background]},
 		},
 		partners: {
-			Img:         "/dist/assets/golden_gate_shore.png",
+			Img:         "/dist/images/golden_gate_shore.png",
 			Name:        "Partners",
 			Breadcrumbs: []*Page{pages[home], pages[about], pages[partners]},
 		},
 		connect: {
-			Img:         "/dist/assets/header_contact.png",
+			Img:         "/dist/images/header_contact.png",
 			Name:        "Connect With Us",
 			Breadcrumbs: []*Page{pages[home], pages[connect]},
 		},
 		login: {
-			Img:         "/dist/assets/false_colour_dem.png",
+			Img:         "/dist/images/false_colour_dem.png",
 			Name:        "User Login",
 			Breadcrumbs: []*Page{pages[home], pages[login]},
 		},
 		logout: {
-			Img:         "/dist/assets/false_colour_dem.png",
+			Img:         "/dist/images/false_colour_dem.png",
 			Name:        "User Logout",
 			Breadcrumbs: []*Page{pages[home], pages[logout]},
 		},
 		profile: {
-			Img:         "/dist/assets/header_contact.png",
+			Img:         "/dist/images/header_contact.png",
 			Name:        "Person Profile",
 			Breadcrumbs: []*Page{pages[home], pages[profile]},
 		},

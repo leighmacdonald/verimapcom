@@ -7,6 +7,8 @@ import (
 )
 
 func main() {
+	log.SetFormatter(&log.TextFormatter{ForceColors: true})
+	log.SetLevel(log.DebugLevel)
 	ctx := context.Background()
 	w := web.New(ctx)
 	if err := w.Setup(); err != nil {

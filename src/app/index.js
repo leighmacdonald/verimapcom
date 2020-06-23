@@ -26,10 +26,11 @@ import {
     get_maps,
     map_create_connect,
     map_create_example,
-    map_select_coord,
-    map_view_mission
+    map_select_coord
 } from "./maps";
-import {fromLonLat, transform} from "ol/proj";
+
+import {transform} from "ol/proj";
+import {page_mission} from "./mission";
 
 let map_sets = [];
 
@@ -50,10 +51,6 @@ function init_examples() {
     });
 }
 
-function page_mission(mission_id) {
-    const map_div = document.getElementById("map");
-    map_view_mission("map", mission_id, map_div.dataset.lat_ul, map_div.dataset.lon_ul)
-}
 
 function page_missions_create() {
     const lat_ul = document.getElementById("lat_ul");
@@ -70,7 +67,6 @@ function page_missions_create() {
         lat_lr.value = lonlat_lr[1];
     })
 }
-
 
 function main() {
     jQuery(document).foundation();
