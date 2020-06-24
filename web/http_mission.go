@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v4"
 	"github.com/leighmacdonald/verimapcom/web/store"
+	"net/http"
 	"strconv"
 	"time"
 )
@@ -82,4 +83,23 @@ func (w *Web) getMissions(c *gin.Context) {
 	}
 	m["missions"] = userMissions
 	w.render(c, missions, m)
+}
+
+func (w *Web) getMissionEvents(c *gin.Context) {
+	missionID, err := strconv.ParseInt(c.Param("mission_id"), 10, 64)
+	if err != nil {
+		abortFlash(c, "Invalid mission", referer(c))
+		return
+	}
+	mis, err := store.GetMission(w.ctx, w.db, int(missionID))
+	if err != nil {
+		abortFlashErr(c, "Failed to load mission", referer(c), err)
+		return
+	}
+	events, err := store.MissionEventGetAll(w.ctx, w.db, mis.MissionID)
+	if err != nil {
+		abortFlashErr(c, "Failed to load events", referer(c), err)
+		return
+	}
+	c.JSON(http.StatusOK, events)
 }

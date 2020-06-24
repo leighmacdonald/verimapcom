@@ -126,3 +126,26 @@ func (w *Web) postProfile(c *gin.Context) {
 		successFlash(c, "Updated profile successfully", w.route(profile))
 	}
 }
+
+func (w *Web) getProfileCreate(c *gin.Context) {
+	agencyKey := c.DefaultQuery("agency_key", "")
+	agencies, err := store.GetAgencies(w.ctx, w.db)
+	if err != nil {
+		abortFlashErr(c, "Error fetching agency list", w.page(home).Path, err)
+		return
+	}
+	selectedAgencyID := 0
+	if agencyKey != "" {
+		var invitedAgency store.Agency
+		if err := store.LoadAgencyByInviteKey(w.ctx, w.db, agencyKey, &invitedAgency); err != nil {
+			abortFlashErr(c, "Failed to load agency by invite key", w.route(profileCreate), err)
+			return
+		}
+		selectedAgencyID = invitedAgency.AgencyID
+	}
+	m := w.defaultM(c, profileCreate)
+	m["agencies"] = agencies
+	m["agency_key"] = agencyKey
+	m["selected_agency_id"] = selectedAgencyID
+	w.render(c, profileCreate, m)
+}

@@ -19,6 +19,8 @@ import (
 	"html/template"
 	"net/http"
 	"os"
+	"path/filepath"
+	"strings"
 	"sync"
 	"time"
 )
@@ -38,8 +40,12 @@ func abortFlashErr(c *gin.Context, msg string, path string, err error) {
 	log.Error(err)
 }
 
-func (w *Web) route(name pageName) string {
-	r, found := w.pages[name]
+func (w *Web) route(name pageName, methods ...string) string {
+	method := "GET"
+	if len(methods) > 0 {
+		method = methods[0]
+	}
+	r, found := w.pages[method][name]
 	if !found {
 		return "/"
 	}
@@ -101,35 +107,39 @@ func sessionMiddleWare(ctx context.Context, db *pgxpool.Pool) gin.HandlerFunc {
 type pageName string
 
 const (
-	about             pageName = "about"
-	adminAgencies     pageName = "admin_agencies"
-	adminPeople       pageName = "admin_people"
-	adminPeopleDelete pageName = "admin_people_delete"
-	adminPeopleEdit   pageName = "admin_people_edit"
-	background        pageName = "background"
-	connect           pageName = "connect"
-	download          pageName = "download"
-	downloads         pageName = "downloads"
-	emergency         pageName = "emergency"
-	environmental     pageName = "environmental"
-	err               pageName = "error"
-	example           pageName = "example"
-	examples          pageName = "examples"
-	firetracker       pageName = "firetracker"
-	home              pageName = "home"
-	infrastructure    pageName = "infrastructure"
-	login             pageName = "login"
-	logout            pageName = "logout"
-	mission           pageName = "mission"
-	missions          pageName = "missions"
-	missionsCreate    pageName = "missions_create"
-	partners          pageName = "partners"
-	profile           pageName = "profile"
-	services          pageName = "services"
-	technology        pageName = "technology"
-	upload            pageName = "upload"
-	uploads           pageName = "uploads"
-	wildfire          pageName = "wildfire"
+	about              pageName = "about"
+	adminAgencies      pageName = "admin_agencies"
+	adminPeople        pageName = "admin_people"
+	adminPeopleDelete  pageName = "admin_people_delete"
+	adminPeopleEdit    pageName = "admin_people_edit"
+	background         pageName = "background"
+	connect            pageName = "connect"
+	connectSendMessage pageName = "connect_send_message"
+	downloads          pageName = "downloads"
+	downloadFile       pageName = "downloads_file"
+	emergency          pageName = "emergency"
+	environmental      pageName = "environmental"
+	err                pageName = "error"
+	example            pageName = "example"
+	examples           pageName = "examples"
+	firetracker        pageName = "firetracker"
+	home               pageName = "home"
+	infrastructure     pageName = "infrastructure"
+	login              pageName = "login"
+	logout             pageName = "logout"
+	mission            pageName = "mission"
+	missionEvents      pageName = "mission_events"
+	missions           pageName = "missions"
+	missionsCreate     pageName = "missions_create"
+	partners           pageName = "partners"
+	profile            pageName = "profile"
+	profileCreate      pageName = "profile_create"
+	services           pageName = "services"
+	technology         pageName = "technology"
+	upload             pageName = "upload"
+	uploads            pageName = "uploads"
+	wildfire           pageName = "wildfire"
+	ws                 pageName = "ws"
 )
 
 var ErrInvalidUser = errors.New("Invalid user")
@@ -283,9 +293,9 @@ type Web struct {
 	client         *http.Client
 	uploadPath     string
 	tmpl           map[pageName]*template.Template
-	pages          map[pageName]*Page
+	pages          map[string]map[pageName]*Page
 	headers        map[pageName]*Header
-	wsHandler      map[wsEvent]wsEventHandler
+	wsHandler      map[store.Evt]wsEventHandler
 	wsClient       map[*websocket.Conn]*wsClient
 	wsMissionConns map[int][]*wsClient
 	wsClientMu     *sync.RWMutex
@@ -345,6 +355,19 @@ func New(ctx context.Context) *Web {
 		log.Fatalf("Could not connect to redis: %v", err)
 	}
 
+	var templateFiles []string
+	root := "templates"
+	if err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+		if strings.HasSuffix(info.Name(), ".gohtml") {
+			if !strings.Contains(path, "/layouts/") && !strings.Contains(path, "/partials") {
+				templateFiles = append(templateFiles, info.Name())
+			}
+		}
+		return nil
+	}); err != nil {
+		log.Fatalf("Failed to read templates: %v", err)
+	}
+
 	r := gin.Default()
 	w := &Web{
 		r,
@@ -355,9 +378,9 @@ func New(ctx context.Context) *Web {
 		},
 		"./uploads",
 		make(map[pageName]*template.Template),
-		make(map[pageName]*Page),
+		make(map[string]map[pageName]*Page),
 		make(map[pageName]*Header),
-		make(map[wsEvent]wsEventHandler),
+		make(map[store.Evt]wsEventHandler),
 		make(map[*websocket.Conn]*wsClient),
 		make(map[int][]*wsClient),
 		&sync.RWMutex{},
@@ -375,145 +398,165 @@ func New(ctx context.Context) *Web {
 	}
 	sesh := r.Group("", sessions.Sessions("vmsesh", s), sessionMiddleWare(w.ctx, w.db))
 	admin := sesh.Group("", adminMiddleWare(w))
-	admin.POST(w.route(adminPeopleEdit), w.postAdminPeopleEdit)
-	admin.POST("/admin/people_delete/:person_id", w.postAdminPeopleDelete)
-	admin.POST(w.route(adminPeople), w.postAdminPeopleCreate)
-	admin.POST(w.route(adminAgencies), w.postAdminAgenciesCreate)
-	for page, p := range w.pages {
-		w.tmpl[page] = w.newTmpl(newPagesSet(p.Name)...)
-		if p.Handler == nil {
-			p.Handler = w.simple(page)
-		}
-		if p.Admin {
-			admin.GET(p.Path, p.Handler)
-		} else {
-			sesh.GET(p.Path, p.Handler)
+
+	for _, p := range templateFiles {
+		pageN := strings.ReplaceAll(p, ".gohtml", "")
+		w.tmpl[pageName(pageN)] = w.newTmpl(newPagesSet(pageN)...)
+	}
+	for method, handlers := range w.pages {
+		for page, p := range handlers {
+			if p.Handler == nil {
+				p.Handler = w.simple(page)
+			}
+			fn := sesh
+			if p.Admin {
+				fn = admin
+			}
+			switch method {
+			case "GET":
+				fn.GET(p.Path, p.Handler)
+			case "POST":
+				fn.POST(p.Path, p.Handler)
+			}
 		}
 	}
-	sesh.POST("/connect/send", w.sendConnectMessage)
-	sesh.GET("/download/:file_id", w.getFile)
-	sesh.POST(w.route(upload), w.postUpload)
-	sesh.POST(w.route(login), w.postLogin)
-	sesh.POST(w.route(profile), w.postProfile)
-	sesh.POST(w.route(missionsCreate), w.postMission)
-	sesh.GET("/ws", w.serveWs)
 	return w
+}
+func (w *Web) page(name pageName) *Page {
+	return w.pages["GET"][name]
 }
 
 func (w *Web) setup() {
-	w.wsHandler = map[wsEvent]wsEventHandler{
-		evtMessage:    w.wsOnMessage,
-		evtSetMission: w.wsOnSetMission,
-		evtPing:       w.wsOnPing,
+	w.wsHandler = map[store.Evt]wsEventHandler{
+		store.EvtMessage:    w.wsOnMessage,
+		store.EvtSetMission: w.wsOnSetMission,
+		store.EvtPing:       w.wsOnPing,
+	}
+	pages := map[string]map[pageName]*Page{
+		"GET": {
+			adminAgencies:   {Path: "/admin/agencies", Admin: true, Handler: w.getAdminAgencies},
+			adminPeople:     {Path: "/admin/people", Admin: true, Handler: w.getAdminPeople},
+			adminPeopleEdit: {Path: "/admin/people/:person_id", Admin: true, Handler: w.getAdminPeopleEdit},
+			about:           {Path: "/about"},
+			background:      {Path: "/about/background", Handler: w.getBackground},
+			connect:         {Path: "/connect"},
+			downloads:       {Path: "/downloads", Handler: w.getDownloads},
+			downloadFile:    {Path: "/download/:file_id", Handler: w.getFile},
+			emergency:       {Path: "/services/emergency"},
+			environmental:   {Path: "/services/environmental"},
+			err:             {Path: "/error"},
+			example:         {Path: "/example/:example_id", Handler: w.getExample},
+			examples:        {Path: "/examples", Handler: w.getExamples},
+			firetracker:     {Path: "/firetracker", Handler: w.getFireTracker},
+			home:            {Path: "/", Handler: w.getHome},
+			infrastructure:  {Path: "/services/infrastructure"},
+			login:           {Path: "/login", Handler: w.getLogin},
+			logout:          {Path: "/logout", Handler: w.getLogout},
+			mission:         {Path: "/mission/:mission_id", Handler: w.getMission},
+			missionEvents:   {Path: "/mission/:mission_id/events", Handler: w.getMissionEvents},
+			missions:        {Path: "/missions", Handler: w.getMissions},
+			missionsCreate:  {Path: "/missions/create", Handler: w.getMissionsCreate},
+			partners:        {Path: "/about/partners", Handler: w.getPartners},
+			profile:         {Path: "/profile", Handler: w.getProfile},
+			profileCreate:   {Path: "/profile/create", Handler: w.getProfileCreate},
+			services:        {Path: "/services"},
+			technology:      {Path: "/innovation/technology"},
+			upload:          {Path: "/upload", Handler: w.getUpload},
+			uploads:         {Path: "/uploads", Handler: w.getUploads},
+			wildfire:        {Path: "/services/wildfire"},
+			ws:              {Path: "/ws", Handler: w.serveWs},
+		},
+		"POST": {
+			upload:             {Path: "/upload", Handler: w.postUpload},
+			login:              {Path: "/login", Handler: w.postLogin},
+			profile:            {Path: "/profile", Handler: w.postProfile},
+			missionsCreate:     {Path: "/mission/create", Handler: w.postMission},
+			connectSendMessage: {Path: "/connect/send", Handler: w.sendConnectMessage},
+			adminPeopleEdit:    {Path: "/admin/people/:person_id", Handler: w.postAdminPeopleEdit, Admin: true},
+			adminPeopleDelete:  {Path: "/admin/people_delete/:person_id", Handler: w.postAdminPeopleDelete, Admin: true},
+			adminPeople:        {Path: "/admin/people", Handler: w.postAdminPeopleCreate, Admin: true},
+			adminAgencies:      {Path: "/admin/agencies", Handler: w.postAdminAgenciesCreate, Admin: true},
+		},
 	}
 
-	pages := map[pageName]*Page{
-		adminAgencies:   {Name: "admin_agencies", Path: "/admin/agencies", Admin: true, Handler: w.getAdminAgencies},
-		adminPeople:     {Name: "admin_people", Path: "/admin/people", Admin: true, Handler: w.getAdminPeople},
-		adminPeopleEdit: {Name: "admin_people_edit", Path: "/admin/people/:person_id", Admin: true, Handler: w.getAdminPeopleEdit},
-		about:           {Name: "about", Path: "/about"},
-		background:      {Name: "background", Path: "/about/background", Handler: w.getBackground},
-		connect:         {Name: "connect", Path: "/connect"},
-		downloads:       {Name: "downloads", Path: "/downloads", Handler: w.getDownloads},
-		emergency:       {Name: "emergency", Path: "/services/emergency"},
-		environmental:   {Name: "environmental", Path: "/services/environmental"},
-		err:             {Name: "error", Path: "/error"},
-		example:         {Name: "example", Path: "/example/:example_id", Handler: w.getExample},
-		examples:        {Name: "examples", Path: "/examples", Handler: w.getExamples},
-		firetracker:     {Name: "firetracker", Path: "/firetracker", Handler: w.getFireTracker},
-		home:            {Name: "home", Path: "/", Handler: w.getHome},
-		infrastructure:  {Name: "infrastructure", Path: "/services/infrastructure"},
-		login:           {Name: "login", Path: "/login", Handler: w.getLogin},
-		logout:          {Name: "logout", Path: "/logout", Handler: w.getLogout},
-		mission:         {Name: "mission", Path: "/mission/:mission_id", Handler: w.getMission},
-		missions:        {Name: "missions", Path: "/missions", Handler: w.getMissions},
-		missionsCreate:  {Name: "missions_create", Path: "/missions/create", Handler: w.getMissionsCreate},
-		partners:        {Name: "partners", Path: "/about/partners", Handler: w.getPartners},
-		profile:         {Name: "profile", Path: "/profile", Handler: w.getProfile},
-		services:        {Name: "services", Path: "/services"},
-		technology:      {Name: "technology", Path: "/innovation/technology"},
-		upload:          {Name: "upload", Path: "/upload", Handler: w.getUpload},
-		uploads:         {Name: "uploads", Path: "/uploads", Handler: w.getUploads},
-		wildfire:        {Name: "wildfire", Path: "/services/wildfire"},
-	}
 	w.pages = pages
 
 	headers := map[pageName]*Header{
 		services: {
 			Img:         "/dist/images/golden_gate_shore.png",
 			Name:        "Services",
-			Breadcrumbs: []*Page{pages[home], pages[services]},
+			Breadcrumbs: []*Page{w.page(home), w.page(services)},
 		},
 		wildfire: {
 			Img:         "/dist/images/fire_fighters_12_2.png",
 			Name:        "Wildfire Mapping Services",
-			Breadcrumbs: []*Page{pages[home], pages[services], pages[wildfire]},
+			Breadcrumbs: []*Page{w.page(home), w.page(services), w.page(wildfire)},
 		},
 		emergency: {
 			Img:         "/dist/images/header_emergency.png",
 			Name:        "Emergency Response Management",
-			Breadcrumbs: []*Page{pages[home], pages[services], pages[emergency]},
+			Breadcrumbs: []*Page{w.page(home), w.page(services), w.page(emergency)},
 		},
 		environmental: {
 			Img:         "/dist/images/false_colour_dem.png",
 			Name:        "Environmental",
-			Breadcrumbs: []*Page{pages[home], pages[services], pages[environmental]},
+			Breadcrumbs: []*Page{w.page(home), w.page(services), w.page(environmental)},
 		},
 		infrastructure: {
 			Img:         "/dist/images/barrels.png",
 			Name:        "Infrastructure",
-			Breadcrumbs: []*Page{pages[home], pages[services], pages[infrastructure]},
+			Breadcrumbs: []*Page{w.page(home), w.page(services), w.page(infrastructure)},
 		},
 
 		technology: {
 			Img:         "/dist/images/contours.png",
 			Name:        "Technology",
-			Breadcrumbs: []*Page{pages[home], pages[technology]},
+			Breadcrumbs: []*Page{w.page(home), w.page(technology)},
 		},
 		examples: {
 			Img:         "/dist/images/header_solar.png",
 			Name:        "Example Datasets",
-			Breadcrumbs: []*Page{pages[home], pages[examples]},
+			Breadcrumbs: []*Page{w.page(home), w.page(examples)},
 		},
 		example: {
 			Img:         "/dist/images/header_solar.png",
 			Name:        "Example Dataset",
-			Breadcrumbs: []*Page{pages[home], pages[examples], pages[example]},
+			Breadcrumbs: []*Page{w.page(home), w.page(examples), w.page(example)},
 		},
 		firetracker: {
 			Img:         "/dist/images/fire_fighters_12_2.png",
 			Name:        "Global Fire Tracker",
-			Breadcrumbs: []*Page{pages[home], pages[firetracker]},
+			Breadcrumbs: []*Page{w.page(home), w.page(firetracker)},
 		},
 		background: {
 			Img:         "/dist/images/header_emergency.png",
 			Name:        "Background",
-			Breadcrumbs: []*Page{pages[home], pages[about], pages[background]},
+			Breadcrumbs: []*Page{w.page(home), w.page(about), w.page(background)},
 		},
 		partners: {
 			Img:         "/dist/images/golden_gate_shore.png",
 			Name:        "Partners",
-			Breadcrumbs: []*Page{pages[home], pages[about], pages[partners]},
+			Breadcrumbs: []*Page{w.page(home), w.page(about), w.page(partners)},
 		},
 		connect: {
 			Img:         "/dist/images/header_contact.png",
 			Name:        "Connect With Us",
-			Breadcrumbs: []*Page{pages[home], pages[connect]},
+			Breadcrumbs: []*Page{w.page(home), w.page(connect)},
 		},
 		login: {
 			Img:         "/dist/images/false_colour_dem.png",
 			Name:        "User Login",
-			Breadcrumbs: []*Page{pages[home], pages[login]},
+			Breadcrumbs: []*Page{w.page(home), w.page(login)},
 		},
 		logout: {
 			Img:         "/dist/images/false_colour_dem.png",
 			Name:        "User Logout",
-			Breadcrumbs: []*Page{pages[home], pages[logout]},
+			Breadcrumbs: []*Page{w.page(home), w.page(logout)},
 		},
 		profile: {
 			Img:         "/dist/images/header_contact.png",
 			Name:        "Person Profile",
-			Breadcrumbs: []*Page{pages[home], pages[profile]},
+			Breadcrumbs: []*Page{w.page(home), w.page(profile)},
 		},
 	}
 	w.headers = headers

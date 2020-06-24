@@ -7,12 +7,14 @@
         <div class="grid-y grid-padding-y">
 
             <div class="cell">
-                <table>
+                <table class="hover stack">
                     <thead>
                     <tr>
                         <th>ID</th>
                         <th>Name</th>
                         <th>Created On</th>
+                        <th>Slots</th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -20,7 +22,13 @@
                         <tr>
                             <td>{{ .AgencyID }}</td>
                             <td>{{ .AgencyName }}</td>
-                            <td>{{ .CreatedOn }}</td>
+                            <td>{{ datetime .CreatedOn }}</td>
+                            <td>{{ .SlotsUsed }} / {{if eq .Slots 0 }}∞{{else}}{{ .Slots }}{{end}}</td>
+                            <td>
+                                <div class="button-group">
+
+                                </div>
+                            </td>
                         </tr>
                     {{end}}
                     </tbody>
@@ -32,7 +40,7 @@
         <div class="grid-container">
             <div class="grid-x grid-padding-x">
                 <div class="cell">
-                    <h2>Create New Person</h2>
+                    <h2>Create New Agency</h2>
                 </div>
                 <div class="cell medium-9 small-12">
                     <div class="grid-x grid-padding-x">

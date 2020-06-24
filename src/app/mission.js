@@ -12,10 +12,11 @@ class payloadMessage {
 
 
 function send_message(ws, message) {
-    console.log("Sending", message)
     let p = new payloadMessage()
     p.message = message
     ws.send(EvtMessage, p)
+    const element = document.getElementById("live_chat")
+    add_event_log(element, {"payload": {"message": message}})
 }
 
 function recv_message(payload) {
@@ -27,6 +28,7 @@ class payloadSetMission {
         this.mission_id = mission_id;
     }
 }
+
 /**
  *
  * @param ws WSClient
@@ -39,7 +41,36 @@ function set_mission(ws, mission_id) {
     }
 }
 
+function add_event_log(element, event) {
+    const d = `
+        <div class="cell">
+            <div class="grid-x">
+                <div class="cell small-2">
+                    <a href="/profile/${event.payload["profile_id"]}">${event.payload["profile_id"]}</a>
+                </div>
+                <div class="cell auto">
+                    <p>${event.payload["message"]}</p>
+                </div>
+            </div>
+        </div>
+    `
+
+    element.insertAdjacentHTML('beforeend', d);
+}
+
+function fetch_mission_events(mission_id) {
+    const element = document.getElementById("live_chat")
+    fetch(`/mission/${mission_id}/events`)
+        .then(response => response.json())
+        .then(data => {
+            data.forEach((event) => {
+                add_event_log(element, event)
+            })
+        })
+}
+
 export function page_mission(mission_id) {
+    fetch_mission_events(mission_id)
     let ws = new WSClient();
     ws.onopen = (event) => {
         console.log("Calling set_mission")

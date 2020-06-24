@@ -1,0 +1,76 @@
+{{define "content"}}
+    {{template "admin_header" "Create New Profile"}}
+    {{template "alert" .alerts}}
+
+    {{$sid := .selected_agency_id }}
+
+    <form action="/profile/create" method="post" enctype="multipart/form-data">
+        <div class="grid-container">
+            <div class="grid-x grid-padding-y  align-center">
+                <div class="cell medium-6">
+                    <div class="grid-y">
+                        <div class="cell">
+                            <h1>Create New Profile</h1>
+                        </div>
+                        <div class="cell">
+                            <label>First Name
+                                <input type="text" placeholder="John" value="{{ .subject.FirstName }}"
+                                       name="first_name">
+                            </label>
+                        </div>
+                        <div class="cell">
+                            <label>Last Name
+                                <input type="text" placeholder="Doe" value="{{ .subject.LastName }}" name="last_name">
+                            </label>
+                        </div>
+                        <div class="cell">
+                            <label>Email
+                                <input type="email" placeholder="user@host.com" value="{{ .subject.Email }}"
+                                       name="email">
+                            </label>
+                        </div>
+                        <div class="medium-6 cell {{if gt $sid 0 }}hide {{end}}">
+                            <label>Agency Key
+                                <input type="text" placeholder="XXXXXXXXXX" name="agency_key" value="{{ .agency_key }}">
+                            </label>
+                        </div>
+                        <div class="cell">
+                            <label>Agency
+
+                                <select name="agency_id" {{if gt $sid 0 }}disabled {{end}}>
+                                    {{range .agencies }}
+                                        <option {{if eq $sid .AgencyID}}selected {{end}}
+                                                value="{{ .AgencyID }}">{{ .AgencyName }}</option>
+                                    {{end}}
+                                </select>
+                            </label>
+                        </div>
+                        zzzz
+                        <div class="cell">
+                            <p>If left empty, no password change will occur. Otherwise both must match</p>
+                        </div>
+                        <div class="medium-6 cell">
+                            <label>New Password
+                                <input type="password" placeholder="" name="password">
+                            </label>
+                        </div>
+                        <div class="medium-6 cell">
+                            <label>New Password Again
+                                <input type="password" placeholder="" name="password_verify">
+                            </label>
+                        </div>
+                        <div class="medium-6 cell">
+                            <label>
+                                <input class="button success expanded" type="submit" value="Create Profile" name="submit">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{{end}}
+
+{{define "title"}}
+    Admin - Person Editor
+{{end}}

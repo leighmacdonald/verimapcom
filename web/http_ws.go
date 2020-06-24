@@ -37,22 +37,12 @@ type wsClient struct {
 	conn        *websocket.Conn
 	missionID   int
 	payloadChan chan payloadSend
+	person      store.Person
 }
 
 func (ws *wsClient) send(p payloadSend) {
 	ws.payloadChan <- p
 }
-
-type wsEvent int
-
-const (
-	evtConnect    wsEvent = 1
-	evtPing       wsEvent = 2
-	evtPong       wsEvent = 3
-	evtMessage    wsEvent = 10
-	evtSetMission wsEvent = 20
-	evtError      wsEvent = 10000
-)
 
 func removeWSClientIndex(s []*wsClient, index int) []*wsClient {
 	return append(s[:index], s[index+1:]...)
@@ -72,9 +62,15 @@ func (w *Web) serveWs(c *gin.Context) {
 			}
 		}
 	}()
+	person, err := w.currentPerson(c)
+	if err != nil {
+		log.Errorf("Failed to get person for ws connection")
+		return
+	}
 	wsClientConn := &wsClient{
 		conn:        ws,
 		payloadChan: make(chan payloadSend),
+		person:      person,
 	}
 	w.wsClientMu.Lock()
 	w.wsClient[ws] = wsClientConn
@@ -126,8 +122,9 @@ func (w *Web) wsJoinMission(ws *wsClient, missionID int) error {
 }
 
 func (w *Web) wsOnMessage(ws *wsClient, p payloadRecv) error {
-	log.Debug(p.Payload)
-	e := store.MissionEvent{}
+	e := store.NewMissionEvent(p.Event, ws.missionID)
+	e.Payload["message"] = p.Payload["message"].(string)
+	e.Payload["person_id"] = ws.person.PersonID
 	if err := store.MissionEventAdd(w.ctx, w.db, &e); err != nil {
 		return err
 	}
@@ -135,7 +132,6 @@ func (w *Web) wsOnMessage(ws *wsClient, p payloadRecv) error {
 }
 
 func (w *Web) wsOnSetMission(ws *wsClient, p payloadRecv) error {
-	log.Debug(p.Payload)
 	missionID, ok := p.Payload["mission_id"].(float64)
 	if !ok {
 		return errors.Errorf("Invalid missionID")
@@ -149,7 +145,7 @@ func (w *Web) wsOnPing(ws *wsClient, p payloadRecv) error {
 		return errors.Errorf("Invalid data")
 	}
 	ws.send(payloadSend{
-		Event: evtPong,
+		Event: store.EvtPong,
 		Payload: map[string]string{
 			"data": data,
 		},

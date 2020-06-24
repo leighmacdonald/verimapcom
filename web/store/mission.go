@@ -19,6 +19,17 @@ const (
 	StatePublished  MissionState = 4
 )
 
+type Evt int
+
+const (
+	EvtConnect    Evt = 1
+	EvtPing       Evt = 2
+	EvtPong       Evt = 3
+	EvtMessage    Evt = 10
+	EvtSetMission Evt = 20
+	EvtError      Evt = 10000
+)
+
 type BoundingBox struct {
 	LatUL  float64
 	LongUL float64
@@ -182,17 +193,18 @@ func MissionDetachFile(ctx context.Context, db *pgxpool.Pool, missionID int, fil
 }
 
 type MissionEvent struct {
-	MissionEventID int         `json:"mission_event_id"`
-	MissionID      int         `json:"mission_id"`
-	EventType      int         `json:"event_type"`
-	Payload        interface{} `json:"payload"`
-	CreatedOn      time.Time   `json:"created_on"`
+	MissionEventID int                    `json:"mission_event_id"`
+	MissionID      int                    `json:"mission_id"`
+	EventType      Evt                    `json:"event_type"`
+	Payload        map[string]interface{} `json:"payload"`
+	CreatedOn      time.Time              `json:"created_on"`
 }
 
-func NewMissionEvent(evt int, payload interface{}) MissionEvent {
+func NewMissionEvent(evt Evt, missionID int) MissionEvent {
 	return MissionEvent{
+		MissionID: missionID,
 		EventType: evt,
-		Payload:   payload,
+		Payload:   make(map[string]interface{}),
 		CreatedOn: time.Now(),
 	}
 }
@@ -227,6 +239,7 @@ func MissionEventGetAll(ctx context.Context, db *pgxpool.Pool, missionID int) ([
 		if err := rows.Scan(&e.MissionEventID, &e.MissionID, &e.EventType, &e.Payload, &e.CreatedOn); err != nil {
 			return nil, err
 		}
+		events = append(events, e)
 	}
 	return events, nil
 }

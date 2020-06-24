@@ -1,12 +1,14 @@
 package web
 
+import "github.com/leighmacdonald/verimapcom/web/store"
+
 type payloadRecv struct {
-	Event   wsEvent                `json:"event"`
+	Event   store.Evt              `json:"event"`
 	Payload map[string]interface{} `json:"payload"`
 }
 
 type payloadSend struct {
-	Event   wsEvent     `json:"event"`
+	Event   store.Evt   `json:"event"`
 	Payload interface{} `json:"payload"`
 }
 

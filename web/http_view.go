@@ -24,6 +24,7 @@ type Page struct {
 	Path    string
 	Handler gin.HandlerFunc
 	Admin   bool
+	Method  string
 }
 
 type Level string
