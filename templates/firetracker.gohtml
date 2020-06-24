@@ -3,18 +3,18 @@
     {{template "page_header" .header }}
     {{template "alert" .alerts}}
 
-    <div class="grid-container bottom_spacer">
-        <div class="grid-x grid-padding-x">
+    <div class="grid-container">
+        <div class="grid-y grid-padding-y">
             <div class="cell text-center">
                 <h3 class="subheader">Fire is a natural and crucial part of life.
                     See maps and follow the links below for articles of interest</h3>
             </div>
         </div>
-
+        <div class="grid-y">
         {{ range .firewatches }}
-            <div class="grid-x grid-padding-x">
+
                 <div class="cell">
-                    <div class="grid-x grid-padding-x ">
+                    <div class="grid-x grid-padding-x">
                         <div class="cell medium-8">
                             <h2>{{ .Title }}</h2>
                             <h6 class="subheader">{{ .Published }} - {{ .User.Username }}</h6>
@@ -27,9 +27,9 @@
 
                     </div>
                 </div>
-            </div>
-        {{end}}
 
+        {{end}}
+        </div>
     </div>
 
 {{end}}

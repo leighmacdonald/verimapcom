@@ -1,10 +1,13 @@
 package web
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/leighmacdonald/verimapcom/web/store"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 func referer(c *gin.Context) string {
@@ -18,6 +21,83 @@ func (w *Web) simple(page pageName) gin.HandlerFunc {
 	}
 }
 
+func (w *Web) sendConnectMessage(c *gin.Context) {
+	name := c.PostForm("name")
+	email := c.PostForm("email")
+	subject := c.PostForm("subject")
+	body := c.PostForm("body")
+	if name == "" {
+		abortFlash(c, "Name cannot be empty", referer(c))
+		return
+	}
+	if email == "" {
+		abortFlash(c, "Email cannot be empty", referer(c))
+		return
+	}
+	if subject == "" {
+		abortFlash(c, "Subject cannot be empty", referer(c))
+		return
+	}
+	if body == "" {
+		abortFlash(c, "Message body cannot be empty", referer(c))
+		return
+	}
+	m := store.Message{
+		Author:    email,
+		AuthorID:  0,
+		Subject:   fmt.Sprintf("[%s] %s", name, subject),
+		Body:      body,
+		CreatedOn: time.Time{},
+	}
+	if err := store.MessageAdd(w.ctx, w.db, &m); err != nil {
+		abortFlashErr(c, "Failed to send messag, please try again later", referer(c), err)
+		return
+	}
+	successFlash(c, "Successfully sent message, thanks for your inquiry", referer(c))
+}
+
+func (w *Web) getBackground(c *gin.Context) {
+	type teamMember struct {
+		Name        string
+		Credentials string
+		Role        string
+		Image       string
+		Email       string
+	}
+	members := []teamMember{
+		{
+			Name:        "David Stonehouse",
+			Credentials: "Founder/CEO",
+			Role:        "Certified Thermographer",
+			Image:       "https://get.foundation/sites/docs/assets/img/generic/rectangle-1.jpg",
+			Email:       "dstonehouse@verimap.com",
+		},
+		{
+			Name:        "Rod Coppock",
+			Credentials: "CPA, CA",
+			Role:        "Chief Financial Officer",
+			Image:       "https://get.foundation/sites/docs/assets/img/generic/rectangle-1.jpg",
+			Email:       "",
+		},
+		{
+			Name:        "Erkin Atakhanov",
+			Credentials: "CPA, CA",
+			Role:        "Corporate Finance & Investor Relations",
+			Image:       "https://get.foundation/sites/docs/assets/img/generic/rectangle-1.jpg",
+			Email:       "",
+		}, {
+			Name:        "Dale Good",
+			Credentials: "P. Eng",
+			Role:        "Technical Advisor",
+			Image:       "https://get.foundation/sites/docs/assets/img/generic/rectangle-1.jpg",
+			Email:       "",
+		},
+	}
+	m := w.defaultM(c, background)
+	m["members"] = members
+	w.render(c, background, m)
+}
+
 func (w *Web) getFireTracker(c *gin.Context) {
 	fw, err := apiGetFireWatches(w.ctx, w.client, 10)
 	if err != nil {
@@ -26,7 +106,7 @@ func (w *Web) getFireTracker(c *gin.Context) {
 		return
 	}
 	m := w.defaultM(c, firetracker)
-	m["firewatces"] = fw
+	m["firewatches"] = fw
 	w.render(c, firetracker, m)
 }
 

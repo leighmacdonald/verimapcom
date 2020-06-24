@@ -2,35 +2,68 @@
 
     {{template "page_header" .header }}
     {{template "alert" .alerts}}
-
-    <div class="grid-container">
-        <div class="grid-x grid-padding-x">
-            <div class="cell text-center">
-                <form name="login" action="/login" method="post">
-                    <div class="grid-container">
-                        <div class="grid-x grid-padding-x">
-                            <div class="cell">
-                                <label>Email Address
-                                    <input type="email" placeholder="" name="email">
-                                </label>
-                            </div>
-                            <div class="cell">
-                                <label>Password
-                                    <input type="password" placeholder="" name="password">
-                                </label>
-                            </div>
-                            <div class="cell">
-                                <div class="input-group-button">
-                                    <input type="submit" class="button" value="Submit" name="submit">
+    <form name="login" action="/login" method="post">
+        <div class="grid-container">
+            <div class="grid-x grid-padding-x">
+                <div class="cell medium-6">
+                    <div class="grid-y grid-padding-y">
+                        <div class="cell">
+                            <h2>Login To Your Account</h2>
+                        </div>
+                        <div class="cell">
+                            <label>Email Address
+                                <input type="email" placeholder="" name="email">
+                            </label>
+                        </div>
+                        <div class="cell">
+                            <label>Password
+                                <input type="password" placeholder="" name="password">
+                            </label>
+                        </div>
+                        <div class="cell">
+                            <a href="/profile/recover">Forgot password?</a>
+                        </div>
+                        <div class="cell">
+                            <div class="grid-x">
+                                <div class="cell medium-6">
+                                    <input type="submit" class="button large expanded success" value="Login" name="submit">
                                 </div>
                             </div>
                         </div>
                     </div>
-                </form>
+                </div>
+                <div class="cell medium-6">
+                    <div class="grid-y grid-padding-y">
+                        <div class="cell">
+                            <h2>Create Account</h2>
+                            <p>To gain access to our services you must first create a personal user account. Some of
+                                these
+                                services include:</p>
+                            <ul>
+                                <li>Mission Creation</li>
+                                <li>Live Mission Status Tracker</li>
+                                <li>File Uploads &amp; Downloads</li>
+                                <li>Mission Deliverables</li>
+                            </ul>
 
+                            <p>To register for an account you must first have a registration code for your agency. These
+                                can be obtained by the representative of your agency at their discretion. If you do not
+                                have a representative for your agency and would like to register to become one or
+                                otherwise
+                                do not know who is your representative you can <a href="/connect">contact us</a>.</p>
+
+                        </div>
+                        <div class="cell">
+                            <div class="grid-x">
+                                <div class="cell medium-6">
+                                    <a class="button large expanded success" href="/profile/create">Create Account</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
+    </form>
 {{end}}
 
 {{define "title"}}

@@ -1,31 +1,33 @@
 {{define "page_header"}}
-    <div class="grid-container header_box" style="background-image: url({{ .Img }})">
-        <div class="grid-x grid-padding-x header_content">
-            <div class="cell small-12 shaded">
-                <div class="grid-x grid-padding-x align-middle">
-                    <div class="cell">
-                        <div class="grid-x grid-padding-x  align-bottom" style="height: 175px">
-                            <div class="cell" style="padding: 0;">
-                                <h1>{{ .Name }}</h1>
+    <div class="grid-container header_box">
+        <div class="grid-x header_content" style="height: 200px; background-image: url({{ .Img }})">
+            <div class="cell shaded">
+                <div class="grid-x">
+                    <div class="cell" style="padding-top: 114px">
+                        <div class="cell shaded">
+                            <div class="grid-y" style="padding: 8px">
+                                <div class="cell">
+                                    <h1>{{ .Name }}</h1>
+                                </div>
+                                <div class="cell">
+
+                                    <nav aria-label="You are here:" role="navigation">
+                                        <ul class="breadcrumbs">
+
+                                            {{ range .Breadcrumbs }}
+                                                <li><a href="{{ .Path }}">{{ .Name }}</a></li>
+                                            {{end}}
+
+                                        </ul>
+                                    </nav>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="cell">
-                        <div class="grid-x grid-padding-x  align-bottom" style="height: 25px">
-                            <div class="cell">
-                                <nav aria-label="You are here:" role="navigation">
-                                    <ul class="breadcrumbs">
 
-                                        {{ range .Breadcrumbs }}
-                                            <li><a href="{{ .Path }}">{{ .Name }}</a></li>
-                                        {{end}}
 
-                                    </ul>
-                                </nav>
-                            </div>
-                        </div>
-                    </div>
                 </div>
+
             </div>
         </div>
     </div>

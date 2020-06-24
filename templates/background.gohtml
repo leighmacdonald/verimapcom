@@ -1,12 +1,27 @@
+{{define "person_card"}}
+    <div class="card cell large-5 medium-6 small-12 person_card">
+        <div class="card-divider">
+            {{ .Role }}
+        </div>
+        <img src="https://get.foundation/sites/docs/assets/img/generic/rectangle-1.jpg">
+        <div class="card-section" style="padding-top:0; padding-left: 0; padding-right: 0">
+            <h2 style="background-color: ">{{ .Name }}, {{ .Credentials }}</h2>
+            {{if ne "" .Email}}
+                <p><a href="mailto:{{.Email}}">{{ icon "fi-mail" }} {{ .Email }}</a></p>
+                {{end}}
+        </div>
+    </div>
+{{end}}
+
+
 {{define "content"}}
 
     {{template "page_header" .header}}
     {{template "alert" .alerts}}
 
-    <div class="grid-container bottom_spacer">
-        <div class="grid-x grid-padding-x">
+    <div class="grid-container">
+        <div class="grid-x grid-margin-x">
             <div class="cell small-8">
-
                 <p>VeriMap has been providing thermal IR (TIR) products for clients since 1993. We have worked
                     with Alberta and BC Forestry, <a href="https://www.usgs.gov/">USGS</a> Florida environmental
                     projects,
@@ -21,29 +36,22 @@
             <div class="cell small-4">
                 {{ img "/dist/images/dw.png" "" false }}
             </div>
-        </div>
-        <div class="grid-x grid-padding-x text-center">
             <div class="cell">
-                <h1>Our Executive Team</h1>
-                <p><strong>David Stonehouse</strong>, Founder/CEO<br>
-                    Certified Thermographer<br>
-                    Business Development<br>
-                    <a href="mailto:dstonehouse@verimap.com">{{ icon "fi-mail" }} Contact</a>
-                </p>
-                <p><strong>Paul Canizaro</strong>, Managing Director<br>
-                    Business Strategy, Development, Operations<br>
-                    Product Development and Strategic Planning</p>
-                <p><strong>Rod Coppock</strong>, CPA, CA<br>
-                    Chief Financial Officer</p>
-                <p><strong>Erkin Atakhanov</strong>, CPA, CA<br>
-                    Corporate Finance & Investor Relations</p>
-                <p><strong>Dale Good</strong>, P. Eng<br>
-                    Technical Advisor</p>
+                <h1 class="text-center">Our Executive Team</h1>
             </div>
+            <div class="cell">
+
+                <div class="grid-x grid-padding-x align-spaced ">
+                    {{range .members}}
+                        {{template "person_card" .}}
+                    {{end}}
+                </div>
+            </div>
+
         </div>
     </div>
 {{end}}
 
 {{define "title"}}
-    Our Background
+    Our Background & Team
 {{end}}

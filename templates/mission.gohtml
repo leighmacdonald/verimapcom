@@ -6,7 +6,7 @@
 
     <form action="/missions/create" method="post" enctype="application/x-www-form-urlencoded">
         <div class="top-grid-container">
-            <div class="grid-x grid-padding-x">
+            <div class="grid-x">
                 <div class="cell medium-3">
                     <h1>Mission Summary</h1>
                     <dl>
@@ -24,26 +24,17 @@
                         <dd>
                             <div class="grid-x grid-padding-x">
                                 <div class="cell">
-                                    <div class="cell medium-6">
-                                        <span>{{ fmtFloat .mission.BoundingBox.LatUL 5}}</span>
-                                    </div>
-                                    <div class="cell medium-6">
-                                        <span>{{ fmtFloat .mission.BoundingBox.LongUL 5 }}</span>
-                                    </div>
+                                    <span>UL: {{ fmtFloat .mission.BoundingBox.LatUL 5}} {{ fmtFloat .mission.BoundingBox.LongUL 5 }}</span>
                                 </div>
                                 <div class="cell">
-                                    <div class="cell medium-6">
-                                        <span>{{ fmtFloat .mission.BoundingBox.LatLR 5 }}</span>
-                                    </div>
-                                    <div class="cell medium-6">
-                                        <span>{{ fmtFloat .mission.BoundingBox.LongLR 5 }}</span>
-                                    </div>
+                                    <span>LR: {{ fmtFloat .mission.BoundingBox.LatLR 5 }} {{ fmtFloat .mission.BoundingBox.LongLR 5 }}</span>
                                 </div>
                             </div>
                         </dd>
                     </dl>
                     <div class="cell">
-                        <a class="button medium expanded success" href="/upload?mission_id={{.mission.MissionID}}">Upload File</a>
+                        <a class="button medium success" href="/upload?mission_id={{.mission.MissionID}}">Upload
+                            File</a>
                     </div>
                     <h5>Flights Summary ({{ len .flights }})</h5>
                     {{range .flights }}
@@ -113,14 +104,16 @@
                                     <label>
                                         Message & System Log
 
-                                            <div class="grid-x">
-                                                <div class="cell medium-10">
-                                                    <input type="text" name="message" id="chat_message">
-                                                </div>
-                                                <div class="cell medium-2">
-                                                    <button style="margin-bottom: 0" class="button expanded" id="chat_submit">Send</button>
-                                                </div>
+                                        <div class="grid-x">
+                                            <div class="cell medium-10">
+                                                <input type="text" name="message" id="chat_message">
                                             </div>
+                                            <div class="cell medium-2">
+                                                <button style="margin-bottom: 0" class="button expanded"
+                                                        id="chat_submit">Send
+                                                </button>
+                                            </div>
+                                        </div>
                                     </label>
                                 </div>
                             </div>

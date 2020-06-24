@@ -390,6 +390,7 @@ func New(ctx context.Context) *Web {
 			sesh.GET(p.Path, p.Handler)
 		}
 	}
+	sesh.POST("/connect/send", w.sendConnectMessage)
 	sesh.GET("/download/:file_id", w.getFile)
 	sesh.POST(w.route(upload), w.postUpload)
 	sesh.POST(w.route(login), w.postLogin)
@@ -411,7 +412,7 @@ func (w *Web) setup() {
 		adminPeople:     {Name: "admin_people", Path: "/admin/people", Admin: true, Handler: w.getAdminPeople},
 		adminPeopleEdit: {Name: "admin_people_edit", Path: "/admin/people/:person_id", Admin: true, Handler: w.getAdminPeopleEdit},
 		about:           {Name: "about", Path: "/about"},
-		background:      {Name: "background", Path: "/about/background"},
+		background:      {Name: "background", Path: "/about/background", Handler: w.getBackground},
 		connect:         {Name: "connect", Path: "/connect"},
 		downloads:       {Name: "downloads", Path: "/downloads", Handler: w.getDownloads},
 		emergency:       {Name: "emergency", Path: "/services/emergency"},
