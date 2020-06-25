@@ -6,3 +6,5 @@ dist/
 tmp/
 *.tif
 /uploads
+frontend/node_modules
+/examples/scratch/

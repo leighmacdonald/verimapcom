@@ -1,0 +1,111 @@
+syntax = "proto3";
+option go_package = "pb";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/any.proto";
+
+service RPC {
+  rpc StreamMissionEvents(MissionRequest) returns (stream MissionEvent) {}
+  rpc StreamPositions(MissionRequest) returns (stream PositionEvent) {}
+  rpc StreamHotSpots(MissionRequest) returns (stream HotSpotEvent) {}
+  rpc SendMessage(ChatMessageRequest) returns (StatusReply) {}
+
+  rpc SendFile(FileUpload) returns (FileReply) {}
+  rpc SendPosition(stream PositionEvent) returns (SendPositionReply) {}
+  rpc SendHotspot(stream HotSpotEvent) returns (SendHotspotReply) {}
+  rpc Ping(PingRequest) returns (PingReply) {}
+  rpc OpenProject(ProjectRequest) returns (ProjectReply) {}
+}
+
+message ProjectRequest {
+  int32 mission_id = 1;
+  string name = 2;
+}
+
+message ProjectReply {
+  int32 mission_id = 1;
+  string message = 2;
+}
+
+message PingRequest {
+  google.protobuf.Timestamp at = 1;
+}
+
+message PingReply {
+  bool ok = 1;
+}
+
+message SendPositionReply {
+  bool ok = 1;
+}
+
+message SendHotspotReply {
+  bool ok = 1;
+}
+
+message FileUpload {
+  int32 mission_id = 1;
+  string file_name = 2;
+  int64 file_size = 3;
+  bytes data = 4;
+}
+
+message FileReply {
+  int32 status = 1;
+}
+
+message Location {
+  double lat = 1;
+  double lon = 2;
+}
+
+message PositionEvent {
+  int32 mission_id = 1;
+  google.protobuf.Timestamp at = 2;
+  Location location = 3;
+  int32 elevation = 4;
+  int32 flight_id = 5;
+}
+
+message HotSpotEvent {
+  int32 mission_id = 1;
+  int64 id = 2;
+  Location location = 3;
+  float delta = 4;
+  int32 flight_id = 5;
+}
+
+enum EventType {
+  EVT_UNKNOWN = 0;
+  EVT_CONNECT = 1;
+  EVT_PING = 2;
+  EVT_PONG = 3;
+  EVT_MESSAGE = 10;
+  EVT_SET_MISSION = 20;
+  EVT_ERROR = 1000;
+}
+
+message StatusReply {
+    enum Status {
+      OK = 0;
+      ERROR = 1;
+    }
+    Status status = 1;
+    string message = 2;
+}
+
+message ChatMessageRequest {
+  int32 mission_id = 1;
+  string message = 2;
+  google.protobuf.Timestamp at = 3;
+}
+
+message MissionEvent {
+  int32 mission_id = 1;
+  EventType event_type = 2;
+  google.protobuf.Any payload = 3;
+}
+
+message MissionRequest {
+  int32 mission_id = 1;
+}
