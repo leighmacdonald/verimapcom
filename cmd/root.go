@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/ghodss/yaml"
 	"github.com/leighmacdonald/verimapcom/client"
-	"github.com/leighmacdonald/verimapcom/gs"
+	"github.com/leighmacdonald/verimapcom/core"
 	"github.com/mitchellh/go-homedir"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -48,33 +48,29 @@ var rootCmd = &cobra.Command{
 		if err := app.Connect(); err != nil {
 			log.Fatalf("Could not connect to server: %s", err)
 		}
-		if err := app.Ping(); err != nil {
-			log.Fatalf("Failed to contact server: %s", err.Error())
-		}
-		var project gs.Project
-		projectConfig := path.Join(dir, "project.yml")
-		if gs.Exists(projectConfig) {
+		var missionConfig client.MissionConfig
+		projectConfig := path.Join(dir, "missionConfig.yaml")
+		if core.Exists(projectConfig) {
 			b, err := ioutil.ReadFile(projectConfig)
 			if err != nil {
 				log.Fatalf("Error reading config file %s: %v", projectConfig, err)
 			}
-			if err := yaml.Unmarshal(b, &project); err != nil {
+			if err := yaml.Unmarshal(b, &missionConfig); err != nil {
 				log.Fatalf("Failed to decode config file %s: %v", projectConfig, err)
 			}
 		} else {
-			project.ProjectID = 0
-			project.Path = dir
-			project.Name = name
+			missionConfig.MissionID = 0
+			missionConfig.Name = name
 		}
-		if err := app.OpenProject(&project); err != nil {
+		if err := app.OpenMission(missionConfig.MissionID); err != nil {
 			log.Fatalf(err.Error())
 		}
-		b, err := yaml.Marshal(&project)
+		b, err := yaml.Marshal(&missionConfig)
 		if err != nil {
-			log.Fatalf("Could not encode project config: %s", err)
+			log.Fatalf("Could not encode missionConfig config: %s", err)
 		}
 		if err := ioutil.WriteFile(projectConfig, b, 0766); err != nil {
-			log.Fatalf("Could not write project config: %s", err)
+			log.Fatalf("Could not write missionConfig config: %s", err)
 		}
 		if err := app.Start(); err != nil {
 			log.Errorf("Failed to shutdown cleanly: %v", err)
@@ -93,7 +89,7 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringP("host", "H", "localhost", "Listen host")
-	rootCmd.PersistentFlags().Uint16P("port", "p", 9999, "Listen port")
+	rootCmd.PersistentFlags().Uint16P("port", "p", 9090, "Listen port")
 	rootCmd.PersistentFlags().StringP("dir", "d", "./", "Directory to watch for files")
 	rootCmd.PersistentFlags().StringP("name", "n", "project_name", "Name of the project")
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.vm_uploader.yaml)")
@@ -101,6 +97,10 @@ func init() {
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
+	viper.SetDefault("migrate", true)
+	viper.SetDefault("listen_http", ":8001")
+	viper.SetDefault("redis", "localhost:6379")
+	viper.SetDefault("dsn", "postgres:///verimapcom")
 	if cfgFile != "" {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
@@ -112,9 +112,10 @@ func initConfig() {
 			os.Exit(1)
 		}
 
-		// Search config in home directory with name ".vm_uploader" (without extension).
+		// Search config in home directory with name ".config" (without extension).
 		viper.AddConfigPath(home)
-		viper.SetConfigName(".vm_uploader")
+		viper.AddConfigPath("./")
+		viper.SetConfigName("config")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match

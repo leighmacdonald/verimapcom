@@ -19,6 +19,18 @@ yarn_install:
 frontend:
 	@cd frontend && yarn run build && cd ..
 
+watch:
+	@cd frontend && yarn run watch && cd ..
+
+demo:
+	@go run main.go demo
+
+client:
+	@go run main.go
+
+serve:
+	@go run main.go serve
+
 deps: yarn_install
 	@go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.27.0
 

@@ -3,7 +3,7 @@ package web
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/leighmacdonald/verimapcom/web/store"
+	"github.com/leighmacdonald/verimapcom/store"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"strconv"

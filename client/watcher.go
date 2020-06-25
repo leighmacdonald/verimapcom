@@ -3,7 +3,7 @@ package client
 import (
 	"context"
 	"github.com/fsnotify/fsnotify"
-	"github.com/leighmacdonald/verimapcom/gs"
+	"github.com/leighmacdonald/verimapcom/core"
 	log "github.com/sirupsen/logrus"
 	"os"
 	"path/filepath"
@@ -49,7 +49,7 @@ func eventParser(watcher *fsnotify.Watcher, newFiles chan string) {
 				} else if name == "stage_position_file.csv" {
 					newFiles <- event.Name
 				} else {
-					if gs.IsDir(event.Name) {
+					if core.IsDir(event.Name) {
 						if err := watcher.Add(event.Name); err != nil {
 							log.Errorf("Failed to add new watch dir: %v", err)
 							continue
@@ -108,10 +108,8 @@ func monitorDirectory(ctx context.Context, directory string, newFiles chan strin
 	go eventParser(watcher, newFiles)
 	go func() {
 		for {
-			select {
-			case err := <-watcher.Errors:
-				log.Errorf("Watcher err: %v", err)
-			}
+			err := <-watcher.Errors
+			log.Errorf("Watcher err: %v", err)
 		}
 	}()
 	err = watcher.Add(directory)

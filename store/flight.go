@@ -2,30 +2,50 @@ package store
 
 import (
 	"context"
-	"github.com/jackc/pgtype"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/pkg/errors"
 	"time"
 )
 
-type FlightState int
+func FlightPositionsSince(ctx context.Context, db *pgxpool.Pool, flightID int32, sinceIdx int32) ([]PositionZ, error) {
+	const q = `
+		SELECT position_id, st_y(pos), st_x(pos), st_z(pos), created_on 
+		FROM flight_positions 
+		WHERE flight_id = $1 
+		ORDER BY position_id DESC
+		OFFSET $2`
+	rows, err := db.Query(ctx, q, flightID, sinceIdx)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var positions []PositionZ
+	for rows.Next() {
+		var pos PositionZ
+		if err := rows.Scan(&pos.ID, &pos.Lat, &pos.Lon, &pos.Elevation, &pos.CreatedOn); err != nil {
+			return nil, err
+		}
+		positions = append(positions, pos)
+	}
+	return positions, nil
+}
 
-const (
-	FlightCreated  FlightState = 1
-	FlightAirborne FlightState = 2
-	FlightLanded   FlightState = 3
-	FlightClosed   FlightState = 10
-)
+func FlightPositionInsert(ctx context.Context, db *pgxpool.Pool, flightID int32, t time.Time, lat float64, lon float64, elev int32) error {
+	const q = `INSERT INTO flight_positions (flight_id, pos, created_on)
+			VALUES ($1, ST_MakePoint($3, $2, $4), $5)`
+	if _, err := db.Exec(ctx, q, flightID, lat, lon, elev, t); err != nil {
+		return err
+	}
+	return nil
+}
 
-type Flight struct {
-	FlightID      int
-	MissionID     int
-	FlightState   FlightState
-	EnginesOnTime pgtype.Timestamp
-	TakeOffTime   pgtype.Timestamp
-	LandingTime   pgtype.Timestamp
-	Summary       string
-	CreatedOn     time.Time
+func FlightHotspotInsert(ctx context.Context, db *pgxpool.Pool, flightID int32, t time.Time, lat float64, lon float64, delta int32) error {
+	const q = `INSERT INTO flight_hotspot (flight_id, pos, delta, created_on)
+			VALUES ($1, ST_MakePoint($3, $2), $4, $5)`
+	if _, err := db.Exec(ctx, q, flightID, lat, lon, delta, t); err != nil {
+		return err
+	}
+	return nil
 }
 
 func FlightSave(ctx context.Context, db *pgxpool.Pool, flight *Flight) error {
@@ -60,7 +80,7 @@ func Flights(ctx context.Context, db *pgxpool.Pool) ([]Flight, error) {
 	return flights, nil
 }
 
-func FlightsByMissionID(ctx context.Context, db *pgxpool.Pool, missionID int) ([]Flight, error) {
+func FlightsByMissionID(ctx context.Context, db *pgxpool.Pool, missionID int32) ([]Flight, error) {
 	var flights []Flight
 	const q = `
 		SELECT 

@@ -130,7 +130,7 @@ func apiGetExample(ctx context.Context, client *http.Client, ID int) (examplePag
 	if err := get(ctx, client, url, &resp); err != nil {
 		return examplePage{}, errors.Wrapf(err, "Failed to make get request")
 	}
-	for _, page := range resp {
+	for i, page := range resp {
 		m := make(map[string]string)
 		for _, row := range strings.Split(page.Stats, "\n") {
 			cols := strings.SplitN(row, "|", 2)
@@ -139,7 +139,9 @@ func apiGetExample(ctx context.Context, client *http.Client, ID int) (examplePag
 			}
 		}
 		page.StatsMap = m
-		return page, nil
+		if i == 0 {
+			return page, nil
+		}
 	}
 	return examplePage{}, errors.New("Unknown result")
 }

@@ -3,7 +3,7 @@ package web
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v4"
-	"github.com/leighmacdonald/verimapcom/web/store"
+	"github.com/leighmacdonald/verimapcom/store"
 	"net/http"
 	"strconv"
 	"time"
@@ -14,7 +14,7 @@ func (w *Web) postMission(c *gin.Context) {
 	m := w.defaultM(c, missionsCreate)
 	u := m["person"].(store.Person)
 	mission.AgencyID = u.AgencyID
-	mission.MissionState = int(store.StateCreated)
+	mission.MissionState = int32(store.StateCreated)
 	mission.PersonID = u.PersonID
 	mission.CreatedOn = time.Now()
 	mission.UpdatedOn = mission.CreatedOn
@@ -52,7 +52,7 @@ func (w *Web) getMission(c *gin.Context) {
 		abortFlash(c, "Invalid mission", referer(c))
 		return
 	}
-	mis, err := store.GetMission(w.ctx, w.db, int(missionID))
+	mis, err := store.GetMission(w.ctx, w.db, int32(missionID))
 	if err != nil {
 		abortFlashErr(c, "Failed to load mission", referer(c), err)
 		return
@@ -91,7 +91,7 @@ func (w *Web) getMissionEvents(c *gin.Context) {
 		abortFlash(c, "Invalid mission", referer(c))
 		return
 	}
-	mis, err := store.GetMission(w.ctx, w.db, int(missionID))
+	mis, err := store.GetMission(w.ctx, w.db, int32(missionID))
 	if err != nil {
 		abortFlashErr(c, "Failed to load mission", referer(c), err)
 		return

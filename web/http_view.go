@@ -31,8 +31,8 @@ type Level string
 
 const (
 	lSuccess Level = "success"
-	lWarning Level = "warning"
-	lError   Level = "alert"
+	//lWarning Level = "warning"
+	lError Level = "alert"
 )
 
 type Flash struct {

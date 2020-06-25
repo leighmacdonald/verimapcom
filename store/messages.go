@@ -3,17 +3,7 @@ package store
 import (
 	"context"
 	"github.com/jackc/pgx/v4/pgxpool"
-	"time"
 )
-
-type Message struct {
-	MessageID int
-	Author    string
-	AuthorID  int
-	Subject   string
-	Body      string
-	CreatedOn time.Time
-}
 
 func MessageAdd(ctx context.Context, db *pgxpool.Pool, m *Message) error {
 	const q = `

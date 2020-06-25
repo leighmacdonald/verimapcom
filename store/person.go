@@ -3,22 +3,9 @@ package store
 import (
 	"context"
 	"github.com/jackc/pgx/v4/pgxpool"
-	"time"
 )
 
-type Person struct {
-	PersonID     int
-	AgencyID     int
-	Email        string
-	PasswordHash string
-	FirstName    string
-	LastName     string
-	Deleted      bool
-	CreatedOn    time.Time
-	Agency       Agency
-}
-
-func PersonDelete(ctx context.Context, db *pgxpool.Pool, personID int) error {
+func PersonDelete(ctx context.Context, db *pgxpool.Pool, personID int32) error {
 	const q = `UPDATE person SET deleted = true WHERE person_id = $1`
 	if _, err := db.Exec(ctx, q, personID); err != nil {
 		return err
@@ -54,6 +41,26 @@ func GetPeople(ctx context.Context, db *pgxpool.Pool) ([]Person, error) {
 	return people, nil
 }
 
+func LoadPersonByToken(ctx context.Context, db *pgxpool.Pool, rpcToken string, person *Person) error {
+	const q = `
+		SELECT 
+			p.person_id, p.agency_id, p.email, p.password_hash, p.first_name, p.last_name, p.created_on, 
+		       a.agency_id, a.agency_name, a.created_on
+		FROM 
+		    person p
+		LEFT JOIN agency a on a.agency_id = p.agency_id
+		WHERE 
+		      p.deleted = false AND rpc_token = $1
+		ORDER BY p.person_id`
+	if err := db.QueryRow(ctx, q, rpcToken).
+		Scan(&person.PersonID, &person.AgencyID, &person.Email, &person.PasswordHash,
+			&person.FirstName, &person.LastName, &person.CreatedOn,
+			&person.Agency.AgencyID, &person.Agency.AgencyName, &person.Agency.CreatedOn); err != nil {
+		return err
+	}
+	return nil
+}
+
 func LoadPersonByEmail(ctx context.Context, db *pgxpool.Pool, email string, person *Person) error {
 	const q = `
 		SELECT 
@@ -74,7 +81,7 @@ func LoadPersonByEmail(ctx context.Context, db *pgxpool.Pool, email string, pers
 	return nil
 }
 
-func LoadPersonByID(ctx context.Context, db *pgxpool.Pool, userID int, p *Person) error {
+func LoadPersonByID(ctx context.Context, db *pgxpool.Pool, userID int32, p *Person) error {
 	const q = `
 		SELECT 
 			p.person_id, p.agency_id, p.email, p.password_hash, p.first_name, p.last_name, p.created_on, 

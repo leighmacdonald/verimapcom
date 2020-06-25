@@ -9,12 +9,12 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/redis"
 	"github.com/gin-gonic/gin"
-	"github.com/gorilla/websocket"
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
-	"github.com/leighmacdonald/verimapcom/web/store"
+	"github.com/leighmacdonald/verimapcom/store"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 	"golang.org/x/crypto/bcrypt"
 	"html/template"
 	"net/http"
@@ -83,7 +83,7 @@ func sessionMiddleWare(ctx context.Context, db *pgxpool.Pool) gin.HandlerFunc {
 		var p store.Person
 		v := s.Get("person_id")
 		if v != nil {
-			pId, ok := v.(int)
+			pId, ok := v.(int32)
 			if ok {
 				if err := store.LoadPersonByID(ctx, db, pId, &p); err != nil {
 					log.Errorf("Failed to load persons session user: %v", err)
@@ -139,7 +139,6 @@ const (
 	upload             pageName = "upload"
 	uploads            pageName = "uploads"
 	wildfire           pageName = "wildfire"
-	ws                 pageName = "ws"
 )
 
 var ErrInvalidUser = errors.New("Invalid user")
@@ -240,10 +239,7 @@ type HTTPOpts struct {
 
 // DefaultHTTPOpts returns a default set of options for http.Server instances
 func DefaultHTTPOpts() *HTTPOpts {
-	addr, found := os.LookupEnv("LISTEN")
-	if !found {
-		addr = ":8080"
-	}
+	addr := viper.GetString("listen_http")
 	return &HTTPOpts{
 		ListenAddr:     addr,
 		UseTLS:         false,
@@ -287,18 +283,15 @@ func NewHTTPServer(opts *HTTPOpts) *http.Server {
 }
 
 type Web struct {
-	Handler        http.Handler
-	db             *pgxpool.Pool
-	ctx            context.Context
-	client         *http.Client
-	uploadPath     string
-	tmpl           map[pageName]*template.Template
-	pages          map[string]map[pageName]*Page
-	headers        map[pageName]*Header
-	wsHandler      map[store.Evt]wsEventHandler
-	wsClient       map[*websocket.Conn]*wsClient
-	wsMissionConns map[int][]*wsClient
-	wsClientMu     *sync.RWMutex
+	Handler    http.Handler
+	db         *pgxpool.Pool
+	ctx        context.Context
+	client     *http.Client
+	uploadPath string
+	tmpl       map[pageName]*template.Template
+	pages      map[string]map[pageName]*Page
+	headers    map[pageName]*Header
+	wsClientMu *sync.RWMutex
 }
 
 func (w *Web) Setup() error {
@@ -344,11 +337,7 @@ func (w *Web) Close() {
 	w.db.Close()
 }
 
-func New(ctx context.Context) *Web {
-	redisHost, found := os.LookupEnv("REDIS_HOST")
-	if !found {
-		redisHost = "localhost:6379"
-	}
+func New(ctx context.Context, redisHost string) *Web {
 	s, err := redis.NewStoreWithDB(10, "tcp",
 		redisHost, "", "5", []byte("temp"))
 	if err != nil {
@@ -380,9 +369,6 @@ func New(ctx context.Context) *Web {
 		make(map[pageName]*template.Template),
 		make(map[string]map[pageName]*Page),
 		make(map[pageName]*Header),
-		make(map[store.Evt]wsEventHandler),
-		make(map[*websocket.Conn]*wsClient),
-		make(map[int][]*wsClient),
 		&sync.RWMutex{},
 	}
 	w.setup()
@@ -427,11 +413,6 @@ func (w *Web) page(name pageName) *Page {
 }
 
 func (w *Web) setup() {
-	w.wsHandler = map[store.Evt]wsEventHandler{
-		store.EvtMessage:    w.wsOnMessage,
-		store.EvtSetMission: w.wsOnSetMission,
-		store.EvtPing:       w.wsOnPing,
-	}
 	pages := map[string]map[pageName]*Page{
 		"GET": {
 			adminAgencies:   {Path: "/admin/agencies", Admin: true, Handler: w.getAdminAgencies},
@@ -464,7 +445,6 @@ func (w *Web) setup() {
 			upload:          {Path: "/upload", Handler: w.getUpload},
 			uploads:         {Path: "/uploads", Handler: w.getUploads},
 			wildfire:        {Path: "/services/wildfire"},
-			ws:              {Path: "/ws", Handler: w.serveWs},
 		},
 		"POST": {
 			upload:             {Path: "/upload", Handler: w.postUpload},

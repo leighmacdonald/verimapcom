@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v4"
-	"github.com/leighmacdonald/verimapcom/web/store"
+	"github.com/leighmacdonald/verimapcom/store"
 	"net/http"
 	"strconv"
 	"time"
@@ -77,7 +77,7 @@ func (w *Web) getAdminPeopleEdit(c *gin.Context) {
 		abortFlashErr(c, "Could not parse person_id", w.route(adminPeople), err)
 		return
 	}
-	if err := store.LoadPersonByID(w.ctx, w.db, int(p), &person); err != nil {
+	if err := store.LoadPersonByID(w.ctx, w.db, int32(p), &person); err != nil {
 		abortFlashErr(c, "Failed to load user data", w.route(adminPeople), err)
 		return
 	}
@@ -106,7 +106,7 @@ func (w *Web) postAdminPeopleDelete(c *gin.Context) {
 		return
 	}
 	var p store.Person
-	if err := store.LoadPersonByID(w.ctx, w.db, int(pid), &p); err != nil {
+	if err := store.LoadPersonByID(w.ctx, w.db, int32(pid), &p); err != nil {
 		abortFlash(c, "Failed to find user", w.route(adminPeople))
 		return
 	}
@@ -124,7 +124,7 @@ func (w *Web) postAdminPeopleEdit(c *gin.Context) {
 		return
 	}
 	var p store.Person
-	if err := store.LoadPersonByID(w.ctx, w.db, int(pid), &p); err != nil {
+	if err := store.LoadPersonByID(w.ctx, w.db, int32(pid), &p); err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}

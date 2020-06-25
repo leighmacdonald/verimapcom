@@ -3,7 +3,7 @@ package web
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/leighmacdonald/verimapcom/web/store"
+	"github.com/leighmacdonald/verimapcom/store"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"strconv"
@@ -54,7 +54,7 @@ func (w *Web) postUpload(c *gin.Context) {
 		return
 	}
 	if missionId > 0 {
-		if err := store.MissionAttachFile(w.ctx, w.db, int(missionId), f.FileID); err != nil {
+		if err := store.MissionAttachFile(w.ctx, w.db, int32(missionId), f.FileID); err != nil {
 			abortFlash(c, "Failed to attach file to mission", referer(c))
 			return
 		}
@@ -68,7 +68,7 @@ func (w *Web) getFile(c *gin.Context) {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
-	file, err := store.FileGet(w.ctx, w.db, int(fid))
+	file, err := store.FileGet(w.ctx, w.db, int32(fid))
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 		return

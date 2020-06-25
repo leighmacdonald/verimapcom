@@ -79,8 +79,8 @@ proto.RPCPromiseClient =
  *   !proto.MissionRequest,
  *   !proto.MissionEvent>}
  */
-const methodDescriptor_RPC_StreamMissionEvents = new grpc.web.MethodDescriptor(
-  '/RPC/StreamMissionEvents',
+const methodDescriptor_RPC_ClientStreamMissionEvents = new grpc.web.MethodDescriptor(
+  '/RPC/ClientStreamMissionEvents',
   grpc.web.MethodType.SERVER_STREAMING,
   proto.MissionRequest,
   proto.MissionEvent,
@@ -101,7 +101,7 @@ const methodDescriptor_RPC_StreamMissionEvents = new grpc.web.MethodDescriptor(
  *   !proto.MissionRequest,
  *   !proto.MissionEvent>}
  */
-const methodInfo_RPC_StreamMissionEvents = new grpc.web.AbstractClientBase.MethodInfo(
+const methodInfo_RPC_ClientStreamMissionEvents = new grpc.web.AbstractClientBase.MethodInfo(
   proto.MissionEvent,
   /**
    * @param {!proto.MissionRequest} request
@@ -121,13 +121,13 @@ const methodInfo_RPC_StreamMissionEvents = new grpc.web.AbstractClientBase.Metho
  * @return {!grpc.web.ClientReadableStream<!proto.MissionEvent>}
  *     The XHR Node Readable Stream
  */
-proto.RPCClient.prototype.streamMissionEvents =
+proto.RPCClient.prototype.clientStreamMissionEvents =
     function(request, metadata) {
   return this.client_.serverStreaming(this.hostname_ +
-      '/RPC/StreamMissionEvents',
+      '/RPC/ClientStreamMissionEvents',
       request,
       metadata || {},
-      methodDescriptor_RPC_StreamMissionEvents);
+      methodDescriptor_RPC_ClientStreamMissionEvents);
 };
 
 
@@ -138,13 +138,13 @@ proto.RPCClient.prototype.streamMissionEvents =
  * @return {!grpc.web.ClientReadableStream<!proto.MissionEvent>}
  *     The XHR Node Readable Stream
  */
-proto.RPCPromiseClient.prototype.streamMissionEvents =
+proto.RPCPromiseClient.prototype.clientStreamMissionEvents =
     function(request, metadata) {
   return this.client_.serverStreaming(this.hostname_ +
-      '/RPC/StreamMissionEvents',
+      '/RPC/ClientStreamMissionEvents',
       request,
       metadata || {},
-      methodDescriptor_RPC_StreamMissionEvents);
+      methodDescriptor_RPC_ClientStreamMissionEvents);
 };
 
 
@@ -154,8 +154,8 @@ proto.RPCPromiseClient.prototype.streamMissionEvents =
  *   !proto.MissionRequest,
  *   !proto.PositionEvent>}
  */
-const methodDescriptor_RPC_StreamPositions = new grpc.web.MethodDescriptor(
-  '/RPC/StreamPositions',
+const methodDescriptor_RPC_ClientStreamPositions = new grpc.web.MethodDescriptor(
+  '/RPC/ClientStreamPositions',
   grpc.web.MethodType.SERVER_STREAMING,
   proto.MissionRequest,
   proto.PositionEvent,
@@ -176,7 +176,7 @@ const methodDescriptor_RPC_StreamPositions = new grpc.web.MethodDescriptor(
  *   !proto.MissionRequest,
  *   !proto.PositionEvent>}
  */
-const methodInfo_RPC_StreamPositions = new grpc.web.AbstractClientBase.MethodInfo(
+const methodInfo_RPC_ClientStreamPositions = new grpc.web.AbstractClientBase.MethodInfo(
   proto.PositionEvent,
   /**
    * @param {!proto.MissionRequest} request
@@ -196,13 +196,13 @@ const methodInfo_RPC_StreamPositions = new grpc.web.AbstractClientBase.MethodInf
  * @return {!grpc.web.ClientReadableStream<!proto.PositionEvent>}
  *     The XHR Node Readable Stream
  */
-proto.RPCClient.prototype.streamPositions =
+proto.RPCClient.prototype.clientStreamPositions =
     function(request, metadata) {
   return this.client_.serverStreaming(this.hostname_ +
-      '/RPC/StreamPositions',
+      '/RPC/ClientStreamPositions',
       request,
       metadata || {},
-      methodDescriptor_RPC_StreamPositions);
+      methodDescriptor_RPC_ClientStreamPositions);
 };
 
 
@@ -213,13 +213,13 @@ proto.RPCClient.prototype.streamPositions =
  * @return {!grpc.web.ClientReadableStream<!proto.PositionEvent>}
  *     The XHR Node Readable Stream
  */
-proto.RPCPromiseClient.prototype.streamPositions =
+proto.RPCPromiseClient.prototype.clientStreamPositions =
     function(request, metadata) {
   return this.client_.serverStreaming(this.hostname_ +
-      '/RPC/StreamPositions',
+      '/RPC/ClientStreamPositions',
       request,
       metadata || {},
-      methodDescriptor_RPC_StreamPositions);
+      methodDescriptor_RPC_ClientStreamPositions);
 };
 
 
@@ -229,8 +229,8 @@ proto.RPCPromiseClient.prototype.streamPositions =
  *   !proto.MissionRequest,
  *   !proto.HotSpotEvent>}
  */
-const methodDescriptor_RPC_StreamHotSpots = new grpc.web.MethodDescriptor(
-  '/RPC/StreamHotSpots',
+const methodDescriptor_RPC_ClientStreamHotSpots = new grpc.web.MethodDescriptor(
+  '/RPC/ClientStreamHotSpots',
   grpc.web.MethodType.SERVER_STREAMING,
   proto.MissionRequest,
   proto.HotSpotEvent,
@@ -251,7 +251,7 @@ const methodDescriptor_RPC_StreamHotSpots = new grpc.web.MethodDescriptor(
  *   !proto.MissionRequest,
  *   !proto.HotSpotEvent>}
  */
-const methodInfo_RPC_StreamHotSpots = new grpc.web.AbstractClientBase.MethodInfo(
+const methodInfo_RPC_ClientStreamHotSpots = new grpc.web.AbstractClientBase.MethodInfo(
   proto.HotSpotEvent,
   /**
    * @param {!proto.MissionRequest} request
@@ -271,13 +271,13 @@ const methodInfo_RPC_StreamHotSpots = new grpc.web.AbstractClientBase.MethodInfo
  * @return {!grpc.web.ClientReadableStream<!proto.HotSpotEvent>}
  *     The XHR Node Readable Stream
  */
-proto.RPCClient.prototype.streamHotSpots =
+proto.RPCClient.prototype.clientStreamHotSpots =
     function(request, metadata) {
   return this.client_.serverStreaming(this.hostname_ +
-      '/RPC/StreamHotSpots',
+      '/RPC/ClientStreamHotSpots',
       request,
       metadata || {},
-      methodDescriptor_RPC_StreamHotSpots);
+      methodDescriptor_RPC_ClientStreamHotSpots);
 };
 
 
@@ -288,13 +288,13 @@ proto.RPCClient.prototype.streamHotSpots =
  * @return {!grpc.web.ClientReadableStream<!proto.HotSpotEvent>}
  *     The XHR Node Readable Stream
  */
-proto.RPCPromiseClient.prototype.streamHotSpots =
+proto.RPCPromiseClient.prototype.clientStreamHotSpots =
     function(request, metadata) {
   return this.client_.serverStreaming(this.hostname_ +
-      '/RPC/StreamHotSpots',
+      '/RPC/ClientStreamHotSpots',
       request,
       metadata || {},
-      methodDescriptor_RPC_StreamHotSpots);
+      methodDescriptor_RPC_ClientStreamHotSpots);
 };
 
 
@@ -304,8 +304,8 @@ proto.RPCPromiseClient.prototype.streamHotSpots =
  *   !proto.ChatMessageRequest,
  *   !proto.StatusReply>}
  */
-const methodDescriptor_RPC_SendMessage = new grpc.web.MethodDescriptor(
-  '/RPC/SendMessage',
+const methodDescriptor_RPC_ClientSendMessage = new grpc.web.MethodDescriptor(
+  '/RPC/ClientSendMessage',
   grpc.web.MethodType.UNARY,
   proto.ChatMessageRequest,
   proto.StatusReply,
@@ -326,7 +326,7 @@ const methodDescriptor_RPC_SendMessage = new grpc.web.MethodDescriptor(
  *   !proto.ChatMessageRequest,
  *   !proto.StatusReply>}
  */
-const methodInfo_RPC_SendMessage = new grpc.web.AbstractClientBase.MethodInfo(
+const methodInfo_RPC_ClientSendMessage = new grpc.web.AbstractClientBase.MethodInfo(
   proto.StatusReply,
   /**
    * @param {!proto.ChatMessageRequest} request
@@ -349,13 +349,13 @@ const methodInfo_RPC_SendMessage = new grpc.web.AbstractClientBase.MethodInfo(
  * @return {!grpc.web.ClientReadableStream<!proto.StatusReply>|undefined}
  *     The XHR Node Readable Stream
  */
-proto.RPCClient.prototype.sendMessage =
+proto.RPCClient.prototype.clientSendMessage =
     function(request, metadata, callback) {
   return this.client_.rpcCall(this.hostname_ +
-      '/RPC/SendMessage',
+      '/RPC/ClientSendMessage',
       request,
       metadata || {},
-      methodDescriptor_RPC_SendMessage,
+      methodDescriptor_RPC_ClientSendMessage,
       callback);
 };
 
@@ -368,13 +368,13 @@ proto.RPCClient.prototype.sendMessage =
  * @return {!Promise<!proto.StatusReply>}
  *     A native promise that resolves to the response
  */
-proto.RPCPromiseClient.prototype.sendMessage =
+proto.RPCPromiseClient.prototype.clientSendMessage =
     function(request, metadata) {
   return this.client_.unaryCall(this.hostname_ +
-      '/RPC/SendMessage',
+      '/RPC/ClientSendMessage',
       request,
       metadata || {},
-      methodDescriptor_RPC_SendMessage);
+      methodDescriptor_RPC_ClientSendMessage);
 };
 
 
@@ -384,8 +384,8 @@ proto.RPCPromiseClient.prototype.sendMessage =
  *   !proto.FileUpload,
  *   !proto.FileReply>}
  */
-const methodDescriptor_RPC_SendFile = new grpc.web.MethodDescriptor(
-  '/RPC/SendFile',
+const methodDescriptor_RPC_SyncSendFile = new grpc.web.MethodDescriptor(
+  '/RPC/SyncSendFile',
   grpc.web.MethodType.UNARY,
   proto.FileUpload,
   proto.FileReply,
@@ -406,7 +406,7 @@ const methodDescriptor_RPC_SendFile = new grpc.web.MethodDescriptor(
  *   !proto.FileUpload,
  *   !proto.FileReply>}
  */
-const methodInfo_RPC_SendFile = new grpc.web.AbstractClientBase.MethodInfo(
+const methodInfo_RPC_SyncSendFile = new grpc.web.AbstractClientBase.MethodInfo(
   proto.FileReply,
   /**
    * @param {!proto.FileUpload} request
@@ -429,13 +429,13 @@ const methodInfo_RPC_SendFile = new grpc.web.AbstractClientBase.MethodInfo(
  * @return {!grpc.web.ClientReadableStream<!proto.FileReply>|undefined}
  *     The XHR Node Readable Stream
  */
-proto.RPCClient.prototype.sendFile =
+proto.RPCClient.prototype.syncSendFile =
     function(request, metadata, callback) {
   return this.client_.rpcCall(this.hostname_ +
-      '/RPC/SendFile',
+      '/RPC/SyncSendFile',
       request,
       metadata || {},
-      methodDescriptor_RPC_SendFile,
+      methodDescriptor_RPC_SyncSendFile,
       callback);
 };
 
@@ -448,173 +448,253 @@ proto.RPCClient.prototype.sendFile =
  * @return {!Promise<!proto.FileReply>}
  *     A native promise that resolves to the response
  */
-proto.RPCPromiseClient.prototype.sendFile =
+proto.RPCPromiseClient.prototype.syncSendFile =
     function(request, metadata) {
   return this.client_.unaryCall(this.hostname_ +
-      '/RPC/SendFile',
+      '/RPC/SyncSendFile',
       request,
       metadata || {},
-      methodDescriptor_RPC_SendFile);
+      methodDescriptor_RPC_SyncSendFile);
 };
 
 
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.PingRequest,
- *   !proto.PingReply>}
+ *   !proto.CreateFlightRequest,
+ *   !proto.CreateFlightResponse>}
  */
-const methodDescriptor_RPC_Ping = new grpc.web.MethodDescriptor(
-  '/RPC/Ping',
+const methodDescriptor_RPC_SyncCreateFlight = new grpc.web.MethodDescriptor(
+  '/RPC/SyncCreateFlight',
   grpc.web.MethodType.UNARY,
-  proto.PingRequest,
-  proto.PingReply,
+  proto.CreateFlightRequest,
+  proto.CreateFlightResponse,
   /**
-   * @param {!proto.PingRequest} request
+   * @param {!proto.CreateFlightRequest} request
    * @return {!Uint8Array}
    */
   function(request) {
     return request.serializeBinary();
   },
-  proto.PingReply.deserializeBinary
+  proto.CreateFlightResponse.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.PingRequest,
- *   !proto.PingReply>}
+ *   !proto.CreateFlightRequest,
+ *   !proto.CreateFlightResponse>}
  */
-const methodInfo_RPC_Ping = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.PingReply,
+const methodInfo_RPC_SyncCreateFlight = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.CreateFlightResponse,
   /**
-   * @param {!proto.PingRequest} request
+   * @param {!proto.CreateFlightRequest} request
    * @return {!Uint8Array}
    */
   function(request) {
     return request.serializeBinary();
   },
-  proto.PingReply.deserializeBinary
+  proto.CreateFlightResponse.deserializeBinary
 );
 
 
 /**
- * @param {!proto.PingRequest} request The
+ * @param {!proto.CreateFlightRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.PingReply)}
+ * @param {function(?grpc.web.Error, ?proto.CreateFlightResponse)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.PingReply>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.CreateFlightResponse>|undefined}
  *     The XHR Node Readable Stream
  */
-proto.RPCClient.prototype.ping =
+proto.RPCClient.prototype.syncCreateFlight =
     function(request, metadata, callback) {
   return this.client_.rpcCall(this.hostname_ +
-      '/RPC/Ping',
+      '/RPC/SyncCreateFlight',
       request,
       metadata || {},
-      methodDescriptor_RPC_Ping,
+      methodDescriptor_RPC_SyncCreateFlight,
       callback);
 };
 
 
 /**
- * @param {!proto.PingRequest} request The
+ * @param {!proto.CreateFlightRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.PingReply>}
+ * @return {!Promise<!proto.CreateFlightResponse>}
  *     A native promise that resolves to the response
  */
-proto.RPCPromiseClient.prototype.ping =
+proto.RPCPromiseClient.prototype.syncCreateFlight =
     function(request, metadata) {
   return this.client_.unaryCall(this.hostname_ +
-      '/RPC/Ping',
+      '/RPC/SyncCreateFlight',
       request,
       metadata || {},
-      methodDescriptor_RPC_Ping);
+      methodDescriptor_RPC_SyncCreateFlight);
 };
 
 
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.ProjectRequest,
- *   !proto.ProjectReply>}
+ *   !proto.CreateMissionRequest,
+ *   !proto.MissionReply>}
  */
-const methodDescriptor_RPC_OpenProject = new grpc.web.MethodDescriptor(
-  '/RPC/OpenProject',
+const methodDescriptor_RPC_SyncCreateMission = new grpc.web.MethodDescriptor(
+  '/RPC/SyncCreateMission',
   grpc.web.MethodType.UNARY,
-  proto.ProjectRequest,
-  proto.ProjectReply,
+  proto.CreateMissionRequest,
+  proto.MissionReply,
   /**
-   * @param {!proto.ProjectRequest} request
+   * @param {!proto.CreateMissionRequest} request
    * @return {!Uint8Array}
    */
   function(request) {
     return request.serializeBinary();
   },
-  proto.ProjectReply.deserializeBinary
+  proto.MissionReply.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.ProjectRequest,
- *   !proto.ProjectReply>}
+ *   !proto.CreateMissionRequest,
+ *   !proto.MissionReply>}
  */
-const methodInfo_RPC_OpenProject = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.ProjectReply,
+const methodInfo_RPC_SyncCreateMission = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.MissionReply,
   /**
-   * @param {!proto.ProjectRequest} request
+   * @param {!proto.CreateMissionRequest} request
    * @return {!Uint8Array}
    */
   function(request) {
     return request.serializeBinary();
   },
-  proto.ProjectReply.deserializeBinary
+  proto.MissionReply.deserializeBinary
 );
 
 
 /**
- * @param {!proto.ProjectRequest} request The
+ * @param {!proto.CreateMissionRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.ProjectReply)}
+ * @param {function(?grpc.web.Error, ?proto.MissionReply)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.ProjectReply>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.MissionReply>|undefined}
  *     The XHR Node Readable Stream
  */
-proto.RPCClient.prototype.openProject =
+proto.RPCClient.prototype.syncCreateMission =
     function(request, metadata, callback) {
   return this.client_.rpcCall(this.hostname_ +
-      '/RPC/OpenProject',
+      '/RPC/SyncCreateMission',
       request,
       metadata || {},
-      methodDescriptor_RPC_OpenProject,
+      methodDescriptor_RPC_SyncCreateMission,
       callback);
 };
 
 
 /**
- * @param {!proto.ProjectRequest} request The
+ * @param {!proto.CreateMissionRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.ProjectReply>}
+ * @return {!Promise<!proto.MissionReply>}
  *     A native promise that resolves to the response
  */
-proto.RPCPromiseClient.prototype.openProject =
+proto.RPCPromiseClient.prototype.syncCreateMission =
     function(request, metadata) {
   return this.client_.unaryCall(this.hostname_ +
-      '/RPC/OpenProject',
+      '/RPC/SyncCreateMission',
       request,
       metadata || {},
-      methodDescriptor_RPC_OpenProject);
+      methodDescriptor_RPC_SyncCreateMission);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.MissionRequest,
+ *   !proto.MissionReply>}
+ */
+const methodDescriptor_RPC_SyncOpenMission = new grpc.web.MethodDescriptor(
+  '/RPC/SyncOpenMission',
+  grpc.web.MethodType.UNARY,
+  proto.MissionRequest,
+  proto.MissionReply,
+  /**
+   * @param {!proto.MissionRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.MissionReply.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.MissionRequest,
+ *   !proto.MissionReply>}
+ */
+const methodInfo_RPC_SyncOpenMission = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.MissionReply,
+  /**
+   * @param {!proto.MissionRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.MissionReply.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.MissionRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.MissionReply)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.MissionReply>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.RPCClient.prototype.syncOpenMission =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/RPC/SyncOpenMission',
+      request,
+      metadata || {},
+      methodDescriptor_RPC_SyncOpenMission,
+      callback);
+};
+
+
+/**
+ * @param {!proto.MissionRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.MissionReply>}
+ *     A native promise that resolves to the response
+ */
+proto.RPCPromiseClient.prototype.syncOpenMission =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/RPC/SyncOpenMission',
+      request,
+      metadata || {},
+      methodDescriptor_RPC_SyncOpenMission);
 };
 
 

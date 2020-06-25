@@ -62,7 +62,7 @@ func Migrate(dsn string) error {
 	if err != nil {
 		log.Fatalf("Failed to create migration instance")
 	}
-	m, err := migrate.NewWithDatabaseInstance("file://./web/store/schema", "postgres", driver)
+	m, err := migrate.NewWithDatabaseInstance("file://./store/schema", "postgres", driver)
 	if err != nil {
 		return errors.Wrapf(err, "failed to create new migrate instance")
 	}

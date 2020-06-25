@@ -17,23 +17,11 @@ import (
 	"time"
 )
 
-type File struct {
-	FileID    int
-	PersonID  int
-	FileName  string
-	FileType  string
-	FileSize  int64
-	Hash256   []byte
-	Data      []byte
-	CreatedOn time.Time
-	UpdatedOn time.Time
-}
-
 func (f File) Path(root string) string {
 	return path.Join(root, fmt.Sprintf("%d", f.FileID))
 }
 
-func NewFile(reader io.Reader, fileName string, personID int) (*File, error) {
+func NewFile(reader io.Reader, fileName string, personID int32) (*File, error) {
 	data, err := ioutil.ReadAll(reader)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to read data from reader")
@@ -122,7 +110,7 @@ func fileInsert(ctx context.Context, db *pgxpool.Pool, dir string, f *File) erro
 	return nil
 }
 
-func fileRoot(root string, fileID int) string {
+func fileRoot(root string, fileID int32) string {
 	rounded := int(math.Round(float64(fileID)/1000) * 1000)
 	return path.Join(root, fmt.Sprintf("%d", rounded))
 }
@@ -191,7 +179,7 @@ func FileRead(dir string, f *File) error {
 	return nil
 }
 
-func FileGetAllMission(ctx context.Context, db *pgxpool.Pool, missionID int) ([]*File, error) {
+func FileGetAllMission(ctx context.Context, db *pgxpool.Pool, missionID int32) ([]*File, error) {
 	const q = `
 		SELECT 
 			f.file_id, f.person_id, f.file_name, f.file_type, f.file_size, f.hash_256, f.created_on, f.updated_on 
@@ -216,7 +204,7 @@ func FileGetAllMission(ctx context.Context, db *pgxpool.Pool, missionID int) ([]
 	}
 	return files, nil
 }
-func FileGet(ctx context.Context, db *pgxpool.Pool, fileID int) (*File, error) {
+func FileGet(ctx context.Context, db *pgxpool.Pool, fileID int32) (*File, error) {
 	const q = `
 		SELECT 
 			file_id,person_id, file_name, file_type, file_size, hash_256, created_on, updated_on 
@@ -232,7 +220,7 @@ func FileGet(ctx context.Context, db *pgxpool.Pool, fileID int) (*File, error) {
 	return &f, nil
 }
 
-func FileRegisterDownload(ctx context.Context, db *pgxpool.Pool, personID int, fileID int) error {
+func FileRegisterDownload(ctx context.Context, db *pgxpool.Pool, personID int32, fileID int32) error {
 	const q = `INSERT INTO file_downloads (file_id, person_id, created_on) VALUES ($1, $2, $3)`
 	if _, err := db.Exec(ctx, q, fileID, personID, time.Now()); err != nil {
 		return errors.Wrapf(err, "Failed to register download")
@@ -240,7 +228,7 @@ func FileRegisterDownload(ctx context.Context, db *pgxpool.Pool, personID int, f
 	return nil
 }
 
-func FileHaveAccess(ctx context.Context, db *pgxpool.Pool, agencyID int, fileID int, personID int) bool {
+func FileHaveAccess(ctx context.Context, db *pgxpool.Pool, agencyID int32, fileID int32, personID int32) bool {
 	const q = `
 		SELECT 1 FROM file f 
 		LEFT JOIN agency_file af on f.file_id = af.file_id

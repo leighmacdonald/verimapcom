@@ -2,55 +2,11 @@ package store
 
 import (
 	"context"
-	"github.com/jackc/pgtype"
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/pkg/errors"
 	"time"
 )
-
-type MissionState int
-
-const (
-	StateDeleted    MissionState = 0
-	StateCreated    MissionState = 1
-	StateLive       MissionState = 2
-	StateProcessing MissionState = 3
-	StatePublished  MissionState = 4
-)
-
-type Evt int
-
-const (
-	EvtConnect    Evt = 1
-	EvtPing       Evt = 2
-	EvtPong       Evt = 3
-	EvtMessage    Evt = 10
-	EvtSetMission Evt = 20
-	EvtError      Evt = 10000
-)
-
-type BoundingBox struct {
-	LatUL  float64
-	LongUL float64
-	LatLR  float64
-	LongLR float64
-}
-
-type Mission struct {
-	MissionID          int
-	PersonID           int
-	AgencyID           int
-	MissionName        string
-	MissionState       int
-	ScheduledStartDate pgtype.Timestamp
-	ScheduledEndDate   pgtype.Timestamp
-	CreatedOn          time.Time
-	UpdatedOn          time.Time
-	BoundingBox        BoundingBox
-	AgencyName         string
-	PersonName         string
-}
 
 func (m *Mission) NewFlight() Flight {
 	return Flight{
@@ -111,7 +67,7 @@ func SaveMission(ctx context.Context, db *pgxpool.Pool, m *Mission) error {
 	return InsertMission(ctx, db, m)
 }
 
-func GetMission(ctx context.Context, db *pgxpool.Pool, missionID int) (Mission, error) {
+func GetMission(ctx context.Context, db *pgxpool.Pool, missionID int32) (Mission, error) {
 	const q = `
 		SELECT 
 		    m.mission_id, m.person_id, m.agency_id, m.mission_name, m.mission_state, m.created_on, m.updated_on,
@@ -132,7 +88,7 @@ func GetMission(ctx context.Context, db *pgxpool.Pool, missionID int) (Mission, 
 	return m, nil
 }
 
-func GetMissions(ctx context.Context, db *pgxpool.Pool, agencyID int) ([]Mission, error) {
+func GetMissions(ctx context.Context, db *pgxpool.Pool, agencyID int32) ([]Mission, error) {
 	const q = `
 		SELECT 
 		    m.mission_id, m.person_id, m.agency_id, m.mission_name, m.mission_state, m.created_on, m.updated_on,
@@ -172,7 +128,7 @@ func GetMissions(ctx context.Context, db *pgxpool.Pool, agencyID int) ([]Mission
 	return missions, nil
 }
 
-func MissionAttachFile(ctx context.Context, db *pgxpool.Pool, missionID int, fileID int) error {
+func MissionAttachFile(ctx context.Context, db *pgxpool.Pool, missionID int32, fileID int32) error {
 	const q = `
 		INSERT INTO mission_file (
 		    mission_id, file_id, created_on
@@ -183,7 +139,7 @@ func MissionAttachFile(ctx context.Context, db *pgxpool.Pool, missionID int, fil
 	return nil
 }
 
-func MissionDetachFile(ctx context.Context, db *pgxpool.Pool, missionID int, fileID int) error {
+func MissionDetachFile(ctx context.Context, db *pgxpool.Pool, missionID int32, fileID int32) error {
 	const q = `
 		DELETE FROM  mission_file WHERE mission_id = $1 AND file_id = $2`
 	if _, err := db.Exec(ctx, q, missionID, fileID); err != nil {
@@ -193,14 +149,14 @@ func MissionDetachFile(ctx context.Context, db *pgxpool.Pool, missionID int, fil
 }
 
 type MissionEvent struct {
-	MissionEventID int                    `json:"mission_event_id"`
-	MissionID      int                    `json:"mission_id"`
+	MissionEventID int32                  `json:"mission_event_id"`
+	MissionID      int32                  `json:"mission_id"`
 	EventType      Evt                    `json:"event_type"`
 	Payload        map[string]interface{} `json:"payload"`
 	CreatedOn      time.Time              `json:"created_on"`
 }
 
-func NewMissionEvent(evt Evt, missionID int) MissionEvent {
+func NewMissionEvent(evt Evt, missionID int32) MissionEvent {
 	return MissionEvent{
 		MissionID: missionID,
 		EventType: evt,
@@ -223,7 +179,7 @@ func MissionEventAdd(ctx context.Context, db *pgxpool.Pool, e *MissionEvent) err
 	return nil
 }
 
-func MissionEventGetAll(ctx context.Context, db *pgxpool.Pool, missionID int) ([]MissionEvent, error) {
+func MissionEventGetAll(ctx context.Context, db *pgxpool.Pool, missionID int32) ([]MissionEvent, error) {
 	const q = `
 		SELECT mission_event_id, mission_id, event_type, payload, created_on 
 		FROM mission_event

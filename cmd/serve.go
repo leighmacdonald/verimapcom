@@ -1,11 +1,10 @@
 package cmd
 
 import (
-	"fmt"
-	"github.com/leighmacdonald/verimapcom/server"
+	"context"
+	"github.com/leighmacdonald/verimapcom/core"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"net"
 )
 
 // serveCmd represents the serve command
@@ -20,38 +19,18 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		log.SetFormatter(&log.TextFormatter{ForceColors: true})
-		host, err := cmd.Flags().GetString("host")
+		log.SetLevel(log.DebugLevel)
+		ctx := context.Background()
+		app, err := core.New(ctx)
 		if err != nil {
-			log.Fatal("Invalid host value")
+			log.Fatalf("Could not start service: %v", err)
 		}
-		port, err2 := cmd.Flags().GetUint16("port")
-		if err2 != nil {
-			log.Fatal("Invalid port value")
-		}
-		listenAddr := fmt.Sprintf("%s:%d", host, port)
-		lis, err3 := net.Listen("tcp", listenAddr)
-		if err3 != nil {
-			log.Fatalf("failed to listen: %v", err)
-		}
-		s := server.NewServer(server.Opts{
-			Tls: false,
-		})
-		log.Infof("Listening on %s", listenAddr)
-		if err := s.Serve(lis); err != nil {
-			log.Errorf("Failed to serve: %s", err)
+		if err := app.ListenAndServe(); err != nil {
+			log.Errorf("Failed to cleanly shutdown: %v", err)
 		}
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(serveCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// serveCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
 }

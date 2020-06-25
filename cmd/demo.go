@@ -3,7 +3,7 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"github.com/leighmacdonald/verimapcom/gs"
+	"github.com/leighmacdonald/verimapcom/core"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"os"
@@ -35,14 +35,14 @@ to quickly create a Cobra application.`,
 		if err != nil {
 			log.Fatalf("--ir must be set")
 		}
-		if !gs.Exists(irSrc) {
+		if !core.Exists(irSrc) {
 			log.Fatalf("--ir must exist (%s)", irSrc)
 		}
 		dst, err := cmd.Flags().GetString("dest")
 		if err != nil {
 			log.Fatalf("--dest must be set")
 		}
-		if gs.Exists(dst) {
+		if core.Exists(dst) {
 			if err := os.RemoveAll(dst); err != nil {
 				log.Fatalf("Error trying to remove scratch dir: %v", err)
 			}
@@ -56,7 +56,7 @@ to quickly create a Cobra application.`,
 		if err != nil {
 			log.Fatalf("--position must be set")
 		}
-		if !gs.Exists(position) {
+		if !core.Exists(position) {
 			log.Fatalf("--position must exist (%s)", position)
 		}
 
@@ -64,7 +64,7 @@ to quickly create a Cobra application.`,
 		if err != nil {
 			log.Fatalf("--hotspots must be set")
 		}
-		if !gs.Exists(hotspots) {
+		if !core.Exists(hotspots) {
 			log.Fatalf("--hotspots must exist (%s)", hotspots)
 		}
 		var fileNames []string
@@ -101,7 +101,7 @@ to quickly create a Cobra application.`,
 					}
 					err = ioutil.WriteFile(path.Join(dstDir, filepath.Base(fileNames[i])), input, 0644)
 					if err != nil {
-						log.Fatalf("Error creating", filepath.Base(fileNames[i]))
+						log.Fatalf("Error creating: %s", filepath.Base(fileNames[i]))
 						return
 					}
 					log.Infof("Wrote frame data %d: %s", i, path.Join(dstDir, filepath.Base(fileNames[i])))
@@ -118,7 +118,7 @@ to quickly create a Cobra application.`,
 			outFile := path.Join(dst, "stage_position_file.csv")
 			fp, err := os.Create(outFile)
 			if err != nil {
-				log.Fatalf("Error creating %d: %v", outFile, err)
+				log.Fatalf("Error creating %s: %v", outFile, err)
 			}
 			defer func() {
 				if err := fp.Close(); err != nil {
@@ -187,7 +187,7 @@ to quickly create a Cobra application.`,
 				}
 			}
 		}()
-		gs.WaitForSignal(ctx, func(ctx context.Context) error {
+		core.WaitForSignal(ctx, func(ctx context.Context) error {
 			cancel()
 			return nil
 		})

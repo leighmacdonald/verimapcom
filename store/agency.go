@@ -7,7 +7,7 @@ import (
 )
 
 type Agency struct {
-	AgencyID   int
+	AgencyID   int32
 	AgencyName string
 	InviteKey  string
 	Slots      int

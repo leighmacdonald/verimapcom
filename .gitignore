@@ -8,3 +8,5 @@ tmp/
 /uploads
 frontend/node_modules
 /examples/scratch/
+/verimapcom
+/config.yaml

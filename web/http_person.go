@@ -3,7 +3,7 @@ package web
 import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"github.com/leighmacdonald/verimapcom/web/store"
+	"github.com/leighmacdonald/verimapcom/store"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"strconv"
@@ -52,7 +52,7 @@ func (w *Web) postLogin(c *gin.Context) {
 		Message: "Logged in successfully",
 	})
 	if err := session.Save(); err != nil {
-		log.Error("Failed to save session login value: %v", err)
+		log.Errorf("Failed to save session login value: %v", err)
 	}
 	c.Redirect(http.StatusFound, "/")
 }
@@ -87,7 +87,7 @@ func (w *Web) updateUserFromForm(c *gin.Context, p *store.Person, emptyPasswordO
 		abortFlashErr(c, "Invalid Agency ID", w.route(adminPeople), err)
 		return false
 	}
-	p.AgencyID = int(id)
+	p.AgencyID = int32(id)
 	if p.AgencyID == 0 {
 		abortFlash(c, "All fields are required", w.route(adminPeople))
 		return false
@@ -134,7 +134,7 @@ func (w *Web) getProfileCreate(c *gin.Context) {
 		abortFlashErr(c, "Error fetching agency list", w.page(home).Path, err)
 		return
 	}
-	selectedAgencyID := 0
+	selectedAgencyID := int32(0)
 	if agencyKey != "" {
 		var invitedAgency store.Agency
 		if err := store.LoadAgencyByInviteKey(w.ctx, w.db, agencyKey, &invitedAgency); err != nil {

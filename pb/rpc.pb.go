@@ -88,57 +88,88 @@ func (x StatusReply_Status) String() string {
 }
 
 func (StatusReply_Status) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_3cea3ef5dc9ae365, []int{11, 0}
+	return fileDescriptor_3cea3ef5dc9ae365, []int{9, 0}
 }
 
-type ProjectRequest struct {
-	MissionId            int32    `protobuf:"varint,1,opt,name=mission_id,json=missionId,proto3" json:"mission_id,omitempty"`
-	Name                 string   `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+type CreateFlightRequest struct {
+	Description          string   `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *ProjectRequest) Reset()         { *m = ProjectRequest{} }
-func (m *ProjectRequest) String() string { return proto.CompactTextString(m) }
-func (*ProjectRequest) ProtoMessage()    {}
-func (*ProjectRequest) Descriptor() ([]byte, []int) {
+func (m *CreateFlightRequest) Reset()         { *m = CreateFlightRequest{} }
+func (m *CreateFlightRequest) String() string { return proto.CompactTextString(m) }
+func (*CreateFlightRequest) ProtoMessage()    {}
+func (*CreateFlightRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_3cea3ef5dc9ae365, []int{0}
 }
 
-func (m *ProjectRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ProjectRequest.Unmarshal(m, b)
+func (m *CreateFlightRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_CreateFlightRequest.Unmarshal(m, b)
 }
-func (m *ProjectRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ProjectRequest.Marshal(b, m, deterministic)
+func (m *CreateFlightRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_CreateFlightRequest.Marshal(b, m, deterministic)
 }
-func (m *ProjectRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ProjectRequest.Merge(m, src)
+func (m *CreateFlightRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CreateFlightRequest.Merge(m, src)
 }
-func (m *ProjectRequest) XXX_Size() int {
-	return xxx_messageInfo_ProjectRequest.Size(m)
+func (m *CreateFlightRequest) XXX_Size() int {
+	return xxx_messageInfo_CreateFlightRequest.Size(m)
 }
-func (m *ProjectRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_ProjectRequest.DiscardUnknown(m)
+func (m *CreateFlightRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_CreateFlightRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ProjectRequest proto.InternalMessageInfo
+var xxx_messageInfo_CreateFlightRequest proto.InternalMessageInfo
 
-func (m *ProjectRequest) GetMissionId() int32 {
+func (m *CreateFlightRequest) GetDescription() string {
 	if m != nil {
-		return m.MissionId
-	}
-	return 0
-}
-
-func (m *ProjectRequest) GetName() string {
-	if m != nil {
-		return m.Name
+		return m.Description
 	}
 	return ""
 }
 
-type ProjectReply struct {
+type CreateFlightResponse struct {
+	FlightId             int32    `protobuf:"varint,1,opt,name=flight_id,json=flightId,proto3" json:"flight_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *CreateFlightResponse) Reset()         { *m = CreateFlightResponse{} }
+func (m *CreateFlightResponse) String() string { return proto.CompactTextString(m) }
+func (*CreateFlightResponse) ProtoMessage()    {}
+func (*CreateFlightResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_3cea3ef5dc9ae365, []int{1}
+}
+
+func (m *CreateFlightResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_CreateFlightResponse.Unmarshal(m, b)
+}
+func (m *CreateFlightResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_CreateFlightResponse.Marshal(b, m, deterministic)
+}
+func (m *CreateFlightResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CreateFlightResponse.Merge(m, src)
+}
+func (m *CreateFlightResponse) XXX_Size() int {
+	return xxx_messageInfo_CreateFlightResponse.Size(m)
+}
+func (m *CreateFlightResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_CreateFlightResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CreateFlightResponse proto.InternalMessageInfo
+
+func (m *CreateFlightResponse) GetFlightId() int32 {
+	if m != nil {
+		return m.FlightId
+	}
+	return 0
+}
+
+type MissionReply struct {
 	MissionId            int32    `protobuf:"varint,1,opt,name=mission_id,json=missionId,proto3" json:"mission_id,omitempty"`
 	Message              string   `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -146,39 +177,39 @@ type ProjectReply struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *ProjectReply) Reset()         { *m = ProjectReply{} }
-func (m *ProjectReply) String() string { return proto.CompactTextString(m) }
-func (*ProjectReply) ProtoMessage()    {}
-func (*ProjectReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3cea3ef5dc9ae365, []int{1}
+func (m *MissionReply) Reset()         { *m = MissionReply{} }
+func (m *MissionReply) String() string { return proto.CompactTextString(m) }
+func (*MissionReply) ProtoMessage()    {}
+func (*MissionReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_3cea3ef5dc9ae365, []int{2}
 }
 
-func (m *ProjectReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ProjectReply.Unmarshal(m, b)
+func (m *MissionReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MissionReply.Unmarshal(m, b)
 }
-func (m *ProjectReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ProjectReply.Marshal(b, m, deterministic)
+func (m *MissionReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MissionReply.Marshal(b, m, deterministic)
 }
-func (m *ProjectReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ProjectReply.Merge(m, src)
+func (m *MissionReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MissionReply.Merge(m, src)
 }
-func (m *ProjectReply) XXX_Size() int {
-	return xxx_messageInfo_ProjectReply.Size(m)
+func (m *MissionReply) XXX_Size() int {
+	return xxx_messageInfo_MissionReply.Size(m)
 }
-func (m *ProjectReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ProjectReply.DiscardUnknown(m)
+func (m *MissionReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_MissionReply.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ProjectReply proto.InternalMessageInfo
+var xxx_messageInfo_MissionReply proto.InternalMessageInfo
 
-func (m *ProjectReply) GetMissionId() int32 {
+func (m *MissionReply) GetMissionId() int32 {
 	if m != nil {
 		return m.MissionId
 	}
 	return 0
 }
 
-func (m *ProjectReply) GetMessage() string {
+func (m *MissionReply) GetMessage() string {
 	if m != nil {
 		return m.Message
 	}
@@ -196,7 +227,7 @@ func (m *PingRequest) Reset()         { *m = PingRequest{} }
 func (m *PingRequest) String() string { return proto.CompactTextString(m) }
 func (*PingRequest) ProtoMessage()    {}
 func (*PingRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3cea3ef5dc9ae365, []int{2}
+	return fileDescriptor_3cea3ef5dc9ae365, []int{3}
 }
 
 func (m *PingRequest) XXX_Unmarshal(b []byte) error {
@@ -224,128 +255,10 @@ func (m *PingRequest) GetAt() *timestamp.Timestamp {
 	return nil
 }
 
-type PingReply struct {
-	Ok                   bool     `protobuf:"varint,1,opt,name=ok,proto3" json:"ok,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *PingReply) Reset()         { *m = PingReply{} }
-func (m *PingReply) String() string { return proto.CompactTextString(m) }
-func (*PingReply) ProtoMessage()    {}
-func (*PingReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3cea3ef5dc9ae365, []int{3}
-}
-
-func (m *PingReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_PingReply.Unmarshal(m, b)
-}
-func (m *PingReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_PingReply.Marshal(b, m, deterministic)
-}
-func (m *PingReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_PingReply.Merge(m, src)
-}
-func (m *PingReply) XXX_Size() int {
-	return xxx_messageInfo_PingReply.Size(m)
-}
-func (m *PingReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_PingReply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_PingReply proto.InternalMessageInfo
-
-func (m *PingReply) GetOk() bool {
-	if m != nil {
-		return m.Ok
-	}
-	return false
-}
-
-type SendPositionReply struct {
-	Ok                   bool     `protobuf:"varint,1,opt,name=ok,proto3" json:"ok,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *SendPositionReply) Reset()         { *m = SendPositionReply{} }
-func (m *SendPositionReply) String() string { return proto.CompactTextString(m) }
-func (*SendPositionReply) ProtoMessage()    {}
-func (*SendPositionReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3cea3ef5dc9ae365, []int{4}
-}
-
-func (m *SendPositionReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_SendPositionReply.Unmarshal(m, b)
-}
-func (m *SendPositionReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_SendPositionReply.Marshal(b, m, deterministic)
-}
-func (m *SendPositionReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SendPositionReply.Merge(m, src)
-}
-func (m *SendPositionReply) XXX_Size() int {
-	return xxx_messageInfo_SendPositionReply.Size(m)
-}
-func (m *SendPositionReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_SendPositionReply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_SendPositionReply proto.InternalMessageInfo
-
-func (m *SendPositionReply) GetOk() bool {
-	if m != nil {
-		return m.Ok
-	}
-	return false
-}
-
-type SendHotspotReply struct {
-	Ok                   bool     `protobuf:"varint,1,opt,name=ok,proto3" json:"ok,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *SendHotspotReply) Reset()         { *m = SendHotspotReply{} }
-func (m *SendHotspotReply) String() string { return proto.CompactTextString(m) }
-func (*SendHotspotReply) ProtoMessage()    {}
-func (*SendHotspotReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3cea3ef5dc9ae365, []int{5}
-}
-
-func (m *SendHotspotReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_SendHotspotReply.Unmarshal(m, b)
-}
-func (m *SendHotspotReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_SendHotspotReply.Marshal(b, m, deterministic)
-}
-func (m *SendHotspotReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SendHotspotReply.Merge(m, src)
-}
-func (m *SendHotspotReply) XXX_Size() int {
-	return xxx_messageInfo_SendHotspotReply.Size(m)
-}
-func (m *SendHotspotReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_SendHotspotReply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_SendHotspotReply proto.InternalMessageInfo
-
-func (m *SendHotspotReply) GetOk() bool {
-	if m != nil {
-		return m.Ok
-	}
-	return false
-}
-
 type FileUpload struct {
-	MissionId            int32    `protobuf:"varint,1,opt,name=mission_id,json=missionId,proto3" json:"mission_id,omitempty"`
-	FileName             string   `protobuf:"bytes,2,opt,name=file_name,json=fileName,proto3" json:"file_name,omitempty"`
-	FileSize             int64    `protobuf:"varint,3,opt,name=file_size,json=fileSize,proto3" json:"file_size,omitempty"`
-	Data                 []byte   `protobuf:"bytes,4,opt,name=data,proto3" json:"data,omitempty"`
+	FileName             string   `protobuf:"bytes,1,opt,name=file_name,json=fileName,proto3" json:"file_name,omitempty"`
+	FileSize             int64    `protobuf:"varint,2,opt,name=file_size,json=fileSize,proto3" json:"file_size,omitempty"`
+	Data                 []byte   `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -355,7 +268,7 @@ func (m *FileUpload) Reset()         { *m = FileUpload{} }
 func (m *FileUpload) String() string { return proto.CompactTextString(m) }
 func (*FileUpload) ProtoMessage()    {}
 func (*FileUpload) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3cea3ef5dc9ae365, []int{6}
+	return fileDescriptor_3cea3ef5dc9ae365, []int{4}
 }
 
 func (m *FileUpload) XXX_Unmarshal(b []byte) error {
@@ -375,13 +288,6 @@ func (m *FileUpload) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_FileUpload proto.InternalMessageInfo
-
-func (m *FileUpload) GetMissionId() int32 {
-	if m != nil {
-		return m.MissionId
-	}
-	return 0
-}
 
 func (m *FileUpload) GetFileName() string {
 	if m != nil {
@@ -415,7 +321,7 @@ func (m *FileReply) Reset()         { *m = FileReply{} }
 func (m *FileReply) String() string { return proto.CompactTextString(m) }
 func (*FileReply) ProtoMessage()    {}
 func (*FileReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3cea3ef5dc9ae365, []int{7}
+	return fileDescriptor_3cea3ef5dc9ae365, []int{5}
 }
 
 func (m *FileReply) XXX_Unmarshal(b []byte) error {
@@ -455,7 +361,7 @@ func (m *Location) Reset()         { *m = Location{} }
 func (m *Location) String() string { return proto.CompactTextString(m) }
 func (*Location) ProtoMessage()    {}
 func (*Location) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3cea3ef5dc9ae365, []int{8}
+	return fileDescriptor_3cea3ef5dc9ae365, []int{6}
 }
 
 func (m *Location) XXX_Unmarshal(b []byte) error {
@@ -491,8 +397,8 @@ func (m *Location) GetLon() float64 {
 }
 
 type PositionEvent struct {
-	MissionId            int32                `protobuf:"varint,1,opt,name=mission_id,json=missionId,proto3" json:"mission_id,omitempty"`
-	At                   *timestamp.Timestamp `protobuf:"bytes,2,opt,name=at,proto3" json:"at,omitempty"`
+	At                   *timestamp.Timestamp `protobuf:"bytes,1,opt,name=at,proto3" json:"at,omitempty"`
+	Id                   int32                `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
 	Location             *Location            `protobuf:"bytes,3,opt,name=location,proto3" json:"location,omitempty"`
 	Elevation            int32                `protobuf:"varint,4,opt,name=elevation,proto3" json:"elevation,omitempty"`
 	FlightId             int32                `protobuf:"varint,5,opt,name=flight_id,json=flightId,proto3" json:"flight_id,omitempty"`
@@ -505,7 +411,7 @@ func (m *PositionEvent) Reset()         { *m = PositionEvent{} }
 func (m *PositionEvent) String() string { return proto.CompactTextString(m) }
 func (*PositionEvent) ProtoMessage()    {}
 func (*PositionEvent) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3cea3ef5dc9ae365, []int{9}
+	return fileDescriptor_3cea3ef5dc9ae365, []int{7}
 }
 
 func (m *PositionEvent) XXX_Unmarshal(b []byte) error {
@@ -526,18 +432,18 @@ func (m *PositionEvent) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_PositionEvent proto.InternalMessageInfo
 
-func (m *PositionEvent) GetMissionId() int32 {
-	if m != nil {
-		return m.MissionId
-	}
-	return 0
-}
-
 func (m *PositionEvent) GetAt() *timestamp.Timestamp {
 	if m != nil {
 		return m.At
 	}
 	return nil
+}
+
+func (m *PositionEvent) GetId() int32 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
 }
 
 func (m *PositionEvent) GetLocation() *Location {
@@ -562,21 +468,21 @@ func (m *PositionEvent) GetFlightId() int32 {
 }
 
 type HotSpotEvent struct {
-	MissionId            int32     `protobuf:"varint,1,opt,name=mission_id,json=missionId,proto3" json:"mission_id,omitempty"`
-	Id                   int64     `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
-	Location             *Location `protobuf:"bytes,3,opt,name=location,proto3" json:"location,omitempty"`
-	Delta                float32   `protobuf:"fixed32,4,opt,name=delta,proto3" json:"delta,omitempty"`
-	FlightId             int32     `protobuf:"varint,5,opt,name=flight_id,json=flightId,proto3" json:"flight_id,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
-	XXX_unrecognized     []byte    `json:"-"`
-	XXX_sizecache        int32     `json:"-"`
+	At                   *timestamp.Timestamp `protobuf:"bytes,1,opt,name=at,proto3" json:"at,omitempty"`
+	Id                   int32                `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
+	Location             *Location            `protobuf:"bytes,3,opt,name=location,proto3" json:"location,omitempty"`
+	Delta                int32                `protobuf:"varint,4,opt,name=delta,proto3" json:"delta,omitempty"`
+	FlightId             int32                `protobuf:"varint,5,opt,name=flight_id,json=flightId,proto3" json:"flight_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}             `json:"-"`
+	XXX_unrecognized     []byte               `json:"-"`
+	XXX_sizecache        int32                `json:"-"`
 }
 
 func (m *HotSpotEvent) Reset()         { *m = HotSpotEvent{} }
 func (m *HotSpotEvent) String() string { return proto.CompactTextString(m) }
 func (*HotSpotEvent) ProtoMessage()    {}
 func (*HotSpotEvent) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3cea3ef5dc9ae365, []int{10}
+	return fileDescriptor_3cea3ef5dc9ae365, []int{8}
 }
 
 func (m *HotSpotEvent) XXX_Unmarshal(b []byte) error {
@@ -597,14 +503,14 @@ func (m *HotSpotEvent) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_HotSpotEvent proto.InternalMessageInfo
 
-func (m *HotSpotEvent) GetMissionId() int32 {
+func (m *HotSpotEvent) GetAt() *timestamp.Timestamp {
 	if m != nil {
-		return m.MissionId
+		return m.At
 	}
-	return 0
+	return nil
 }
 
-func (m *HotSpotEvent) GetId() int64 {
+func (m *HotSpotEvent) GetId() int32 {
 	if m != nil {
 		return m.Id
 	}
@@ -618,7 +524,7 @@ func (m *HotSpotEvent) GetLocation() *Location {
 	return nil
 }
 
-func (m *HotSpotEvent) GetDelta() float32 {
+func (m *HotSpotEvent) GetDelta() int32 {
 	if m != nil {
 		return m.Delta
 	}
@@ -644,7 +550,7 @@ func (m *StatusReply) Reset()         { *m = StatusReply{} }
 func (m *StatusReply) String() string { return proto.CompactTextString(m) }
 func (*StatusReply) ProtoMessage()    {}
 func (*StatusReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3cea3ef5dc9ae365, []int{11}
+	return fileDescriptor_3cea3ef5dc9ae365, []int{9}
 }
 
 func (m *StatusReply) XXX_Unmarshal(b []byte) error {
@@ -680,9 +586,9 @@ func (m *StatusReply) GetMessage() string {
 }
 
 type ChatMessageRequest struct {
-	MissionId            int32                `protobuf:"varint,1,opt,name=mission_id,json=missionId,proto3" json:"mission_id,omitempty"`
-	Message              string               `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
-	At                   *timestamp.Timestamp `protobuf:"bytes,3,opt,name=at,proto3" json:"at,omitempty"`
+	Message              string               `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	At                   *timestamp.Timestamp `protobuf:"bytes,2,opt,name=at,proto3" json:"at,omitempty"`
+	StartIdx             int32                `protobuf:"varint,3,opt,name=start_idx,json=startIdx,proto3" json:"start_idx,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}             `json:"-"`
 	XXX_unrecognized     []byte               `json:"-"`
 	XXX_sizecache        int32                `json:"-"`
@@ -692,7 +598,7 @@ func (m *ChatMessageRequest) Reset()         { *m = ChatMessageRequest{} }
 func (m *ChatMessageRequest) String() string { return proto.CompactTextString(m) }
 func (*ChatMessageRequest) ProtoMessage()    {}
 func (*ChatMessageRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3cea3ef5dc9ae365, []int{12}
+	return fileDescriptor_3cea3ef5dc9ae365, []int{10}
 }
 
 func (m *ChatMessageRequest) XXX_Unmarshal(b []byte) error {
@@ -713,13 +619,6 @@ func (m *ChatMessageRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ChatMessageRequest proto.InternalMessageInfo
 
-func (m *ChatMessageRequest) GetMissionId() int32 {
-	if m != nil {
-		return m.MissionId
-	}
-	return 0
-}
-
 func (m *ChatMessageRequest) GetMessage() string {
 	if m != nil {
 		return m.Message
@@ -734,10 +633,16 @@ func (m *ChatMessageRequest) GetAt() *timestamp.Timestamp {
 	return nil
 }
 
+func (m *ChatMessageRequest) GetStartIdx() int32 {
+	if m != nil {
+		return m.StartIdx
+	}
+	return 0
+}
+
 type MissionEvent struct {
-	MissionId            int32     `protobuf:"varint,1,opt,name=mission_id,json=missionId,proto3" json:"mission_id,omitempty"`
-	EventType            EventType `protobuf:"varint,2,opt,name=event_type,json=eventType,proto3,enum=EventType" json:"event_type,omitempty"`
-	Payload              *any.Any  `protobuf:"bytes,3,opt,name=payload,proto3" json:"payload,omitempty"`
+	EventType            EventType `protobuf:"varint,1,opt,name=event_type,json=eventType,proto3,enum=EventType" json:"event_type,omitempty"`
+	Payload              *any.Any  `protobuf:"bytes,2,opt,name=payload,proto3" json:"payload,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
 	XXX_unrecognized     []byte    `json:"-"`
 	XXX_sizecache        int32     `json:"-"`
@@ -747,7 +652,7 @@ func (m *MissionEvent) Reset()         { *m = MissionEvent{} }
 func (m *MissionEvent) String() string { return proto.CompactTextString(m) }
 func (*MissionEvent) ProtoMessage()    {}
 func (*MissionEvent) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3cea3ef5dc9ae365, []int{13}
+	return fileDescriptor_3cea3ef5dc9ae365, []int{11}
 }
 
 func (m *MissionEvent) XXX_Unmarshal(b []byte) error {
@@ -768,13 +673,6 @@ func (m *MissionEvent) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MissionEvent proto.InternalMessageInfo
 
-func (m *MissionEvent) GetMissionId() int32 {
-	if m != nil {
-		return m.MissionId
-	}
-	return 0
-}
-
 func (m *MissionEvent) GetEventType() EventType {
 	if m != nil {
 		return m.EventType
@@ -791,6 +689,7 @@ func (m *MissionEvent) GetPayload() *any.Any {
 
 type MissionRequest struct {
 	MissionId            int32    `protobuf:"varint,1,opt,name=mission_id,json=missionId,proto3" json:"mission_id,omitempty"`
+	StartIdx             int32    `protobuf:"varint,2,opt,name=start_idx,json=startIdx,proto3" json:"start_idx,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -800,7 +699,7 @@ func (m *MissionRequest) Reset()         { *m = MissionRequest{} }
 func (m *MissionRequest) String() string { return proto.CompactTextString(m) }
 func (*MissionRequest) ProtoMessage()    {}
 func (*MissionRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3cea3ef5dc9ae365, []int{14}
+	return fileDescriptor_3cea3ef5dc9ae365, []int{12}
 }
 
 func (m *MissionRequest) XXX_Unmarshal(b []byte) error {
@@ -828,15 +727,59 @@ func (m *MissionRequest) GetMissionId() int32 {
 	return 0
 }
 
+func (m *MissionRequest) GetStartIdx() int32 {
+	if m != nil {
+		return m.StartIdx
+	}
+	return 0
+}
+
+type CreateMissionRequest struct {
+	Name                 int32    `protobuf:"varint,1,opt,name=name,proto3" json:"name,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *CreateMissionRequest) Reset()         { *m = CreateMissionRequest{} }
+func (m *CreateMissionRequest) String() string { return proto.CompactTextString(m) }
+func (*CreateMissionRequest) ProtoMessage()    {}
+func (*CreateMissionRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_3cea3ef5dc9ae365, []int{13}
+}
+
+func (m *CreateMissionRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_CreateMissionRequest.Unmarshal(m, b)
+}
+func (m *CreateMissionRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_CreateMissionRequest.Marshal(b, m, deterministic)
+}
+func (m *CreateMissionRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CreateMissionRequest.Merge(m, src)
+}
+func (m *CreateMissionRequest) XXX_Size() int {
+	return xxx_messageInfo_CreateMissionRequest.Size(m)
+}
+func (m *CreateMissionRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_CreateMissionRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CreateMissionRequest proto.InternalMessageInfo
+
+func (m *CreateMissionRequest) GetName() int32 {
+	if m != nil {
+		return m.Name
+	}
+	return 0
+}
+
 func init() {
 	proto.RegisterEnum("EventType", EventType_name, EventType_value)
 	proto.RegisterEnum("StatusReply_Status", StatusReply_Status_name, StatusReply_Status_value)
-	proto.RegisterType((*ProjectRequest)(nil), "ProjectRequest")
-	proto.RegisterType((*ProjectReply)(nil), "ProjectReply")
+	proto.RegisterType((*CreateFlightRequest)(nil), "CreateFlightRequest")
+	proto.RegisterType((*CreateFlightResponse)(nil), "CreateFlightResponse")
+	proto.RegisterType((*MissionReply)(nil), "MissionReply")
 	proto.RegisterType((*PingRequest)(nil), "PingRequest")
-	proto.RegisterType((*PingReply)(nil), "PingReply")
-	proto.RegisterType((*SendPositionReply)(nil), "SendPositionReply")
-	proto.RegisterType((*SendHotspotReply)(nil), "SendHotspotReply")
 	proto.RegisterType((*FileUpload)(nil), "FileUpload")
 	proto.RegisterType((*FileReply)(nil), "FileReply")
 	proto.RegisterType((*Location)(nil), "Location")
@@ -846,6 +789,7 @@ func init() {
 	proto.RegisterType((*ChatMessageRequest)(nil), "ChatMessageRequest")
 	proto.RegisterType((*MissionEvent)(nil), "MissionEvent")
 	proto.RegisterType((*MissionRequest)(nil), "MissionRequest")
+	proto.RegisterType((*CreateMissionRequest)(nil), "CreateMissionRequest")
 }
 
 func init() {
@@ -853,59 +797,61 @@ func init() {
 }
 
 var fileDescriptor_3cea3ef5dc9ae365 = []byte{
-	// 825 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x55, 0xe1, 0x6e, 0xdb, 0x36,
-	0x10, 0xb6, 0x64, 0x27, 0xb1, 0xce, 0x8a, 0xac, 0x32, 0xc1, 0xe0, 0x29, 0x1b, 0x16, 0xb0, 0x18,
-	0xe0, 0x75, 0x00, 0x3d, 0xb8, 0x43, 0x81, 0xfe, 0xec, 0x0c, 0x2f, 0x35, 0xba, 0xc8, 0x06, 0xe5,
-	0x6e, 0xc0, 0xfe, 0x18, 0x4a, 0xc4, 0xba, 0x5a, 0x65, 0x51, 0x8d, 0x98, 0x02, 0xea, 0x9f, 0xfd,
-	0xdd, 0x1b, 0xec, 0x65, 0xf6, 0x06, 0x7b, 0x91, 0x3d, 0xc6, 0x40, 0x52, 0xd2, 0xe4, 0xc4, 0x6b,
-	0xfc, 0x8f, 0xbc, 0xfb, 0x8e, 0xf7, 0xdd, 0x1d, 0xef, 0x0e, 0xec, 0xec, 0x6a, 0x74, 0x93, 0x5d,
-	0x93, 0xec, 0x86, 0x0b, 0xee, 0x7d, 0xb5, 0xe6, 0x7c, 0x9d, 0xb0, 0x91, 0xba, 0x5d, 0xdd, 0xbe,
-	0x19, 0x89, 0x78, 0xc3, 0x72, 0x11, 0x6e, 0xb2, 0x12, 0xf0, 0xf9, 0x5d, 0x40, 0x98, 0x16, 0x5a,
-	0x85, 0x27, 0xe0, 0x2c, 0x6e, 0xf8, 0x6f, 0xec, 0x5a, 0x50, 0xf6, 0xfe, 0x96, 0xe5, 0x02, 0x7d,
-	0x09, 0xb0, 0x89, 0xf3, 0x3c, 0xe6, 0xe9, 0x2a, 0x8e, 0x06, 0xc6, 0xb9, 0x31, 0x3c, 0xa0, 0x56,
-	0x29, 0x99, 0x45, 0x08, 0x41, 0x27, 0x0d, 0x37, 0x6c, 0x60, 0x9e, 0x1b, 0x43, 0x8b, 0xaa, 0x33,
-	0xbe, 0x00, 0xbb, 0x7e, 0x24, 0x4b, 0x8a, 0x87, 0x9e, 0x18, 0xc0, 0xd1, 0x86, 0xe5, 0x79, 0xb8,
-	0xae, 0x5e, 0xa9, 0xae, 0xf8, 0x39, 0xf4, 0x16, 0x71, 0xba, 0xae, 0xa8, 0x3c, 0x01, 0x33, 0x14,
-	0xca, 0xbe, 0x37, 0xf6, 0x88, 0x0e, 0x82, 0x54, 0x41, 0x90, 0x65, 0x15, 0x25, 0x35, 0x43, 0x81,
-	0xcf, 0xc0, 0xd2, 0xa6, 0x92, 0x80, 0x03, 0x26, 0x7f, 0xa7, 0x0c, 0xbb, 0xd4, 0xe4, 0xef, 0xf0,
-	0x63, 0x78, 0x14, 0xb0, 0x34, 0x5a, 0xf0, 0x3c, 0x16, 0x31, 0x4f, 0x77, 0x83, 0x30, 0xb8, 0x12,
-	0xf4, 0x92, 0x8b, 0x3c, 0xe3, 0x62, 0x37, 0xa6, 0x00, 0xf8, 0x31, 0x4e, 0xd8, 0xeb, 0x2c, 0xe1,
-	0x61, 0xf4, 0x50, 0x9c, 0x67, 0x60, 0xbd, 0x89, 0x13, 0xb6, 0x6a, 0xe4, 0xab, 0x2b, 0x05, 0x7e,
-	0xb8, 0x61, 0xb5, 0x32, 0x8f, 0x3f, 0xb2, 0x41, 0xfb, 0xdc, 0x18, 0xb6, 0xb5, 0x32, 0x88, 0x3f,
-	0x32, 0x99, 0xe4, 0x28, 0x14, 0xe1, 0xa0, 0x73, 0x6e, 0x0c, 0x6d, 0xaa, 0xce, 0xf8, 0x31, 0x58,
-	0xd2, 0xb5, 0xe6, 0xf5, 0x19, 0x1c, 0xe6, 0x22, 0x14, 0xb7, 0x79, 0xe9, 0xb5, 0xbc, 0x61, 0x02,
-	0xdd, 0x9f, 0xf8, 0x75, 0x28, 0x83, 0x44, 0x2e, 0xb4, 0x93, 0x32, 0x7d, 0x06, 0x95, 0x47, 0x25,
-	0xe1, 0xa9, 0xa2, 0x22, 0x25, 0x3c, 0xc5, 0x7f, 0x19, 0x70, 0x5c, 0x65, 0x65, 0xfa, 0x81, 0xa5,
-	0x0f, 0x96, 0x5f, 0x97, 0xc4, 0xdc, 0xa7, 0x24, 0xe8, 0x6b, 0xe8, 0x26, 0x25, 0x19, 0x15, 0x61,
-	0x6f, 0x6c, 0x91, 0x8a, 0x1d, 0xad, 0x55, 0xe8, 0x0b, 0xb0, 0x58, 0xc2, 0x3e, 0x68, 0x5c, 0x47,
-	0x3b, 0xac, 0x05, 0x2a, 0x4f, 0x49, 0xbc, 0x7e, 0x2b, 0x24, 0x9d, 0x03, 0xa5, 0xed, 0x6a, 0xc1,
-	0x2c, 0xc2, 0x7f, 0x1a, 0x60, 0xbf, 0xe4, 0x22, 0xc8, 0xb8, 0xd8, 0x8b, 0xbd, 0x03, 0x66, 0x1c,
-	0x29, 0xf6, 0x6d, 0x6a, 0xc6, 0xd1, 0xbe, 0x0c, 0x4f, 0xe1, 0x20, 0x62, 0x49, 0x59, 0x0f, 0x93,
-	0xea, 0xcb, 0xa7, 0x99, 0xbd, 0x87, 0x5e, 0xa0, 0x4a, 0xa2, 0xeb, 0xf5, 0xed, 0x56, 0xbd, 0x9c,
-	0xf1, 0x09, 0x69, 0x68, 0xab, 0x73, 0x09, 0xf9, 0x44, 0x7f, 0x9c, 0xc1, 0xa1, 0xc6, 0xa2, 0x43,
-	0x30, 0xe7, 0xaf, 0xdc, 0x16, 0xb2, 0xe0, 0x60, 0x4a, 0xe9, 0x9c, 0xba, 0x06, 0x2e, 0x00, 0x4d,
-	0xde, 0x86, 0xe2, 0x52, 0x63, 0xf7, 0x6c, 0xe7, 0xff, 0xf5, 0x55, 0x56, 0xba, 0xbd, 0x57, 0xf3,
-	0xfd, 0x61, 0x80, 0x7d, 0xa9, 0xdf, 0xdc, 0xab, 0x0e, 0xdf, 0x00, 0x30, 0x89, 0x5b, 0x89, 0x22,
-	0xd3, 0x8e, 0x9d, 0x31, 0x10, 0x65, 0xba, 0x2c, 0x32, 0x46, 0x2d, 0x56, 0x1d, 0x11, 0x81, 0xa3,
-	0x2c, 0x2c, 0x64, 0xbb, 0x95, 0x5c, 0x4e, 0xef, 0x71, 0x79, 0x91, 0x16, 0xb4, 0x02, 0xe1, 0x11,
-	0x38, 0x25, 0x93, 0xfd, 0x32, 0xf0, 0xe4, 0x77, 0xb0, 0x6a, 0xc7, 0xa8, 0x0f, 0xbd, 0xe9, 0xcf,
-	0xcb, 0xd5, 0x6b, 0xff, 0x95, 0x3f, 0xff, 0xc5, 0x77, 0x5b, 0x95, 0x60, 0x32, 0xf7, 0xfd, 0xe9,
-	0x64, 0xe9, 0x1a, 0xc8, 0x86, 0xae, 0x14, 0x2c, 0x66, 0xfe, 0x85, 0x6b, 0xd6, 0xb7, 0xb9, 0x7f,
-	0xe1, 0xb6, 0x2b, 0xf0, 0xe5, 0x34, 0x08, 0x5e, 0x5c, 0x4c, 0x5d, 0x40, 0x27, 0xd0, 0x97, 0x82,
-	0x60, 0xba, 0x5c, 0x5d, 0xce, 0x82, 0x60, 0x36, 0xf7, 0xdd, 0x53, 0xe4, 0x80, 0x25, 0x85, 0xba,
-	0x6c, 0xff, 0x1c, 0x8d, 0xff, 0x6e, 0x43, 0x9b, 0x2e, 0x26, 0xe8, 0x39, 0x9c, 0x04, 0xe2, 0x86,
-	0x85, 0x9b, 0x66, 0x26, 0x73, 0xd4, 0x27, 0xdb, 0xf1, 0x78, 0xc7, 0xa4, 0x09, 0xc0, 0xad, 0xef,
-	0x0c, 0xf4, 0x0c, 0xfa, 0xda, 0xb4, 0xea, 0xe5, 0x1d, 0x66, 0x0e, 0xd9, 0x6a, 0x74, 0x65, 0xf7,
-	0x3d, 0x38, 0xda, 0xae, 0x6c, 0xa2, 0x9d, 0xde, 0x9a, 0x0d, 0xa6, 0xac, 0xc6, 0xd0, 0x93, 0x83,
-	0xb2, 0xfc, 0x68, 0xe8, 0x84, 0xdc, 0xff, 0x76, 0x9e, 0xdd, 0xfc, 0xe0, 0xb8, 0x25, 0x3b, 0x4d,
-	0xda, 0xc8, 0x09, 0x86, 0x7a, 0xe4, 0xbf, 0x19, 0xea, 0x01, 0xa9, 0xa7, 0x1a, 0x6e, 0xa1, 0x67,
-	0x60, 0x37, 0x07, 0x35, 0xba, 0x43, 0xda, 0x43, 0xe4, 0xde, 0x1c, 0xc7, 0xad, 0xa1, 0x81, 0x9e,
-	0x6a, 0x4a, 0xe5, 0xec, 0x46, 0xdb, 0xa4, 0xbd, 0x47, 0xe4, 0xee, 0x60, 0x57, 0x46, 0x18, 0x3a,
-	0x72, 0x65, 0x20, 0x9b, 0x34, 0x96, 0x8e, 0x07, 0xa4, 0xde, 0x23, 0xb8, 0x85, 0x46, 0xd0, 0x9b,
-	0x67, 0x2c, 0x2d, 0xd7, 0x1b, 0xea, 0x93, 0xed, 0x6d, 0xe9, 0x1d, 0x93, 0xe6, 0xe6, 0xc3, 0xad,
-	0x1f, 0x3a, 0xbf, 0x9a, 0xd9, 0xd5, 0xd5, 0xa1, 0xfa, 0x9c, 0x4f, 0xff, 0x0d, 0x00, 0x00, 0xff,
-	0xff, 0xc2, 0x9a, 0x51, 0x0a, 0xa9, 0x07, 0x00, 0x00,
+	// 858 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x55, 0xdd, 0x6e, 0xdb, 0x36,
+	0x14, 0xb6, 0x64, 0x3b, 0xb1, 0x8e, 0x5d, 0x47, 0xa5, 0xdd, 0x21, 0x75, 0x36, 0x2c, 0xd0, 0x30,
+	0x20, 0xcd, 0x00, 0x66, 0x48, 0x30, 0x74, 0x7f, 0xc0, 0x90, 0x19, 0x6e, 0x6a, 0xb4, 0x91, 0x03,
+	0xca, 0xdd, 0x80, 0xde, 0x18, 0x4c, 0xc4, 0xba, 0x04, 0x64, 0x49, 0x35, 0x99, 0xae, 0xee, 0xcd,
+	0x5e, 0x66, 0xb7, 0x7b, 0x91, 0x3d, 0xc9, 0x1e, 0x63, 0x20, 0x45, 0xc9, 0x92, 0xeb, 0x76, 0xdb,
+	0x4d, 0xef, 0xc8, 0x8f, 0xe7, 0x3b, 0xfa, 0xbe, 0x73, 0x78, 0x28, 0xe8, 0xa4, 0xd7, 0x27, 0xcb,
+	0xf4, 0x06, 0xa7, 0xcb, 0x44, 0x26, 0x83, 0xcf, 0xe7, 0x49, 0x32, 0x8f, 0xd8, 0x89, 0xde, 0x5d,
+	0xdf, 0xbe, 0x38, 0x91, 0x7c, 0xc1, 0x84, 0xa4, 0x8b, 0xd4, 0x04, 0xdc, 0xdf, 0x0c, 0xa0, 0xf1,
+	0x2a, 0x3b, 0xf2, 0x1e, 0x42, 0x6f, 0xb8, 0x64, 0x54, 0xb2, 0x47, 0x11, 0x9f, 0xbf, 0x94, 0x84,
+	0xbd, 0xba, 0x65, 0x42, 0xa2, 0x43, 0x68, 0x87, 0x4c, 0xdc, 0x2c, 0x79, 0x2a, 0x79, 0x12, 0xef,
+	0x5b, 0x87, 0xd6, 0x91, 0x43, 0xca, 0x90, 0x77, 0x06, 0xfd, 0x2a, 0x51, 0xa4, 0x49, 0x2c, 0x18,
+	0x3a, 0x00, 0xe7, 0x85, 0x46, 0x66, 0x3c, 0xd4, 0xbc, 0x26, 0x69, 0x65, 0xc0, 0x38, 0xf4, 0x2e,
+	0xa0, 0x73, 0xc9, 0x85, 0xe0, 0x49, 0x4c, 0x58, 0x1a, 0xad, 0xd0, 0x67, 0x00, 0x8b, 0x6c, 0xbf,
+	0x8e, 0x76, 0x0c, 0x32, 0x0e, 0xd1, 0x3e, 0xec, 0x2e, 0x98, 0x10, 0x74, 0xce, 0xf6, 0x6d, 0xad,
+	0x20, 0xdf, 0x7a, 0xdf, 0x41, 0xfb, 0x8a, 0xc7, 0xf3, 0x5c, 0xee, 0x31, 0xd8, 0x54, 0x6a, 0x7e,
+	0xfb, 0x74, 0x80, 0x33, 0xb7, 0x38, 0x77, 0x8b, 0xa7, 0x79, 0x39, 0x88, 0x4d, 0xa5, 0xf7, 0x1c,
+	0xe0, 0x11, 0x8f, 0xd8, 0xb3, 0x34, 0x4a, 0x68, 0xa8, 0xe5, 0xf2, 0x88, 0xcd, 0x62, 0xba, 0x60,
+	0xc6, 0x66, 0x4b, 0x01, 0x3e, 0x5d, 0xb0, 0xe2, 0x50, 0xf0, 0xb7, 0x99, 0x82, 0x7a, 0x76, 0x18,
+	0xf0, 0xb7, 0x0c, 0x21, 0x68, 0x84, 0x54, 0xd2, 0xfd, 0xfa, 0xa1, 0x75, 0xd4, 0x21, 0x7a, 0xed,
+	0x7d, 0x01, 0x8e, 0xca, 0x9d, 0x99, 0xfb, 0x04, 0x76, 0x84, 0xa4, 0xf2, 0x56, 0x18, 0x63, 0x66,
+	0xe7, 0x61, 0x68, 0x3d, 0x4d, 0x6e, 0xa8, 0xaa, 0x22, 0x72, 0xa1, 0x1e, 0x19, 0xe5, 0x16, 0x51,
+	0x4b, 0x8d, 0x24, 0xb1, 0xfe, 0x9a, 0x42, 0x92, 0xd8, 0xfb, 0xd3, 0x82, 0x3b, 0x57, 0x89, 0xe0,
+	0x8a, 0x30, 0x7a, 0xcd, 0xe2, 0xff, 0x65, 0x17, 0x75, 0xc1, 0xe6, 0xa1, 0x4e, 0xd7, 0x24, 0x36,
+	0x0f, 0xd1, 0x97, 0xd0, 0x8a, 0xcc, 0xd7, 0xb5, 0xf4, 0xf6, 0xa9, 0x83, 0x73, 0x39, 0xa4, 0x38,
+	0x42, 0x9f, 0x82, 0xc3, 0x22, 0xf6, 0x3a, 0x8b, 0x6b, 0x64, 0x8d, 0x29, 0x80, 0x6a, 0x93, 0x9b,
+	0x1b, 0x4d, 0xfe, 0xc3, 0x82, 0xce, 0xe3, 0x44, 0x06, 0x69, 0x22, 0x3f, 0x9a, 0xdc, 0x3e, 0x34,
+	0x43, 0x16, 0x49, 0x6a, 0xa4, 0x66, 0x9b, 0x0f, 0xcb, 0x7c, 0x05, 0xed, 0x40, 0x37, 0x24, 0xeb,
+	0xd6, 0x57, 0x95, 0x6e, 0x75, 0x4f, 0x7b, 0xb8, 0x74, 0x9a, 0xaf, 0x4d, 0xc8, 0x07, 0x2e, 0xe6,
+	0x01, 0xec, 0x64, 0xb1, 0x68, 0x07, 0xec, 0xc9, 0x13, 0xb7, 0x86, 0x1c, 0x68, 0x8e, 0x08, 0x99,
+	0x10, 0xd7, 0xf2, 0x7e, 0x03, 0x34, 0x7c, 0x49, 0xe5, 0x65, 0x16, 0x9b, 0x5f, 0xde, 0x52, 0x32,
+	0xab, 0x92, 0xcc, 0x14, 0xce, 0xfe, 0x4f, 0x85, 0x3b, 0x00, 0x47, 0x48, 0xba, 0x54, 0x56, 0xdf,
+	0xe8, 0x4a, 0x35, 0x49, 0x4b, 0x03, 0xe3, 0xf0, 0x8d, 0xc7, 0x8b, 0xb9, 0xcb, 0x3a, 0xf2, 0x00,
+	0x80, 0xa9, 0xc5, 0x4c, 0xae, 0x52, 0x66, 0x0c, 0x03, 0xd6, 0x67, 0xd3, 0x55, 0xca, 0x88, 0xc3,
+	0xf2, 0x25, 0xc2, 0xb0, 0x9b, 0xd2, 0x95, 0x9a, 0x15, 0x23, 0xa4, 0xff, 0x8e, 0x90, 0xf3, 0x78,
+	0x45, 0xf2, 0x20, 0xef, 0x29, 0x74, 0x8b, 0x11, 0xcf, 0xfc, 0xfd, 0xcb, 0x90, 0x57, 0x84, 0xdb,
+	0x1b, 0xc2, 0x8f, 0xf3, 0x57, 0x66, 0x23, 0x27, 0x82, 0x46, 0x31, 0xb1, 0x4d, 0xa2, 0xd7, 0xc7,
+	0xbf, 0x83, 0x53, 0x38, 0x40, 0x7b, 0xd0, 0x1e, 0xfd, 0x32, 0x9d, 0x3d, 0xf3, 0x9f, 0xf8, 0x93,
+	0x5f, 0x7d, 0xb7, 0x96, 0x03, 0xc3, 0x89, 0xef, 0x8f, 0x86, 0x53, 0xd7, 0x42, 0x1d, 0x68, 0x29,
+	0xe0, 0x6a, 0xec, 0x5f, 0xb8, 0x76, 0xb1, 0x9b, 0xf8, 0x17, 0x6e, 0x3d, 0x0f, 0xbe, 0x1c, 0x05,
+	0xc1, 0xf9, 0xc5, 0xc8, 0x05, 0xd4, 0x83, 0x3d, 0x05, 0x04, 0xa3, 0xe9, 0xec, 0x72, 0x1c, 0x04,
+	0xe3, 0x89, 0xef, 0xf6, 0x51, 0x17, 0x1c, 0x05, 0x66, 0xdd, 0xfd, 0x7b, 0xf7, 0xf4, 0xaf, 0x06,
+	0xd4, 0xc9, 0xd5, 0x10, 0xfd, 0x04, 0xf7, 0x87, 0x11, 0x67, 0xb1, 0x0c, 0xe4, 0x92, 0xd1, 0x45,
+	0xb9, 0xf2, 0x02, 0xed, 0xe1, 0xaa, 0x95, 0xc1, 0x1d, 0x5c, 0x0e, 0xf0, 0x6a, 0x5f, 0x5b, 0xe8,
+	0x47, 0xb8, 0x57, 0x4e, 0x90, 0x0f, 0xff, 0x16, 0x72, 0x17, 0x57, 0x5e, 0x06, 0xcd, 0xfe, 0x1e,
+	0xfa, 0x65, 0xb6, 0x19, 0xc5, 0xad, 0x5f, 0x2e, 0x8f, 0xa9, 0xe6, 0x7e, 0x0b, 0x77, 0x0d, 0x97,
+	0xc5, 0xa1, 0xb9, 0xa7, 0xa8, 0x87, 0xdf, 0xbd, 0xb5, 0x83, 0x4e, 0x79, 0x3e, 0xbc, 0x1a, 0x7a,
+	0x00, 0x9d, 0x60, 0x15, 0xdf, 0x28, 0x9e, 0x7a, 0x02, 0x51, 0x1b, 0xaf, 0x5f, 0xd9, 0x01, 0xe0,
+	0xe2, 0x59, 0xf4, 0x6a, 0xe8, 0x21, 0xf4, 0x54, 0xe8, 0x38, 0x16, 0x6c, 0x29, 0xd7, 0xe6, 0x36,
+	0xbc, 0x6c, 0x7e, 0xe1, 0xc8, 0x42, 0xdf, 0x00, 0x5a, 0x13, 0x1f, 0x27, 0x52, 0x68, 0x5f, 0x55,
+	0x1b, 0x5b, 0x68, 0xe7, 0xe0, 0x2a, 0x5a, 0xf9, 0x77, 0x85, 0xfa, 0x78, 0xcb, 0x6f, 0x6f, 0x70,
+	0x0f, 0x6f, 0xfb, 0xa7, 0x79, 0x35, 0xf4, 0x03, 0xdc, 0x5d, 0xa7, 0x30, 0x65, 0x44, 0x79, 0xf4,
+	0xfb, 0x1a, 0x9a, 0xfb, 0x3d, 0x83, 0x3d, 0x45, 0x9e, 0xa4, 0x2c, 0xce, 0xa9, 0xef, 0xbf, 0x05,
+	0x86, 0xf4, 0x73, 0xe3, 0xb9, 0x9d, 0x5e, 0x5f, 0xef, 0xe8, 0x21, 0x3b, 0xfb, 0x27, 0x00, 0x00,
+	0xff, 0xff, 0xa7, 0xcf, 0x67, 0xd3, 0xf1, 0x07, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -920,15 +866,20 @@ const _ = grpc.SupportPackageIsVersion6
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type RPCClient interface {
-	StreamMissionEvents(ctx context.Context, in *MissionRequest, opts ...grpc.CallOption) (RPC_StreamMissionEventsClient, error)
-	StreamPositions(ctx context.Context, in *MissionRequest, opts ...grpc.CallOption) (RPC_StreamPositionsClient, error)
-	StreamHotSpots(ctx context.Context, in *MissionRequest, opts ...grpc.CallOption) (RPC_StreamHotSpotsClient, error)
-	SendMessage(ctx context.Context, in *ChatMessageRequest, opts ...grpc.CallOption) (*StatusReply, error)
-	SendFile(ctx context.Context, in *FileUpload, opts ...grpc.CallOption) (*FileReply, error)
-	SendPosition(ctx context.Context, opts ...grpc.CallOption) (RPC_SendPositionClient, error)
-	SendHotspot(ctx context.Context, opts ...grpc.CallOption) (RPC_SendHotspotClient, error)
-	Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingReply, error)
-	OpenProject(ctx context.Context, in *ProjectRequest, opts ...grpc.CallOption) (*ProjectReply, error)
+	// --- Clients data stream egress
+	ClientStreamMissionEvents(ctx context.Context, in *MissionRequest, opts ...grpc.CallOption) (RPC_ClientStreamMissionEventsClient, error)
+	ClientStreamPositions(ctx context.Context, in *MissionRequest, opts ...grpc.CallOption) (RPC_ClientStreamPositionsClient, error)
+	ClientStreamHotSpots(ctx context.Context, in *MissionRequest, opts ...grpc.CallOption) (RPC_ClientStreamHotSpotsClient, error)
+	ClientSendMessage(ctx context.Context, in *ChatMessageRequest, opts ...grpc.CallOption) (*StatusReply, error)
+	// --- Server data ingress
+	SyncSendFile(ctx context.Context, in *FileUpload, opts ...grpc.CallOption) (*FileReply, error)
+	SyncInsertPositions(ctx context.Context, opts ...grpc.CallOption) (RPC_SyncInsertPositionsClient, error)
+	SyncInsertHotspots(ctx context.Context, opts ...grpc.CallOption) (RPC_SyncInsertHotspotsClient, error)
+	SyncCreateFlight(ctx context.Context, in *CreateFlightRequest, opts ...grpc.CallOption) (*CreateFlightResponse, error)
+	// Create a new unique instance of a mission
+	SyncCreateMission(ctx context.Context, in *CreateMissionRequest, opts ...grpc.CallOption) (*MissionReply, error)
+	// Open the mission to check for its existence or get metadata
+	SyncOpenMission(ctx context.Context, in *MissionRequest, opts ...grpc.CallOption) (*MissionReply, error)
 }
 
 type rPCClient struct {
@@ -939,12 +890,12 @@ func NewRPCClient(cc grpc.ClientConnInterface) RPCClient {
 	return &rPCClient{cc}
 }
 
-func (c *rPCClient) StreamMissionEvents(ctx context.Context, in *MissionRequest, opts ...grpc.CallOption) (RPC_StreamMissionEventsClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_RPC_serviceDesc.Streams[0], "/RPC/StreamMissionEvents", opts...)
+func (c *rPCClient) ClientStreamMissionEvents(ctx context.Context, in *MissionRequest, opts ...grpc.CallOption) (RPC_ClientStreamMissionEventsClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_RPC_serviceDesc.Streams[0], "/RPC/ClientStreamMissionEvents", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &rPCStreamMissionEventsClient{stream}
+	x := &rPCClientStreamMissionEventsClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -954,16 +905,16 @@ func (c *rPCClient) StreamMissionEvents(ctx context.Context, in *MissionRequest,
 	return x, nil
 }
 
-type RPC_StreamMissionEventsClient interface {
+type RPC_ClientStreamMissionEventsClient interface {
 	Recv() (*MissionEvent, error)
 	grpc.ClientStream
 }
 
-type rPCStreamMissionEventsClient struct {
+type rPCClientStreamMissionEventsClient struct {
 	grpc.ClientStream
 }
 
-func (x *rPCStreamMissionEventsClient) Recv() (*MissionEvent, error) {
+func (x *rPCClientStreamMissionEventsClient) Recv() (*MissionEvent, error) {
 	m := new(MissionEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -971,12 +922,12 @@ func (x *rPCStreamMissionEventsClient) Recv() (*MissionEvent, error) {
 	return m, nil
 }
 
-func (c *rPCClient) StreamPositions(ctx context.Context, in *MissionRequest, opts ...grpc.CallOption) (RPC_StreamPositionsClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_RPC_serviceDesc.Streams[1], "/RPC/StreamPositions", opts...)
+func (c *rPCClient) ClientStreamPositions(ctx context.Context, in *MissionRequest, opts ...grpc.CallOption) (RPC_ClientStreamPositionsClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_RPC_serviceDesc.Streams[1], "/RPC/ClientStreamPositions", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &rPCStreamPositionsClient{stream}
+	x := &rPCClientStreamPositionsClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -986,16 +937,16 @@ func (c *rPCClient) StreamPositions(ctx context.Context, in *MissionRequest, opt
 	return x, nil
 }
 
-type RPC_StreamPositionsClient interface {
+type RPC_ClientStreamPositionsClient interface {
 	Recv() (*PositionEvent, error)
 	grpc.ClientStream
 }
 
-type rPCStreamPositionsClient struct {
+type rPCClientStreamPositionsClient struct {
 	grpc.ClientStream
 }
 
-func (x *rPCStreamPositionsClient) Recv() (*PositionEvent, error) {
+func (x *rPCClientStreamPositionsClient) Recv() (*PositionEvent, error) {
 	m := new(PositionEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -1003,12 +954,12 @@ func (x *rPCStreamPositionsClient) Recv() (*PositionEvent, error) {
 	return m, nil
 }
 
-func (c *rPCClient) StreamHotSpots(ctx context.Context, in *MissionRequest, opts ...grpc.CallOption) (RPC_StreamHotSpotsClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_RPC_serviceDesc.Streams[2], "/RPC/StreamHotSpots", opts...)
+func (c *rPCClient) ClientStreamHotSpots(ctx context.Context, in *MissionRequest, opts ...grpc.CallOption) (RPC_ClientStreamHotSpotsClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_RPC_serviceDesc.Streams[2], "/RPC/ClientStreamHotSpots", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &rPCStreamHotSpotsClient{stream}
+	x := &rPCClientStreamHotSpotsClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -1018,16 +969,16 @@ func (c *rPCClient) StreamHotSpots(ctx context.Context, in *MissionRequest, opts
 	return x, nil
 }
 
-type RPC_StreamHotSpotsClient interface {
+type RPC_ClientStreamHotSpotsClient interface {
 	Recv() (*HotSpotEvent, error)
 	grpc.ClientStream
 }
 
-type rPCStreamHotSpotsClient struct {
+type rPCClientStreamHotSpotsClient struct {
 	grpc.ClientStream
 }
 
-func (x *rPCStreamHotSpotsClient) Recv() (*HotSpotEvent, error) {
+func (x *rPCClientStreamHotSpotsClient) Recv() (*HotSpotEvent, error) {
 	m := new(HotSpotEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -1035,104 +986,113 @@ func (x *rPCStreamHotSpotsClient) Recv() (*HotSpotEvent, error) {
 	return m, nil
 }
 
-func (c *rPCClient) SendMessage(ctx context.Context, in *ChatMessageRequest, opts ...grpc.CallOption) (*StatusReply, error) {
+func (c *rPCClient) ClientSendMessage(ctx context.Context, in *ChatMessageRequest, opts ...grpc.CallOption) (*StatusReply, error) {
 	out := new(StatusReply)
-	err := c.cc.Invoke(ctx, "/RPC/SendMessage", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/RPC/ClientSendMessage", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *rPCClient) SendFile(ctx context.Context, in *FileUpload, opts ...grpc.CallOption) (*FileReply, error) {
+func (c *rPCClient) SyncSendFile(ctx context.Context, in *FileUpload, opts ...grpc.CallOption) (*FileReply, error) {
 	out := new(FileReply)
-	err := c.cc.Invoke(ctx, "/RPC/SendFile", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/RPC/SyncSendFile", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *rPCClient) SendPosition(ctx context.Context, opts ...grpc.CallOption) (RPC_SendPositionClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_RPC_serviceDesc.Streams[3], "/RPC/SendPosition", opts...)
+func (c *rPCClient) SyncInsertPositions(ctx context.Context, opts ...grpc.CallOption) (RPC_SyncInsertPositionsClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_RPC_serviceDesc.Streams[3], "/RPC/SyncInsertPositions", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &rPCSendPositionClient{stream}
+	x := &rPCSyncInsertPositionsClient{stream}
 	return x, nil
 }
 
-type RPC_SendPositionClient interface {
+type RPC_SyncInsertPositionsClient interface {
 	Send(*PositionEvent) error
-	CloseAndRecv() (*SendPositionReply, error)
+	CloseAndRecv() (*StatusReply, error)
 	grpc.ClientStream
 }
 
-type rPCSendPositionClient struct {
+type rPCSyncInsertPositionsClient struct {
 	grpc.ClientStream
 }
 
-func (x *rPCSendPositionClient) Send(m *PositionEvent) error {
+func (x *rPCSyncInsertPositionsClient) Send(m *PositionEvent) error {
 	return x.ClientStream.SendMsg(m)
 }
 
-func (x *rPCSendPositionClient) CloseAndRecv() (*SendPositionReply, error) {
+func (x *rPCSyncInsertPositionsClient) CloseAndRecv() (*StatusReply, error) {
 	if err := x.ClientStream.CloseSend(); err != nil {
 		return nil, err
 	}
-	m := new(SendPositionReply)
+	m := new(StatusReply)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
 	return m, nil
 }
 
-func (c *rPCClient) SendHotspot(ctx context.Context, opts ...grpc.CallOption) (RPC_SendHotspotClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_RPC_serviceDesc.Streams[4], "/RPC/SendHotspot", opts...)
+func (c *rPCClient) SyncInsertHotspots(ctx context.Context, opts ...grpc.CallOption) (RPC_SyncInsertHotspotsClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_RPC_serviceDesc.Streams[4], "/RPC/SyncInsertHotspots", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &rPCSendHotspotClient{stream}
+	x := &rPCSyncInsertHotspotsClient{stream}
 	return x, nil
 }
 
-type RPC_SendHotspotClient interface {
+type RPC_SyncInsertHotspotsClient interface {
 	Send(*HotSpotEvent) error
-	CloseAndRecv() (*SendHotspotReply, error)
+	CloseAndRecv() (*StatusReply, error)
 	grpc.ClientStream
 }
 
-type rPCSendHotspotClient struct {
+type rPCSyncInsertHotspotsClient struct {
 	grpc.ClientStream
 }
 
-func (x *rPCSendHotspotClient) Send(m *HotSpotEvent) error {
+func (x *rPCSyncInsertHotspotsClient) Send(m *HotSpotEvent) error {
 	return x.ClientStream.SendMsg(m)
 }
 
-func (x *rPCSendHotspotClient) CloseAndRecv() (*SendHotspotReply, error) {
+func (x *rPCSyncInsertHotspotsClient) CloseAndRecv() (*StatusReply, error) {
 	if err := x.ClientStream.CloseSend(); err != nil {
 		return nil, err
 	}
-	m := new(SendHotspotReply)
+	m := new(StatusReply)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
 	return m, nil
 }
 
-func (c *rPCClient) Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingReply, error) {
-	out := new(PingReply)
-	err := c.cc.Invoke(ctx, "/RPC/Ping", in, out, opts...)
+func (c *rPCClient) SyncCreateFlight(ctx context.Context, in *CreateFlightRequest, opts ...grpc.CallOption) (*CreateFlightResponse, error) {
+	out := new(CreateFlightResponse)
+	err := c.cc.Invoke(ctx, "/RPC/SyncCreateFlight", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *rPCClient) OpenProject(ctx context.Context, in *ProjectRequest, opts ...grpc.CallOption) (*ProjectReply, error) {
-	out := new(ProjectReply)
-	err := c.cc.Invoke(ctx, "/RPC/OpenProject", in, out, opts...)
+func (c *rPCClient) SyncCreateMission(ctx context.Context, in *CreateMissionRequest, opts ...grpc.CallOption) (*MissionReply, error) {
+	out := new(MissionReply)
+	err := c.cc.Invoke(ctx, "/RPC/SyncCreateMission", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *rPCClient) SyncOpenMission(ctx context.Context, in *MissionRequest, opts ...grpc.CallOption) (*MissionReply, error) {
+	out := new(MissionReply)
+	err := c.cc.Invoke(ctx, "/RPC/SyncOpenMission", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1141,171 +1101,179 @@ func (c *rPCClient) OpenProject(ctx context.Context, in *ProjectRequest, opts ..
 
 // RPCServer is the server API for RPC service.
 type RPCServer interface {
-	StreamMissionEvents(*MissionRequest, RPC_StreamMissionEventsServer) error
-	StreamPositions(*MissionRequest, RPC_StreamPositionsServer) error
-	StreamHotSpots(*MissionRequest, RPC_StreamHotSpotsServer) error
-	SendMessage(context.Context, *ChatMessageRequest) (*StatusReply, error)
-	SendFile(context.Context, *FileUpload) (*FileReply, error)
-	SendPosition(RPC_SendPositionServer) error
-	SendHotspot(RPC_SendHotspotServer) error
-	Ping(context.Context, *PingRequest) (*PingReply, error)
-	OpenProject(context.Context, *ProjectRequest) (*ProjectReply, error)
+	// --- Clients data stream egress
+	ClientStreamMissionEvents(*MissionRequest, RPC_ClientStreamMissionEventsServer) error
+	ClientStreamPositions(*MissionRequest, RPC_ClientStreamPositionsServer) error
+	ClientStreamHotSpots(*MissionRequest, RPC_ClientStreamHotSpotsServer) error
+	ClientSendMessage(context.Context, *ChatMessageRequest) (*StatusReply, error)
+	// --- Server data ingress
+	SyncSendFile(context.Context, *FileUpload) (*FileReply, error)
+	SyncInsertPositions(RPC_SyncInsertPositionsServer) error
+	SyncInsertHotspots(RPC_SyncInsertHotspotsServer) error
+	SyncCreateFlight(context.Context, *CreateFlightRequest) (*CreateFlightResponse, error)
+	// Create a new unique instance of a mission
+	SyncCreateMission(context.Context, *CreateMissionRequest) (*MissionReply, error)
+	// Open the mission to check for its existence or get metadata
+	SyncOpenMission(context.Context, *MissionRequest) (*MissionReply, error)
 }
 
 // UnimplementedRPCServer can be embedded to have forward compatible implementations.
 type UnimplementedRPCServer struct {
 }
 
-func (*UnimplementedRPCServer) StreamMissionEvents(req *MissionRequest, srv RPC_StreamMissionEventsServer) error {
-	return status.Errorf(codes.Unimplemented, "method StreamMissionEvents not implemented")
+func (*UnimplementedRPCServer) ClientStreamMissionEvents(req *MissionRequest, srv RPC_ClientStreamMissionEventsServer) error {
+	return status.Errorf(codes.Unimplemented, "method ClientStreamMissionEvents not implemented")
 }
-func (*UnimplementedRPCServer) StreamPositions(req *MissionRequest, srv RPC_StreamPositionsServer) error {
-	return status.Errorf(codes.Unimplemented, "method StreamPositions not implemented")
+func (*UnimplementedRPCServer) ClientStreamPositions(req *MissionRequest, srv RPC_ClientStreamPositionsServer) error {
+	return status.Errorf(codes.Unimplemented, "method ClientStreamPositions not implemented")
 }
-func (*UnimplementedRPCServer) StreamHotSpots(req *MissionRequest, srv RPC_StreamHotSpotsServer) error {
-	return status.Errorf(codes.Unimplemented, "method StreamHotSpots not implemented")
+func (*UnimplementedRPCServer) ClientStreamHotSpots(req *MissionRequest, srv RPC_ClientStreamHotSpotsServer) error {
+	return status.Errorf(codes.Unimplemented, "method ClientStreamHotSpots not implemented")
 }
-func (*UnimplementedRPCServer) SendMessage(ctx context.Context, req *ChatMessageRequest) (*StatusReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SendMessage not implemented")
+func (*UnimplementedRPCServer) ClientSendMessage(ctx context.Context, req *ChatMessageRequest) (*StatusReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ClientSendMessage not implemented")
 }
-func (*UnimplementedRPCServer) SendFile(ctx context.Context, req *FileUpload) (*FileReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SendFile not implemented")
+func (*UnimplementedRPCServer) SyncSendFile(ctx context.Context, req *FileUpload) (*FileReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SyncSendFile not implemented")
 }
-func (*UnimplementedRPCServer) SendPosition(srv RPC_SendPositionServer) error {
-	return status.Errorf(codes.Unimplemented, "method SendPosition not implemented")
+func (*UnimplementedRPCServer) SyncInsertPositions(srv RPC_SyncInsertPositionsServer) error {
+	return status.Errorf(codes.Unimplemented, "method SyncInsertPositions not implemented")
 }
-func (*UnimplementedRPCServer) SendHotspot(srv RPC_SendHotspotServer) error {
-	return status.Errorf(codes.Unimplemented, "method SendHotspot not implemented")
+func (*UnimplementedRPCServer) SyncInsertHotspots(srv RPC_SyncInsertHotspotsServer) error {
+	return status.Errorf(codes.Unimplemented, "method SyncInsertHotspots not implemented")
 }
-func (*UnimplementedRPCServer) Ping(ctx context.Context, req *PingRequest) (*PingReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
+func (*UnimplementedRPCServer) SyncCreateFlight(ctx context.Context, req *CreateFlightRequest) (*CreateFlightResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SyncCreateFlight not implemented")
 }
-func (*UnimplementedRPCServer) OpenProject(ctx context.Context, req *ProjectRequest) (*ProjectReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method OpenProject not implemented")
+func (*UnimplementedRPCServer) SyncCreateMission(ctx context.Context, req *CreateMissionRequest) (*MissionReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SyncCreateMission not implemented")
+}
+func (*UnimplementedRPCServer) SyncOpenMission(ctx context.Context, req *MissionRequest) (*MissionReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SyncOpenMission not implemented")
 }
 
 func RegisterRPCServer(s *grpc.Server, srv RPCServer) {
 	s.RegisterService(&_RPC_serviceDesc, srv)
 }
 
-func _RPC_StreamMissionEvents_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _RPC_ClientStreamMissionEvents_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(MissionRequest)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(RPCServer).StreamMissionEvents(m, &rPCStreamMissionEventsServer{stream})
+	return srv.(RPCServer).ClientStreamMissionEvents(m, &rPCClientStreamMissionEventsServer{stream})
 }
 
-type RPC_StreamMissionEventsServer interface {
+type RPC_ClientStreamMissionEventsServer interface {
 	Send(*MissionEvent) error
 	grpc.ServerStream
 }
 
-type rPCStreamMissionEventsServer struct {
+type rPCClientStreamMissionEventsServer struct {
 	grpc.ServerStream
 }
 
-func (x *rPCStreamMissionEventsServer) Send(m *MissionEvent) error {
+func (x *rPCClientStreamMissionEventsServer) Send(m *MissionEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _RPC_StreamPositions_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _RPC_ClientStreamPositions_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(MissionRequest)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(RPCServer).StreamPositions(m, &rPCStreamPositionsServer{stream})
+	return srv.(RPCServer).ClientStreamPositions(m, &rPCClientStreamPositionsServer{stream})
 }
 
-type RPC_StreamPositionsServer interface {
+type RPC_ClientStreamPositionsServer interface {
 	Send(*PositionEvent) error
 	grpc.ServerStream
 }
 
-type rPCStreamPositionsServer struct {
+type rPCClientStreamPositionsServer struct {
 	grpc.ServerStream
 }
 
-func (x *rPCStreamPositionsServer) Send(m *PositionEvent) error {
+func (x *rPCClientStreamPositionsServer) Send(m *PositionEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _RPC_StreamHotSpots_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _RPC_ClientStreamHotSpots_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(MissionRequest)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(RPCServer).StreamHotSpots(m, &rPCStreamHotSpotsServer{stream})
+	return srv.(RPCServer).ClientStreamHotSpots(m, &rPCClientStreamHotSpotsServer{stream})
 }
 
-type RPC_StreamHotSpotsServer interface {
+type RPC_ClientStreamHotSpotsServer interface {
 	Send(*HotSpotEvent) error
 	grpc.ServerStream
 }
 
-type rPCStreamHotSpotsServer struct {
+type rPCClientStreamHotSpotsServer struct {
 	grpc.ServerStream
 }
 
-func (x *rPCStreamHotSpotsServer) Send(m *HotSpotEvent) error {
+func (x *rPCClientStreamHotSpotsServer) Send(m *HotSpotEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _RPC_SendMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _RPC_ClientSendMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ChatMessageRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RPCServer).SendMessage(ctx, in)
+		return srv.(RPCServer).ClientSendMessage(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/RPC/SendMessage",
+		FullMethod: "/RPC/ClientSendMessage",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RPCServer).SendMessage(ctx, req.(*ChatMessageRequest))
+		return srv.(RPCServer).ClientSendMessage(ctx, req.(*ChatMessageRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _RPC_SendFile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _RPC_SyncSendFile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(FileUpload)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RPCServer).SendFile(ctx, in)
+		return srv.(RPCServer).SyncSendFile(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/RPC/SendFile",
+		FullMethod: "/RPC/SyncSendFile",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RPCServer).SendFile(ctx, req.(*FileUpload))
+		return srv.(RPCServer).SyncSendFile(ctx, req.(*FileUpload))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _RPC_SendPosition_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(RPCServer).SendPosition(&rPCSendPositionServer{stream})
+func _RPC_SyncInsertPositions_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(RPCServer).SyncInsertPositions(&rPCSyncInsertPositionsServer{stream})
 }
 
-type RPC_SendPositionServer interface {
-	SendAndClose(*SendPositionReply) error
+type RPC_SyncInsertPositionsServer interface {
+	SendAndClose(*StatusReply) error
 	Recv() (*PositionEvent, error)
 	grpc.ServerStream
 }
 
-type rPCSendPositionServer struct {
+type rPCSyncInsertPositionsServer struct {
 	grpc.ServerStream
 }
 
-func (x *rPCSendPositionServer) SendAndClose(m *SendPositionReply) error {
+func (x *rPCSyncInsertPositionsServer) SendAndClose(m *StatusReply) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func (x *rPCSendPositionServer) Recv() (*PositionEvent, error) {
+func (x *rPCSyncInsertPositionsServer) Recv() (*PositionEvent, error) {
 	m := new(PositionEvent)
 	if err := x.ServerStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -1313,25 +1281,25 @@ func (x *rPCSendPositionServer) Recv() (*PositionEvent, error) {
 	return m, nil
 }
 
-func _RPC_SendHotspot_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(RPCServer).SendHotspot(&rPCSendHotspotServer{stream})
+func _RPC_SyncInsertHotspots_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(RPCServer).SyncInsertHotspots(&rPCSyncInsertHotspotsServer{stream})
 }
 
-type RPC_SendHotspotServer interface {
-	SendAndClose(*SendHotspotReply) error
+type RPC_SyncInsertHotspotsServer interface {
+	SendAndClose(*StatusReply) error
 	Recv() (*HotSpotEvent, error)
 	grpc.ServerStream
 }
 
-type rPCSendHotspotServer struct {
+type rPCSyncInsertHotspotsServer struct {
 	grpc.ServerStream
 }
 
-func (x *rPCSendHotspotServer) SendAndClose(m *SendHotspotReply) error {
+func (x *rPCSyncInsertHotspotsServer) SendAndClose(m *StatusReply) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func (x *rPCSendHotspotServer) Recv() (*HotSpotEvent, error) {
+func (x *rPCSyncInsertHotspotsServer) Recv() (*HotSpotEvent, error) {
 	m := new(HotSpotEvent)
 	if err := x.ServerStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -1339,38 +1307,56 @@ func (x *rPCSendHotspotServer) Recv() (*HotSpotEvent, error) {
 	return m, nil
 }
 
-func _RPC_Ping_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PingRequest)
+func _RPC_SyncCreateFlight_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateFlightRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RPCServer).Ping(ctx, in)
+		return srv.(RPCServer).SyncCreateFlight(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/RPC/Ping",
+		FullMethod: "/RPC/SyncCreateFlight",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RPCServer).Ping(ctx, req.(*PingRequest))
+		return srv.(RPCServer).SyncCreateFlight(ctx, req.(*CreateFlightRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _RPC_OpenProject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProjectRequest)
+func _RPC_SyncCreateMission_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateMissionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RPCServer).OpenProject(ctx, in)
+		return srv.(RPCServer).SyncCreateMission(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/RPC/OpenProject",
+		FullMethod: "/RPC/SyncCreateMission",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RPCServer).OpenProject(ctx, req.(*ProjectRequest))
+		return srv.(RPCServer).SyncCreateMission(ctx, req.(*CreateMissionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RPC_SyncOpenMission_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MissionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RPCServer).SyncOpenMission(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/RPC/SyncOpenMission",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RPCServer).SyncOpenMission(ctx, req.(*MissionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1380,46 +1366,50 @@ var _RPC_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*RPCServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "SendMessage",
-			Handler:    _RPC_SendMessage_Handler,
+			MethodName: "ClientSendMessage",
+			Handler:    _RPC_ClientSendMessage_Handler,
 		},
 		{
-			MethodName: "SendFile",
-			Handler:    _RPC_SendFile_Handler,
+			MethodName: "SyncSendFile",
+			Handler:    _RPC_SyncSendFile_Handler,
 		},
 		{
-			MethodName: "Ping",
-			Handler:    _RPC_Ping_Handler,
+			MethodName: "SyncCreateFlight",
+			Handler:    _RPC_SyncCreateFlight_Handler,
 		},
 		{
-			MethodName: "OpenProject",
-			Handler:    _RPC_OpenProject_Handler,
+			MethodName: "SyncCreateMission",
+			Handler:    _RPC_SyncCreateMission_Handler,
+		},
+		{
+			MethodName: "SyncOpenMission",
+			Handler:    _RPC_SyncOpenMission_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
 		{
-			StreamName:    "StreamMissionEvents",
-			Handler:       _RPC_StreamMissionEvents_Handler,
+			StreamName:    "ClientStreamMissionEvents",
+			Handler:       _RPC_ClientStreamMissionEvents_Handler,
 			ServerStreams: true,
 		},
 		{
-			StreamName:    "StreamPositions",
-			Handler:       _RPC_StreamPositions_Handler,
+			StreamName:    "ClientStreamPositions",
+			Handler:       _RPC_ClientStreamPositions_Handler,
 			ServerStreams: true,
 		},
 		{
-			StreamName:    "StreamHotSpots",
-			Handler:       _RPC_StreamHotSpots_Handler,
+			StreamName:    "ClientStreamHotSpots",
+			Handler:       _RPC_ClientStreamHotSpots_Handler,
 			ServerStreams: true,
 		},
 		{
-			StreamName:    "SendPosition",
-			Handler:       _RPC_SendPosition_Handler,
+			StreamName:    "SyncInsertPositions",
+			Handler:       _RPC_SyncInsertPositions_Handler,
 			ClientStreams: true,
 		},
 		{
-			StreamName:    "SendHotspot",
-			Handler:       _RPC_SendHotspot_Handler,
+			StreamName:    "SyncInsertHotspots",
+			Handler:       _RPC_SyncInsertHotspots_Handler,
 			ClientStreams: true,
 		},
 	},

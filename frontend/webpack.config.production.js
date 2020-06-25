@@ -17,7 +17,7 @@ module.exports = {
 	entry: path.resolve('./src/app/index.js'),
 	output: {
 		//path: path.resolve(__dirname, 'dist'),
-		path: path.resolve('./dist'),
+		path: path.resolve('../dist'),
 		filename: 'main.bundle.js'
 	},
 
@@ -83,7 +83,7 @@ module.exports = {
 		]
 	},
   	plugins: [
-		new CleanWebpackPlugin(['dist']),
+		new CleanWebpackPlugin(['../dist']),
 		new webpack.ProvidePlugin({
 			$: 'jquery',
 			jQuery: 'jquery',
