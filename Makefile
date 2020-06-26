@@ -66,3 +66,13 @@ runimage:
 		--mount type=bind,source=$(CURDIR)/config.yaml,target=/app/config.yaml \
 		--mount type=bind,source=$(CURDIR)/uploads/,target=/app/uploads/ \
 		leighmacdonald/verimapcom:latest || true
+
+
+login:
+	@cat token.txt | docker login https://docker.pkg.github.com -u leighmacdonald --password-stdin
+
+publish:
+	@docker/publish.sh
+
+docker:
+	@echo ()
