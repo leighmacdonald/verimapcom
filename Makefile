@@ -58,7 +58,7 @@ clean:
 	@rm -rf ./dist
 
 image:
-	@docker build -t leighmacdonald/verimapcom .
+	@docker build -t leighmacdonald/verimapcom:latest .
 
 runimage:
 	@docker run --rm --name verimapcom -it \
