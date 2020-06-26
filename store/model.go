@@ -2,7 +2,6 @@ package store
 
 import (
 	"github.com/jackc/pgx/pgtype"
-	"github.com/leighmacdonald/verimapcom/pb"
 	"sync"
 	"time"
 )
@@ -129,8 +128,8 @@ type Flight struct {
 	Summary       string
 	CreatedOn     time.Time
 
-	hotspotsIn  chan pb.HotSpotEvent
-	positionsIn chan pb.PositionEvent
+	//hotspotsIn  chan pb.HotSpotEvent
+	//positionsIn chan pb.PositionEvent
 }
 
 type File struct {

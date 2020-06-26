@@ -1,6 +1,7 @@
-tmp
-venv
-node_modules
+.git
+uploads
+frontend/node_modules
 .idea
-dist
+frontend/dist
 frontend/assets
+examples

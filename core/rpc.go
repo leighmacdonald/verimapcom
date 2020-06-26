@@ -2,7 +2,6 @@ package core
 
 import (
 	"context"
-	"github.com/golang/protobuf/ptypes/timestamp"
 	"github.com/leighmacdonald/verimapcom/pb"
 	"github.com/leighmacdonald/verimapcom/store"
 	log "github.com/sirupsen/logrus"
@@ -13,7 +12,6 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 	"sync"
-	"time"
 )
 
 type RPCServer struct {
@@ -80,6 +78,6 @@ func NewGRPCServer(core *Core, opts Opts) *grpc.Server {
 	return grpcServer
 }
 
-func tsToTime(ts timestamp.Timestamp) time.Time {
-	return time.Unix(ts.Seconds, int64(ts.Nanos))
-}
+//func tsToTime(ts timestamp.Timestamp) time.Time {
+//	return time.Unix(ts.Seconds, int64(ts.Nanos))
+//}

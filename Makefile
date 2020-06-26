@@ -1,5 +1,3 @@
-GO_FLAGS = -ldflags "-X 'github.com/leighmacdonald/verimapcom/consts.BuildVersion=`git describe --long`'"
-
 all: build
 
 vet:
@@ -31,11 +29,14 @@ client:
 serve:
 	@go run main.go serve
 
-deps: yarn_install
+js_deps: yarn_install
+
+go_deps:
+	@go get github.com/golang/protobuf/protoc-gen-go
 	@go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.27.0
 
-build: clean gen fmt lint vet
-	@go build $(GO_FLAGS)
+build: clean go_deps gen fmt lint vet
+	@go build -o verimapcom
 
 run:
 	@go run $(GO_FLAGS) -race main.go
@@ -58,3 +59,6 @@ bench:
 clean:
 	@go clean $(GO_FLAGS) -i
 	@rm -rf ./dist
+
+image:
+	@docker build -t leighmacdonald/verimapcom .

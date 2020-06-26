@@ -148,8 +148,14 @@ func (c *Core) SendMessage(m *store.Message) error {
 }
 
 func (c *Core) ListenAndServe() error {
-	go c.listenHTTP()
-	c.listenGRPC()
+	go func() {
+		if err := c.listenHTTP(); err != nil {
+			log.Errorf("%v", err)
+		}
+	}()
+	if err := c.listenGRPC(); err != nil {
+		log.Errorf("%v", err)
+	}
 	return nil
 }
 

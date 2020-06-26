@@ -8,7 +8,8 @@ require (
 	github.com/gin-contrib/sessions v0.0.3
 	github.com/gin-gonic/gin v1.6.3
 	github.com/golang-migrate/migrate/v4 v4.11.0
-	github.com/golang/protobuf v1.3.3
+	github.com/golang/protobuf v1.4.2
+	github.com/golangci/golangci-lint v1.27.0 // indirect
 	github.com/gomarkdown/markdown v0.0.0-20200609195525-3f9352745725
 	github.com/hpcloud/tail v1.0.0
 	github.com/jackc/fake v0.0.0-20150926172116-812a484cc733 // indirect
@@ -25,5 +26,6 @@ require (
 	golang.org/x/crypto v0.0.0-20200323165209-0ec3e9974c59
 	golang.org/x/net v0.0.0-20200226121028-0de0cce0169b // indirect
 	google.golang.org/grpc v1.27.1
+	google.golang.org/protobuf v1.23.0
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 )
