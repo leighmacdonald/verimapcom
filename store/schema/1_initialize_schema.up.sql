@@ -28,7 +28,8 @@ create table person
     first_name    varchar               not null,
     last_name     varchar               not null,
     created_on    timestamp             not null,
-    deleted       boolean default false not null
+    deleted       boolean default false not null,
+    rpc_token varchar not null
 );
 
 create unique index person_email_uindex
