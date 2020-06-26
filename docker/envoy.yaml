@@ -37,7 +37,7 @@ static_resources:
                   - name: envoy.filters.http.cors
                   - name: envoy.filters.http.router
   clusters:
-    - name: greeter_service
+    - name: verimapcom_service
       connect_timeout: 0.25s
       type: logical_dns
       http2_protocol_options: {}
@@ -50,5 +50,5 @@ static_resources:
               - endpoint:
                   address:
                     socket_address:
-                      address: 172.16.1.22
+                      address: verimapcom
                       port_value: 9090
