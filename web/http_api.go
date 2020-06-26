@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/pkg/errors"
+	"github.com/spf13/viper"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -107,9 +108,16 @@ type FireWatch struct {
 	Gallery []interface{} `json:"gallery"`
 }
 
+func cmsURL(path string) string {
+	h := viper.GetString("cms_host_internal")
+	if h == "" {
+		h = "https://cms.verimap.com"
+	}
+	return fmt.Sprintf("%s%s", h, path)
+}
 func apiGetFireWatches(ctx context.Context, client *http.Client, count int) ([]FireWatch, error) {
 	var resp []FireWatch
-	u := fmt.Sprintf("https://cms.verimap.com/firewatches?_sort=published:desc&_limit=%d", count)
+	u := fmt.Sprintf(cmsURL("/firewatches?_sort=published:desc&_limit=%d"), count)
 	if err := get(ctx, client, u, &resp); err != nil {
 		return nil, errors.Wrapf(err, "Failed to make get request")
 	}
@@ -118,7 +126,7 @@ func apiGetFireWatches(ctx context.Context, client *http.Client, count int) ([]F
 
 func apiGetShowcases(ctx context.Context, client *http.Client) ([]Showcase, error) {
 	var resp []Showcase
-	if err := get(ctx, client, "https://cms.verimap.com/showcases?_sort=order", &resp); err != nil {
+	if err := get(ctx, client, cmsURL("/showcases?_sort=order"), &resp); err != nil {
 		return nil, errors.Wrapf(err, "Failed to make get request")
 	}
 	return resp, nil
@@ -126,7 +134,7 @@ func apiGetShowcases(ctx context.Context, client *http.Client) ([]Showcase, erro
 
 func apiGetExample(ctx context.Context, client *http.Client, ID int) (examplePage, error) {
 	var resp []examplePage
-	url := fmt.Sprintf("https://cms.verimap.com/examples?public=true&id=%d", ID)
+	url := fmt.Sprintf(cmsURL("/examples?public=true&id=%d"), ID)
 	if err := get(ctx, client, url, &resp); err != nil {
 		return examplePage{}, errors.Wrapf(err, "Failed to make get request")
 	}
@@ -148,7 +156,7 @@ func apiGetExample(ctx context.Context, client *http.Client, ID int) (examplePag
 
 func apiGetExamples(ctx context.Context, client *http.Client) ([]examplePage, error) {
 	var resp []examplePage
-	if err := get(ctx, client, "https://cms.verimap.com/examples?public=true", &resp); err != nil {
+	if err := get(ctx, client, cmsURL("/examples?public=true"), &resp); err != nil {
 		return nil, errors.Wrapf(err, "Failed to make get request")
 	}
 	for i, page := range resp {

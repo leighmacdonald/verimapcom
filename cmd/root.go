@@ -101,6 +101,8 @@ func initConfig() {
 	viper.SetDefault("listen_http", ":8001")
 	viper.SetDefault("redis", "localhost:6379")
 	viper.SetDefault("dsn", "postgres:///verimapcom")
+	viper.SetDefault("cms_host_internal", "https://cms.verimap.com")
+	viper.SetDefault("static_path", "dist")
 	if cfgFile != "" {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)

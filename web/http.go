@@ -376,7 +376,11 @@ func New(ctx context.Context, redisHost string) *Web {
 	}
 	w.setup()
 
-	r.Static("/dist", "dist")
+	staticPath := viper.GetString("static_path")
+	if staticPath == "" {
+		staticPath = "frontend/dist"
+	}
+	r.Static("/dist", staticPath)
 	r.StaticFile("/favicon.ico", "./resources/favicon.ico")
 	var newPagesSet = func(path string) []string {
 		return []string{

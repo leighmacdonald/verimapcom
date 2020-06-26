@@ -3,4 +3,5 @@ listen_http: ":8001"
 listen_grpc: ":9090"
 redis: "127.0.0.1:6379"
 dsn: "postgres://user:pass@localhost/verimapcom"
-
+cms_host_internal: https://cms.verimap.com
+static_path: "public/dist"
