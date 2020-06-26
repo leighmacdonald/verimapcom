@@ -1,6 +1,6 @@
 .git
 uploads
-frontend/node_modules
+**/node_modules
 .idea
 frontend/dist
 frontend/assets

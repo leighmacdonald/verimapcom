@@ -13,7 +13,7 @@ module.exports = {
     entry: path.join(__dirname, '/src/app/index.js'),
 
     output: {
-        path: path.resolve("../", 'dist'),
+        path: path.resolve(__dirname, 'dist'),
         filename: 'main.bundle.js'
     },
 

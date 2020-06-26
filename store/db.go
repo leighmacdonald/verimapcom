@@ -10,14 +10,15 @@ import (
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 	"net/url"
-	"os"
 	"strconv"
 	"strings"
 )
 
 func MustConnectDB(ctx context.Context) *pgxpool.Pool {
-	conn, err := pgxpool.Connect(ctx, os.Getenv("DATABASE_URL"))
+	dsn := viper.GetString("dsn")
+	conn, err := pgxpool.Connect(ctx, dsn)
 	if err != nil {
 		log.Fatalf("Unable to connect to database: %v\n", err)
 	}
@@ -60,7 +61,7 @@ func Migrate(dsn string) error {
 	db := stdlib.OpenDB(cfg)
 	driver, err := postgres.WithInstance(db, &postgres.Config{})
 	if err != nil {
-		log.Fatalf("Failed to create migration instance")
+		log.Fatalf("Failed to create migration instance: %v", err)
 	}
 	m, err := migrate.NewWithDatabaseInstance("file://./store/schema", "postgres", driver)
 	if err != nil {

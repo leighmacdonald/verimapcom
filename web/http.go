@@ -347,6 +347,9 @@ func New(ctx context.Context, redisHost string) *Web {
 	var templateFiles []string
 	root := "templates"
 	if err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
 		if strings.HasSuffix(info.Name(), ".gohtml") {
 			if !strings.Contains(path, "/layouts/") && !strings.Contains(path, "/partials") {
 				templateFiles = append(templateFiles, info.Name())

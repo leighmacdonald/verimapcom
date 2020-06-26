@@ -41,9 +41,6 @@ build: clean go_deps gen fmt lint vet
 run:
 	@go run $(GO_FLAGS) -race main.go
 
-install: deps
-	@go install $(GO_FLAGS) ./...
-
 test:
 	@go test $(GO_FLAGS) -race -cover . ./...
 
@@ -62,3 +59,10 @@ clean:
 
 image:
 	@docker build -t leighmacdonald/verimapcom .
+
+runimage:
+	@docker run --rm --name verimapcom -it \
+		-p 8001:8001 -p 9090:9090 \
+		--mount type=bind,source=$(CURDIR)/config.yaml,target=/app/config.yaml \
+		--mount type=bind,source=$(CURDIR)/uploads/,target=/app/uploads/ \
+		leighmacdonald/verimapcom:latest || true
