@@ -2611,7 +2611,7 @@ proto.CreateMissionRequest.prototype.toObject = function(opt_includeInstance) {
  */
 proto.CreateMissionRequest.toObject = function(includeInstance, msg) {
   var obj = {
-    name: jspb.Message.getFieldWithDefault(msg, 1, 0)
+    name: jspb.Message.getFieldWithDefault(msg, 1, "")
   };
 
   if (includeInstance) {
@@ -2649,7 +2649,7 @@ proto.CreateMissionRequest.deserializeBinaryFromReader = function(msg, reader) {
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {number} */ (reader.readInt32());
+      var value = /** @type {string} */ (reader.readString());
       msg.setName(value);
       break;
     default:
@@ -2682,8 +2682,8 @@ proto.CreateMissionRequest.prototype.serializeBinary = function() {
 proto.CreateMissionRequest.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getName();
-  if (f !== 0) {
-    writer.writeInt32(
+  if (f.length > 0) {
+    writer.writeString(
       1,
       f
     );
@@ -2692,17 +2692,17 @@ proto.CreateMissionRequest.serializeBinaryToWriter = function(message, writer) {
 
 
 /**
- * optional int32 name = 1;
- * @return {number}
+ * optional string name = 1;
+ * @return {string}
  */
 proto.CreateMissionRequest.prototype.getName = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
-/** @param {number} value */
+/** @param {string} value */
 proto.CreateMissionRequest.prototype.setName = function(value) {
-  jspb.Message.setProto3IntField(this, 1, value);
+  jspb.Message.setProto3StringField(this, 1, value);
 };
 
 

@@ -103,46 +103,7 @@ export class RPCClient {
       this.methodInfoClientStreamHotSpots);
   }
 
-  methodInfoClientSendMessage = new grpcWeb.AbstractClientBase.MethodInfo(
-    StatusReply,
-    (request: ChatMessageRequest) => {
-      return request.serializeBinary();
-    },
-    StatusReply.deserializeBinary
-  );
-
-  clientSendMessage(
-    request: ChatMessageRequest,
-    metadata: grpcWeb.Metadata | null): Promise<StatusReply>;
-
-  clientSendMessage(
-    request: ChatMessageRequest,
-    metadata: grpcWeb.Metadata | null,
-    callback: (err: grpcWeb.Error,
-               response: StatusReply) => void): grpcWeb.ClientReadableStream<StatusReply>;
-
-  clientSendMessage(
-    request: ChatMessageRequest,
-    metadata: grpcWeb.Metadata | null,
-    callback?: (err: grpcWeb.Error,
-               response: StatusReply) => void) {
-    if (callback !== undefined) {
-      return this.client_.rpcCall(
-        new URL('/RPC/ClientSendMessage', this.hostname_).toString(),
-        request,
-        metadata || {},
-        this.methodInfoClientSendMessage,
-        callback);
-    }
-    return this.client_.unaryCall(
-    this.hostname_ +
-      '/RPC/ClientSendMessage',
-    request,
-    metadata || {},
-    this.methodInfoClientSendMessage);
-  }
-
-  methodInfoSyncSendFile = new grpcWeb.AbstractClientBase.MethodInfo(
+  methodInfoSourceSendFile = new grpcWeb.AbstractClientBase.MethodInfo(
     FileReply,
     (request: FileUpload) => {
       return request.serializeBinary();
@@ -150,38 +111,77 @@ export class RPCClient {
     FileReply.deserializeBinary
   );
 
-  syncSendFile(
+  sourceSendFile(
     request: FileUpload,
     metadata: grpcWeb.Metadata | null): Promise<FileReply>;
 
-  syncSendFile(
+  sourceSendFile(
     request: FileUpload,
     metadata: grpcWeb.Metadata | null,
     callback: (err: grpcWeb.Error,
                response: FileReply) => void): grpcWeb.ClientReadableStream<FileReply>;
 
-  syncSendFile(
+  sourceSendFile(
     request: FileUpload,
     metadata: grpcWeb.Metadata | null,
     callback?: (err: grpcWeb.Error,
                response: FileReply) => void) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
-        new URL('/RPC/SyncSendFile', this.hostname_).toString(),
+        new URL('/RPC/SourceSendFile', this.hostname_).toString(),
         request,
         metadata || {},
-        this.methodInfoSyncSendFile,
+        this.methodInfoSourceSendFile,
         callback);
     }
     return this.client_.unaryCall(
     this.hostname_ +
-      '/RPC/SyncSendFile',
+      '/RPC/SourceSendFile',
     request,
     metadata || {},
-    this.methodInfoSyncSendFile);
+    this.methodInfoSourceSendFile);
   }
 
-  methodInfoSyncCreateFlight = new grpcWeb.AbstractClientBase.MethodInfo(
+  methodInfoSendMessage = new grpcWeb.AbstractClientBase.MethodInfo(
+    StatusReply,
+    (request: ChatMessageRequest) => {
+      return request.serializeBinary();
+    },
+    StatusReply.deserializeBinary
+  );
+
+  sendMessage(
+    request: ChatMessageRequest,
+    metadata: grpcWeb.Metadata | null): Promise<StatusReply>;
+
+  sendMessage(
+    request: ChatMessageRequest,
+    metadata: grpcWeb.Metadata | null,
+    callback: (err: grpcWeb.Error,
+               response: StatusReply) => void): grpcWeb.ClientReadableStream<StatusReply>;
+
+  sendMessage(
+    request: ChatMessageRequest,
+    metadata: grpcWeb.Metadata | null,
+    callback?: (err: grpcWeb.Error,
+               response: StatusReply) => void) {
+    if (callback !== undefined) {
+      return this.client_.rpcCall(
+        new URL('/RPC/SendMessage', this.hostname_).toString(),
+        request,
+        metadata || {},
+        this.methodInfoSendMessage,
+        callback);
+    }
+    return this.client_.unaryCall(
+    this.hostname_ +
+      '/RPC/SendMessage',
+    request,
+    metadata || {},
+    this.methodInfoSendMessage);
+  }
+
+  methodInfoCreateFlight = new grpcWeb.AbstractClientBase.MethodInfo(
     CreateFlightResponse,
     (request: CreateFlightRequest) => {
       return request.serializeBinary();
@@ -189,38 +189,38 @@ export class RPCClient {
     CreateFlightResponse.deserializeBinary
   );
 
-  syncCreateFlight(
+  createFlight(
     request: CreateFlightRequest,
     metadata: grpcWeb.Metadata | null): Promise<CreateFlightResponse>;
 
-  syncCreateFlight(
+  createFlight(
     request: CreateFlightRequest,
     metadata: grpcWeb.Metadata | null,
     callback: (err: grpcWeb.Error,
                response: CreateFlightResponse) => void): grpcWeb.ClientReadableStream<CreateFlightResponse>;
 
-  syncCreateFlight(
+  createFlight(
     request: CreateFlightRequest,
     metadata: grpcWeb.Metadata | null,
     callback?: (err: grpcWeb.Error,
                response: CreateFlightResponse) => void) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
-        new URL('/RPC/SyncCreateFlight', this.hostname_).toString(),
+        new URL('/RPC/CreateFlight', this.hostname_).toString(),
         request,
         metadata || {},
-        this.methodInfoSyncCreateFlight,
+        this.methodInfoCreateFlight,
         callback);
     }
     return this.client_.unaryCall(
     this.hostname_ +
-      '/RPC/SyncCreateFlight',
+      '/RPC/CreateFlight',
     request,
     metadata || {},
-    this.methodInfoSyncCreateFlight);
+    this.methodInfoCreateFlight);
   }
 
-  methodInfoSyncCreateMission = new grpcWeb.AbstractClientBase.MethodInfo(
+  methodInfoCreateMission = new grpcWeb.AbstractClientBase.MethodInfo(
     MissionReply,
     (request: CreateMissionRequest) => {
       return request.serializeBinary();
@@ -228,38 +228,38 @@ export class RPCClient {
     MissionReply.deserializeBinary
   );
 
-  syncCreateMission(
+  createMission(
     request: CreateMissionRequest,
     metadata: grpcWeb.Metadata | null): Promise<MissionReply>;
 
-  syncCreateMission(
+  createMission(
     request: CreateMissionRequest,
     metadata: grpcWeb.Metadata | null,
     callback: (err: grpcWeb.Error,
                response: MissionReply) => void): grpcWeb.ClientReadableStream<MissionReply>;
 
-  syncCreateMission(
+  createMission(
     request: CreateMissionRequest,
     metadata: grpcWeb.Metadata | null,
     callback?: (err: grpcWeb.Error,
                response: MissionReply) => void) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
-        new URL('/RPC/SyncCreateMission', this.hostname_).toString(),
+        new URL('/RPC/CreateMission', this.hostname_).toString(),
         request,
         metadata || {},
-        this.methodInfoSyncCreateMission,
+        this.methodInfoCreateMission,
         callback);
     }
     return this.client_.unaryCall(
     this.hostname_ +
-      '/RPC/SyncCreateMission',
+      '/RPC/CreateMission',
     request,
     metadata || {},
-    this.methodInfoSyncCreateMission);
+    this.methodInfoCreateMission);
   }
 
-  methodInfoSyncOpenMission = new grpcWeb.AbstractClientBase.MethodInfo(
+  methodInfoOpenMission = new grpcWeb.AbstractClientBase.MethodInfo(
     MissionReply,
     (request: MissionRequest) => {
       return request.serializeBinary();
@@ -267,35 +267,35 @@ export class RPCClient {
     MissionReply.deserializeBinary
   );
 
-  syncOpenMission(
+  openMission(
     request: MissionRequest,
     metadata: grpcWeb.Metadata | null): Promise<MissionReply>;
 
-  syncOpenMission(
+  openMission(
     request: MissionRequest,
     metadata: grpcWeb.Metadata | null,
     callback: (err: grpcWeb.Error,
                response: MissionReply) => void): grpcWeb.ClientReadableStream<MissionReply>;
 
-  syncOpenMission(
+  openMission(
     request: MissionRequest,
     metadata: grpcWeb.Metadata | null,
     callback?: (err: grpcWeb.Error,
                response: MissionReply) => void) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
-        new URL('/RPC/SyncOpenMission', this.hostname_).toString(),
+        new URL('/RPC/OpenMission', this.hostname_).toString(),
         request,
         metadata || {},
-        this.methodInfoSyncOpenMission,
+        this.methodInfoOpenMission,
         callback);
     }
     return this.client_.unaryCall(
     this.hostname_ +
-      '/RPC/SyncOpenMission',
+      '/RPC/OpenMission',
     request,
     metadata || {},
-    this.methodInfoSyncOpenMission);
+    this.methodInfoOpenMission);
   }
 
 }

@@ -1,7 +1,6 @@
 package core
 
 import (
-	"context"
 	"github.com/golang/protobuf/ptypes/timestamp"
 	"github.com/leighmacdonald/verimapcom/pb"
 	"github.com/leighmacdonald/verimapcom/store"
@@ -12,6 +11,7 @@ import (
 func (s *RPCServer) ClientStreamMissionEvents(req *pb.MissionRequest, srv pb.RPC_ClientStreamMissionEventsServer) error {
 	return status.Errorf(codes.Unimplemented, "method ClientStreamMissionEvents not implemented")
 }
+
 func (s *RPCServer) ClientStreamPositions(req *pb.MissionRequest, srv pb.RPC_ClientStreamPositionsServer) error {
 	ps, err := store.FlightPositionsSince(s.core.ctx, s.core.db, req.MissionId, req.StartIdx)
 	if err != nil {
@@ -39,23 +39,4 @@ func (s *RPCServer) ClientStreamPositions(req *pb.MissionRequest, srv pb.RPC_Cli
 }
 func (s *RPCServer) ClientStreamHotSpots(req *pb.MissionRequest, srv pb.RPC_ClientStreamHotSpotsServer) error {
 	return status.Errorf(codes.Unimplemented, "method ClientStreamHotSpots not implemented")
-}
-
-func (s *RPCServer) ClientSendMessage(ctx context.Context, req *pb.ChatMessageRequest) (*pb.StatusReply, error) {
-	p, err := s.personFromCtx(ctx)
-	if err != nil {
-		return nil, err
-	}
-	if p.MissionID <= 0 {
-		return nil, status.Errorf(codes.InvalidArgument, "Mission ID must be valid")
-	}
-	e := store.NewMissionEvent(store.EvtMessage, p.MissionID)
-	e.Payload = map[string]interface{}{
-		"message":   req.Message,
-		"person_id": p.PersonID,
-	}
-	if err := store.MissionEventAdd(s.core.ctx, s.core.db, &e); err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to add event to db: %v", err)
-	}
-	return &pb.StatusReply{Status: 0}, nil
 }

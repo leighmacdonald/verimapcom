@@ -327,8 +327,8 @@ export namespace MissionRequest {
 }
 
 export class CreateMissionRequest extends jspb.Message {
-  getName(): number;
-  setName(value: number): CreateMissionRequest;
+  getName(): string;
+  setName(value: string): CreateMissionRequest;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CreateMissionRequest.AsObject;
@@ -340,7 +340,7 @@ export class CreateMissionRequest extends jspb.Message {
 
 export namespace CreateMissionRequest {
   export type AsObject = {
-    name: number,
+    name: string,
   }
 }
 

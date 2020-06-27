@@ -62,12 +62,22 @@ var rootCmd = &cobra.Command{
 			missionConfig.MissionID = 0
 			missionConfig.Name = name
 		}
-		if err := app.OpenMission(missionConfig.MissionID); err != nil {
-			log.Fatalf(err.Error())
+		if missionConfig.MissionID <= 0 {
+			mid, err := app.CreateMission(missionConfig.Name)
+			if err != nil {
+				if err == core.ErrDuplicate {
+					log.Fatalf("Duplicate mission name")
+				}
+				log.Fatalf("Failed to create mission: %v", err)
+			}
+			missionConfig.MissionID = mid
 		}
-		b, err := yaml.Marshal(&missionConfig)
-		if err != nil {
-			log.Fatalf("Could not encode missionConfig config: %s", err)
+		if err := app.OpenMission(missionConfig.MissionID); err != nil {
+			log.Fatalf("Failed to open mission: %v", err)
+		}
+		b, err2 := yaml.Marshal(&missionConfig)
+		if err2 != nil {
+			log.Fatalf("Could not encode missionConfig config: %s", err2)
 		}
 		if err := ioutil.WriteFile(projectConfig, b, 0766); err != nil {
 			log.Fatalf("Could not write missionConfig config: %s", err)

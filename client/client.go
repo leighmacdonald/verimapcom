@@ -4,12 +4,15 @@ import (
 	"context"
 	"github.com/golang/protobuf/ptypes/timestamp"
 	"github.com/hpcloud/tail"
+	"github.com/leighmacdonald/verimapcom/core"
 	"github.com/leighmacdonald/verimapcom/pb"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/encoding/gzip"
+	"google.golang.org/grpc/status"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -69,7 +72,7 @@ func (c *Client) Connect() error {
 // 0                                 1           2             3         4        5        6         7
 // frame_4_time_1560859859.3455.tiff,56.23031677,-117.44821497,572.43188,-0.39258,-2.01074,327.12402,-0.39254
 func (c *Client) processPosition() error {
-	stream, err := c.client.SyncInsertPositions(c.Ctx, grpc.UseCompressor(gzip.Name))
+	stream, err := c.client.SourceInsertPositions(c.Ctx, grpc.UseCompressor(gzip.Name))
 	if err != nil {
 		return errors.Wrap(err, "Failed to setup stream")
 	}
@@ -125,7 +128,7 @@ func (c *Client) processPosition() error {
 }
 
 func (c *Client) processHotcluster() error {
-	stream, err := c.client.SyncInsertHotspots(c.Ctx)
+	stream, err := c.client.SourceInsertHotspots(c.Ctx)
 	if err != nil {
 		return err
 	}
@@ -164,8 +167,20 @@ func (c *Client) processHotcluster() error {
 	}
 }
 
+func (c *Client) CreateMission(missionName string) (int32, error) {
+	rep, err := c.client.CreateMission(c.Ctx, &pb.CreateMissionRequest{Name: missionName})
+	if err != nil {
+		if status.Code(err) == codes.AlreadyExists {
+			return 0, core.ErrDuplicate
+		}
+		return 0, errors.Wrap(err, "Failed to create mission")
+	}
+	log.Infof("Created new mission: %s", rep.Message)
+	return rep.MissionId, nil
+}
+
 func (c *Client) OpenMission(missionID int32) error {
-	rep, err := c.client.SyncOpenMission(c.Ctx, &pb.MissionRequest{
+	rep, err := c.client.OpenMission(c.Ctx, &pb.MissionRequest{
 		MissionId: missionID,
 	})
 	if err != nil {
@@ -186,7 +201,7 @@ func (c *Client) SendFile(ctx context.Context, filePath string) error {
 		FileSize: int64(len(d)),
 		Data:     d,
 	}
-	_, err = c.client.SyncSendFile(ctx, req, []grpc.CallOption{
+	_, err = c.client.SourceSendFile(ctx, req, []grpc.CallOption{
 		grpc.UseCompressor(gzip.Name),
 	}...)
 	if err != nil {
@@ -315,6 +330,9 @@ func newGRPCConn(opts gRPCOpts) (*grpc.ClientConn, error) {
 	} else {
 		clientOpts = append(clientOpts, grpc.WithInsecure())
 	}
+	//var creds core.TokenCredential
+	//creds = "xxxx"
+	// , grpc.WithTransportCredentials(creds)
 	clientOpts = append(clientOpts, grpc.WithBlock())
 	conn, err := grpc.Dial(opts.ServerAddr, clientOpts...)
 	if err != nil {

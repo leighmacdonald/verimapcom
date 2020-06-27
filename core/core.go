@@ -17,6 +17,7 @@ import (
 
 var (
 	ErrInvalidMission = errors.New("invalid mission")
+	ErrDuplicate      = errors.New("duplicate entry")
 )
 
 type Core struct {
@@ -62,6 +63,7 @@ func (c *Core) setupDB() error {
 			log.Infof("No migration performed")
 		}
 	}
+	c.db = store.MustConnectDB(c.ctx)
 	return nil
 }
 

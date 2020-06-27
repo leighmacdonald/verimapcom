@@ -9,17 +9,19 @@ service RPC {
   rpc ClientStreamMissionEvents(MissionRequest) returns (stream MissionEvent) {}
   rpc ClientStreamPositions(MissionRequest) returns (stream PositionEvent) {}
   rpc ClientStreamHotSpots(MissionRequest) returns (stream HotSpotEvent) {}
-  rpc ClientSendMessage(ChatMessageRequest) returns (StatusReply) {}
 
   // --- Server data ingress
-  rpc SyncSendFile(FileUpload) returns (FileReply) {}
-  rpc SyncInsertPositions(stream PositionEvent) returns (StatusReply) {}
-  rpc SyncInsertHotspots(stream HotSpotEvent) returns (StatusReply) {}
-  rpc SyncCreateFlight(CreateFlightRequest) returns (CreateFlightResponse) {}
+  rpc SourceInsertPositions(stream PositionEvent) returns (StatusReply) {}
+  rpc SourceInsertHotspots(stream HotSpotEvent) returns (StatusReply) {}
+
+  // --- Commands that will work from any context
+  rpc SendFile(FileUpload) returns (FileReply) {}
+  rpc SendMessage(ChatMessageRequest) returns (StatusReply) {}
+  rpc CreateFlight(CreateFlightRequest) returns (CreateFlightResponse) {}
   // Create a new unique instance of a mission
-  rpc SyncCreateMission(CreateMissionRequest) returns (MissionReply) {}
+  rpc CreateMission(CreateMissionRequest) returns (MissionReply) {}
   // Open the mission to check for its existence or get metadata
-  rpc SyncOpenMission(MissionRequest) returns (MissionReply) {}
+  rpc OpenMission(MissionRequest) returns (MissionReply) {}
 }
 
 message CreateFlightRequest {
@@ -33,6 +35,7 @@ message CreateFlightResponse {
 message MissionReply {
   int32 mission_id = 1;
   string message = 2;
+  string name = 3;
 }
 
 message PingRequest {
@@ -106,5 +109,5 @@ message MissionRequest {
 }
 
 message CreateMissionRequest {
-  int32 name = 1;
+  string name = 1;
 }

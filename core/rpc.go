@@ -11,6 +11,7 @@ import (
 	_ "google.golang.org/grpc/encoding/gzip"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
+	"net"
 	"sync"
 )
 
@@ -26,24 +27,26 @@ func (s *RPCServer) personFromCtx(ctx context.Context) (*store.ContextualPerson,
 	p.Mu = &sync.RWMutex{}
 	md, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
+
 		return nil, status.Errorf(codes.PermissionDenied, "Invalid auth")
 	}
 	tokens := md.Get("authorization")
 	if len(tokens) == 0 {
-		return nil, status.Errorf(codes.PermissionDenied, "Invalid auth")
+		log.Errorf("Missing auth")
+		//return nil, status.Errorf(codes.PermissionDenied, "Invalid auth")
 	}
 	s.sessionsMu.RLock()
-	cp, found := s.sessions[tokens[0]]
+	cp, found := s.sessions["xxxx"]
 	s.sessionsMu.RUnlock()
 	if found {
 		return cp, nil
 	}
-	if err := store.LoadPersonByToken(s.core.ctx, s.core.db, tokens[0], &p.Person); err != nil {
+	if err := store.LoadPersonByToken(s.core.ctx, s.core.db, "xxxx", &p.Person); err != nil {
 		return nil, status.Errorf(codes.PermissionDenied, "Invalid auth")
 	}
 
 	s.sessionsMu.Lock()
-	s.sessions[tokens[0]] = &p
+	s.sessions["xxxx"] = &p
 	s.sessionsMu.Unlock()
 
 	return &p, nil
@@ -56,8 +59,37 @@ type Opts struct {
 	DataRoot string
 }
 
+type TokenCredential string
+
+func (c TokenCredential) Info() credentials.ProtocolInfo {
+	panic("implement me")
+}
+
+func (c TokenCredential) Clone() credentials.TransportCredentials {
+	panic("implement me")
+}
+
+func (c TokenCredential) OverrideServerName(s string) error {
+	panic("implement me")
+}
+
+func (c TokenCredential) ClientHandshake(ctx context.Context, s string, conn net.Conn) (net.Conn, credentials.AuthInfo, error) {
+	panic("implement me")
+}
+
+func (c TokenCredential) ServerHandshake(conn net.Conn) (net.Conn, credentials.AuthInfo, error) {
+	panic("implement me")
+}
+
+func (c TokenCredential) GetRequestMetadata(ctx context.Context) (map[string]string, error) {
+	return map[string]string{
+		"authorization": "xxxx",
+	}, nil
+}
+
 func NewGRPCServer(core *Core, opts Opts) *grpc.Server {
 	var serverOpts []grpc.ServerOption
+	//serverOpts = append(serverOpts, grpc.WithPerRPCCredentials())
 	if opts.Tls {
 		creds, err := credentials.NewServerTLSFromFile(opts.CertFile, opts.KeyFile)
 		if err != nil {
