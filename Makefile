@@ -8,8 +8,8 @@ fmt:
 
 gen:
 	@protoc --go_out=plugins=grpc:. --go_opt=paths=source_relative pb/rpc.proto
-	@protoc pb/rpc.proto    --js_out=import_style=commonjs:frontend/src/app \
-		--grpc-web_out=import_style=commonjs,mode=grpcwebtext:frontend/src/app
+#	@protoc pb/rpc.proto    --js_out=import_style=commonjs:frontend/src \
+#		--grpc-web_out=import_style=commonjs,mode=grpcwebtext:frontend/src
 
 yarn_install:
 	@cd frontend && yarn install && cd ..
@@ -67,12 +67,8 @@ runimage:
 		--mount type=bind,source=$(CURDIR)/uploads/,target=/app/uploads/ \
 		leighmacdonald/verimapcom:latest || true
 
-
 login:
 	@cat token.txt | docker login https://docker.pkg.github.com -u leighmacdonald --password-stdin
 
 publish:
 	@docker/publish.sh
-
-docker:
-	@echo ()

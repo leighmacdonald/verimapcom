@@ -1,5 +1,5 @@
-import '../scss/foundation.scss';
-import '../scss/app.scss';
+import './scss/foundation.scss';
+import './scss/app.scss';
 import 'foundation-sites/dist/js/plugins/foundation.core';
 import 'foundation-sites/dist/js/plugins/foundation.orbit';
 import 'foundation-sites/dist/js/plugins/foundation.smoothScroll';
@@ -18,8 +18,10 @@ import 'foundation-sites/dist/js/plugins/foundation.util.triggers';
 import 'foundation-sites/dist/js/plugins/foundation.util.motion';
 import 'foundation-sites/dist/js/plugins/foundation.responsiveMenu';
 import 'foundation-sites/dist/js/plugins/foundation.responsiveToggle';
-import 'jquery'
+import $ from 'jquery'
 import 'what-input'
+
+globalThis.jQuery = $
 
 import {
     get_map,
@@ -41,8 +43,8 @@ function init_examples() {
         })
     });
 
-    jQuery("#collapsing-tabs").on("change.zf.tabs", () => {
-        jQuery(".tab_set").each(() => {
+    $("#collapsing-tabs").on("change.zf.tabs", () => {
+        $(".tab_set").each(() => {
             // We lazily just re-render all the containers on tab change
             map_sets.forEach((ms) => {
                 ms.map.updateSize();
@@ -53,10 +55,10 @@ function init_examples() {
 
 
 function page_missions_create() {
-    const lat_ul = document.getElementById("lat_ul");
-    const lon_ul = document.getElementById("lon_ul");
-    const lat_lr = document.getElementById("lat_lr");
-    const lon_lr = document.getElementById("lon_lr");
+    const lat_ul = <HTMLInputElement>document.getElementById("lat_ul");
+    const lon_ul = <HTMLInputElement>document.getElementById("lon_ul");
+    const lat_lr = <HTMLInputElement>document.getElementById("lat_lr");
+    const lon_lr = <HTMLInputElement>document.getElementById("lon_lr");
 
     map_select_coord("map", function (extent, map, view) {
         let lonlat_ul = transform([extent.extent_[0], extent.extent_[1]], 'EPSG:3857', 'EPSG:4326')
@@ -69,7 +71,7 @@ function page_missions_create() {
 }
 
 function main() {
-    jQuery(document).foundation();
+    $(document).foundation();
     const path = window.location.pathname.toLowerCase();
     if (path === "/connect") {
         map_create_connect("map");
@@ -79,8 +81,9 @@ function main() {
         page_missions_create();
     }
     let m = path.match(/\/mission\/(\d+)/)
-    if (m) {
-        page_mission(m[1]);
+    if (m.length > 1) {
+        let id = parseInt(m[1], 10)
+        page_mission(id);
     }
 
     let match = path.match(/\/example\/(\d+)/);

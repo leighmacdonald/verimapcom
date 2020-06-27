@@ -30,7 +30,7 @@
     margin-top: 1em;
 }
 .admin_header_h1 {
-    background-image: url('/dist/images/contours_12_1.png');
+    background-image: url('../public/images/contours_12_1.png');
     color: white;
     font-weight: 700;
     text-align: right;
@@ -324,15 +324,15 @@ ul.dash > li:before {
 }
 
 .emergency {
-    background-image: url("/dist/images/firefighter.png");
+    background-image: url("../public/images/firefighter.png");
 }
 
 .environmental {
-    background-image: url("/dist/images/Florida-Ground-Water.png");
+    background-image: url("../public/images/Florida-Ground-Water.png");
 }
 
 .infrastructure {
-    background-image: url("/dist/images/infrastructure.png");
+    background-image: url("../public/images/infrastructure.png");
 }
 
 .company_block {

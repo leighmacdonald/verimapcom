@@ -11,3 +11,5 @@ frontend/node_modules
 /verimapcom
 /config.yaml
 /token.txt
+/frontend/yarn-error.log
+/frontend/.cache/
