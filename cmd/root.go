@@ -41,9 +41,11 @@ var rootCmd = &cobra.Command{
 		if err4 != nil {
 			log.Fatal("Invalid name specified, doesn't exist")
 		}
+		caCertPath := viper.GetString("ssl_ca")
 		app := client.New(client.Opts{
 			ListenAddr: fmt.Sprintf("%s:%d", host, port),
 			RootDir:    dir,
+			CaCert:     caCertPath,
 		})
 		if err := app.Connect(); err != nil {
 			log.Fatalf("Could not connect to server: %s", err)
@@ -134,6 +136,6 @@ func initConfig() {
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+		log.Infof("Using config file: %s", viper.ConfigFileUsed())
 	}
 }

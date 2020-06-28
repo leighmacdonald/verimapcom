@@ -24,6 +24,7 @@ import (
 type Opts struct {
 	RootDir    string
 	ListenAddr string
+	CaCert     string
 }
 
 type MissionConfig struct {
@@ -55,9 +56,9 @@ func (c *Client) Disconnect() {
 
 func (c *Client) Connect() error {
 	conn, err3 := newGRPCConn(gRPCOpts{
-		Tls:          false,
+		Tls:          c.CaCert != "",
 		ServerAddr:   c.ListenAddr,
-		CaFile:       "",
+		CaFile:       c.CaCert,
 		HostOverride: "",
 	})
 	if err3 != nil {
@@ -334,7 +335,10 @@ func newGRPCConn(opts gRPCOpts) (*grpc.ClientConn, error) {
 	//creds = "xxxx"
 	// , grpc.WithTransportCredentials(creds)
 	clientOpts = append(clientOpts, grpc.WithBlock())
-	conn, err := grpc.Dial(opts.ServerAddr, clientOpts...)
+	c, cancel := context.WithTimeout(context.Background(), time.Second*3)
+	defer cancel()
+	log.Infof("Connecting to: %s", opts.ServerAddr)
+	conn, err := grpc.DialContext(c, opts.ServerAddr, clientOpts...)
 	if err != nil {
 		log.Fatalf("fail to dial: %v", err)
 	}

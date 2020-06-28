@@ -29,6 +29,8 @@ type Core struct {
 	web        *web.Web
 	http       *http.Server
 	grpc       *grpc.Server
+	sslKey     string
+	sslCert    string
 }
 
 func (c *Core) Mission(missionID int32) (*store.Mission, error) {
@@ -79,19 +81,29 @@ func (c *Core) setupHTTP() error {
 }
 
 func (c *Core) setupGRPC() error {
-	s := NewGRPCServer(c, Opts{
+	opts := Opts{
 		Tls: false,
-	})
+	}
+	if Exists(c.sslCert) && Exists(c.sslKey) {
+		opts.Tls = true
+		opts.CertFile = c.sslCert
+		opts.KeyFile = c.sslKey
+	}
+	s := NewGRPCServer(c, opts)
 	c.grpc = s
 	return nil
 }
 
 func New(ctx context.Context) (*Core, error) {
+	sslKey := viper.GetString("ssl_key")
+	sslCert := viper.GetString("ssl_cert")
 	c := Core{
 		uploadDir:  "./uploads",
 		ctx:        ctx,
 		missions:   make(map[int32]*store.Mission),
 		missionsMu: &sync.RWMutex{},
+		sslKey:     sslKey,
+		sslCert:    sslCert,
 	}
 	if err := c.setupDB(); err != nil {
 		return nil, errors.Wrapf(err, "Failed to setup database")
