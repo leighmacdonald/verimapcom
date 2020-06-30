@@ -7,6 +7,7 @@ import BingMaps from "ol/source/BingMaps";
 import XYZ from "ol/source/XYZ";
 import OSM from "ol/source/OSM";
 import ExtentInteraction from 'ol/interaction/Extent';
+
 const BASE_URL = "http://maps.verimap.com/geoserver";
 const DEFAULT_SRS = "EPSG:4326";
 const DEFAULT_FMT = "image/png";

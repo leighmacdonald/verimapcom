@@ -392,6 +392,10 @@ func New(ctx context.Context, redisHost string) *Web {
 	sesh := r.Group("", sessions.Sessions("vmsesh", s), sessionMiddleWare(w.ctx, w.db))
 	admin := sesh.Group("", adminMiddleWare(w))
 
+	sesh.GET("/ws", func(c *gin.Context) {
+		wsHandler(w, c)
+	})
+
 	for _, p := range templateFiles {
 		pageN := strings.ReplaceAll(p, ".gohtml", "")
 		w.tmpl[pageName(pageN)] = w.newTmpl(newPagesSet(pageN)...)

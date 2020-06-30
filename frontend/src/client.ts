@@ -1,7 +1,3 @@
-import * as grpcWeb from 'grpc-web'
-import {MissionRequest, MissionReply} from "./pb/rpc_pb"
-import {RPCClient} from "./pb/RpcServiceClientPb";
-
 /**
  *
  * @param client
