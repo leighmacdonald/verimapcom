@@ -11,6 +11,7 @@ require (
 	github.com/golang/protobuf v1.4.2
 	github.com/golangci/golangci-lint v1.27.0 // indirect
 	github.com/gomarkdown/markdown v0.0.0-20200609195525-3f9352745725
+	github.com/gorilla/websocket v1.4.0
 	github.com/hpcloud/tail v1.0.0
 	github.com/jackc/fake v0.0.0-20150926172116-812a484cc733 // indirect
 	github.com/jackc/pgx v3.6.2+incompatible

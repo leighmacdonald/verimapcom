@@ -80,8 +80,10 @@ function main() {
     if (path === "/missions/create") {
         page_missions_create();
     }
+
     let m = path.match(/\/mission\/(\d+)/)
     if (m.length > 1) {
+
         let id = parseInt(m[1], 10)
         page_mission(id);
     }

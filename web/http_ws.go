@@ -13,7 +13,12 @@ import (
 type wsEvent int
 
 const (
-	openProject wsEvent = 1
+	evtMissionOpen wsEvent = iota + 1
+	evtMissionEvents
+	evtMissionSendMessage
+	evtMissionRecvMessage
+	evtMissionNewFlight
+	evtMissionPosition
 )
 
 type wsSession struct {
@@ -43,6 +48,14 @@ type wsEventPayload struct {
 	Payload json.RawMessage `json:"payload"`
 }
 
+type wsPayloadMissionOpen struct {
+	MissionID int32
+}
+
+type wsPayloadSendMessage struct {
+	Message string
+}
+
 func (ep *wsEventPayload) Decode(i interface{}) error {
 	if err := json.NewDecoder(bytes.NewBuffer(ep.Payload)).Decode(i); err != nil {
 		return errors.Wrapf(err, "failed to decode to interface")
@@ -50,14 +63,46 @@ func (ep *wsEventPayload) Decode(i interface{}) error {
 	return nil
 }
 
-func (s *wsSession) reader() {
+func (s *wsSession) reader(w *Web) {
 	for {
+		var err error
 		var payload wsEventPayload
-		err := s.conn.ReadJSON(&payload)
+		err = s.conn.ReadJSON(&payload)
 		if err != nil {
+			switch e := err.(type) {
+			case *websocket.CloseError:
+				//log.Errorf("Client Disconnected: %e", e)
+			default:
+				log.Errorf("Failed to read JSON payload: %v", e)
+			}
 			break
 		}
+		switch payload.Event {
+		case evtMissionOpen:
+			var p wsPayloadMissionOpen
+			if err := json.Unmarshal(payload.Payload, &p); err != nil {
 
+			}
+			err = w.wsHandleMissionOpen(p)
+		case evtMissionEvents:
+			err = w.wsHandleMissionEvents()
+		case evtMissionNewFlight:
+			err = w.wsHandleMissionNewFlight()
+		case evtMissionRecvMessage:
+			err = w.wsHandleMissionRecvMessage()
+		case evtMissionSendMessage:
+			var p wsPayloadSendMessage
+			if err2 := json.Unmarshal(payload.Payload, &p); err2 != nil {
+				err = err2
+				break
+			}
+			err = w.wsHandleMissionSendMessage(p)
+		case evtMissionPosition:
+			err = w.wsHandlePosition()
+		}
+		if err != nil {
+			log.Errorf("failed to handle ws even: %v", err)
+		}
 	}
 }
 
@@ -81,11 +126,13 @@ func wsHandler(w *Web, ctx *gin.Context) {
 		log.Errorf("Failed to set websocket upgrade: %+v", err)
 		return
 	}
+	log.Infof("Client ws handler conn opened")
 	c, cancel := context.WithCancel(w.ctx)
 	defer cancel()
 	session := newWSSession(c, conn)
 	go session.writer()
-	session.reader()
+	session.reader(w)
+	log.Infof("Client ws handler conn closed")
 }
 
 func wsBroadcast(sessions []*wsSession, event wsEvent, payload interface{}) error {
@@ -117,4 +164,29 @@ func wsSend(conn *websocket.Conn, event wsEvent, payload interface{}) error {
 		return errors.Wrapf(err, "Failed to send & encode full payload")
 	}
 	return nil
+}
+
+func (w *Web) wsHandleMissionOpen(p wsPayloadMissionOpen) error {
+	panic("unimplemented")
+}
+
+func (w *Web) wsHandleMissionEvents() error {
+	panic("unimplemented")
+}
+
+func (w *Web) wsHandleMissionSendMessage(p wsPayloadSendMessage) error {
+	log.Println(p)
+	return nil
+}
+
+func (w *Web) wsHandleMissionRecvMessage() error {
+	panic("unimplemented")
+}
+
+func (w *Web) wsHandleMissionNewFlight() error {
+	panic("unimplemented")
+}
+
+func (w *Web) wsHandlePosition() error {
+	panic("unimplemented")
 }

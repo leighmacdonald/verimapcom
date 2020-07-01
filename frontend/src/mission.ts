@@ -1,6 +1,5 @@
 import {map_view_mission} from "./maps";
-import {RPCClient} from "./pb/RpcServiceClientPb";
-import {open_mission} from "./client";
+import {Client, wsEvent} from "./client";
 
 function send_message(message) {
     const element = <HTMLDivElement>document.getElementById("live_chat")
@@ -9,17 +8,6 @@ function send_message(message) {
 
 function recv_message(payload) {
     console.log("got msg:", payload)
-}
-
-/**
- *
- * @param ws WSClient
- * @param mission_id
- */
-function set_mission(mission_id: number) {
-    if (mission_id > 0) {
-
-    }
 }
 
 function add_event_log(element: HTMLDivElement, event) {
@@ -35,34 +23,52 @@ function add_event_log(element: HTMLDivElement, event) {
             </div>
         </div>
     `
-
     element.insertAdjacentHTML('beforeend', d);
 }
 
-function fetch_mission_events(mission_id: number) {
-    const element = <HTMLDivElement>document.getElementById("live_chat")
-    fetch(`/mission/${mission_id}/events`)
-        .then(response => response.json())
-        .then(data => {
-            data.forEach((event) => {
-                add_event_log(element, event)
-            })
-        })
+function handle_open_mission(payload: any) {
+    console.log("got open mission payload", payload)
+}
+
+function handle_mission_events(payload: any) {
+
+}
+
+function handle_new_flight(payload: any) {
+
+}
+
+function handle_position(payload: any) {
+
+}
+
+function handle_message_recv(payload: any) {
+
+}
+
+function ui_send_message(c: Client, e: Event) {
+    const msg = <HTMLInputElement>document.getElementById("chat_message")
+    e.preventDefault()
+    let user_message = msg.value;
+    c.message_send(user_message)
+    msg.value = "";
 }
 
 export function page_mission(mission_id: number) {
-    const svc = new RPCClient('http://172.16.1.4:8800', null, null);
-    open_mission(svc, mission_id);
-    fetch_mission_events(mission_id)
+    const client = new Client();
+    client.register(wsEvent.missionOpen, handle_open_mission)
+    client.register(wsEvent.missionEvents, handle_mission_events)
+    client.register(wsEvent.missionNewFlight, handle_new_flight)
+    client.register(wsEvent.missionPosition, handle_position)
+    client.register(wsEvent.missionRecvMessage, handle_message_recv)
 
     const submit = document.getElementById("chat_submit")
-    const msg = <HTMLInputElement>document.getElementById("chat_message")
     submit.addEventListener("click", (e) => {
-        e.preventDefault()
-        let user_message = msg.value;
-        //send_message(ws, user_message);
-        msg.value = "";
+        ui_send_message(client, e)
     })
+
     const map_div = document.getElementById("map");
     map_view_mission("map", mission_id, map_div.dataset.lat_ul, map_div.dataset.lon_ul)
+
+    client.open_mission(mission_id)
 }
