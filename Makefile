@@ -7,9 +7,7 @@ fmt:
 	@go fmt . ./...
 
 gen:
-	@protoc --go_out=plugins=grpc:. --go_opt=paths=source_relative pb/rpc.proto
-#	@protoc pb/rpc.proto    --js_out=import_style=commonjs:frontend/src \
-#		--grpc-web_out=import_style=commonjs,mode=grpcwebtext:frontend/src
+	@cd proto && protoc --go_out=plugins=grpc:../pb --go_opt=paths=source_relative rpc.proto
 
 yarn_install:
 	@cd frontend && yarn install && cd ..

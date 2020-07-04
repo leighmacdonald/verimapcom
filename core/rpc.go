@@ -5,6 +5,7 @@ import (
 	"github.com/leighmacdonald/verimapcom/pb"
 	"github.com/leighmacdonald/verimapcom/store"
 	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials"
@@ -27,7 +28,6 @@ func (s *RPCServer) personFromCtx(ctx context.Context) (*store.ContextualPerson,
 	p.Mu = &sync.RWMutex{}
 	md, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
-
 		return nil, status.Errorf(codes.PermissionDenied, "Invalid auth")
 	}
 	tokens := md.Get("authorization")
@@ -90,7 +90,10 @@ func (c TokenCredential) GetRequestMetadata(ctx context.Context) (map[string]str
 func NewGRPCServer(core *Core, opts Opts) *grpc.Server {
 	var serverOpts []grpc.ServerOption
 	//serverOpts = append(serverOpts, grpc.WithPerRPCCredentials())
-	if opts.Tls {
+
+	tlsEnabled := viper.GetBool("tls_enabled")
+	if tlsEnabled && opts.Tls {
+		log.Fatalf("TLS NOT SUPPORTED")
 		creds, err := credentials.NewServerTLSFromFile(opts.CertFile, opts.KeyFile)
 		if err != nil {
 			log.Fatalf("Failed to generate credentials %v", err)

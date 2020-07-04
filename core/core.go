@@ -3,6 +3,7 @@ package core
 import (
 	"context"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/leighmacdonald/golib"
 	"github.com/leighmacdonald/verimapcom/store"
 	"github.com/leighmacdonald/verimapcom/web"
 	"github.com/pkg/errors"
@@ -84,7 +85,7 @@ func (c *Core) setupGRPC() error {
 	opts := Opts{
 		Tls: false,
 	}
-	if Exists(c.sslCert) && Exists(c.sslKey) {
+	if golib.Exists(c.sslCert) && golib.Exists(c.sslKey) {
 		opts.Tls = true
 		opts.CertFile = c.sslCert
 		opts.KeyFile = c.sslKey

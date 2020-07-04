@@ -1,17 +1,13 @@
 package cmd
 
 import (
-	"fmt"
-	"github.com/ghodss/yaml"
-	"github.com/leighmacdonald/verimapcom/client"
+	"context"
 	"github.com/leighmacdonald/verimapcom/core"
 	"github.com/mitchellh/go-homedir"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"io/ioutil"
 	"os"
-	"path"
 )
 
 var cfgFile string
@@ -25,67 +21,14 @@ var rootCmd = &cobra.Command{
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
 		log.SetFormatter(&log.TextFormatter{ForceColors: true})
-		host, err := cmd.Flags().GetString("host")
+		log.SetLevel(log.DebugLevel)
+		ctx := context.Background()
+		app, err := core.New(ctx)
 		if err != nil {
-			log.Fatal("Invalid host value")
+			log.Fatalf("Could not start service: %v", err)
 		}
-		port, err2 := cmd.Flags().GetUint16("port")
-		if err2 != nil {
-			log.Fatal("Invalid port value")
-		}
-		dir, err3 := cmd.Flags().GetString("dir")
-		if err3 != nil {
-			log.Fatal("Invalid dir specified, doesn't exist")
-		}
-		name, err4 := cmd.Flags().GetString("name")
-		if err4 != nil {
-			log.Fatal("Invalid name specified, doesn't exist")
-		}
-		caCertPath := viper.GetString("ssl_ca")
-		app := client.New(client.Opts{
-			ListenAddr: fmt.Sprintf("%s:%d", host, port),
-			RootDir:    dir,
-			CaCert:     caCertPath,
-		})
-		if err := app.Connect(); err != nil {
-			log.Fatalf("Could not connect to server: %s", err)
-		}
-		var missionConfig client.MissionConfig
-		projectConfig := path.Join(dir, "missionConfig.yaml")
-		if core.Exists(projectConfig) {
-			b, err := ioutil.ReadFile(projectConfig)
-			if err != nil {
-				log.Fatalf("Error reading config file %s: %v", projectConfig, err)
-			}
-			if err := yaml.Unmarshal(b, &missionConfig); err != nil {
-				log.Fatalf("Failed to decode config file %s: %v", projectConfig, err)
-			}
-		} else {
-			missionConfig.MissionID = 0
-			missionConfig.Name = name
-		}
-		if missionConfig.MissionID <= 0 {
-			mid, err := app.CreateMission(missionConfig.Name)
-			if err != nil {
-				if err == core.ErrDuplicate {
-					log.Fatalf("Duplicate mission name")
-				}
-				log.Fatalf("Failed to create mission: %v", err)
-			}
-			missionConfig.MissionID = mid
-		}
-		if err := app.OpenMission(missionConfig.MissionID); err != nil {
-			log.Fatalf("Failed to open mission: %v", err)
-		}
-		b, err2 := yaml.Marshal(&missionConfig)
-		if err2 != nil {
-			log.Fatalf("Could not encode missionConfig config: %s", err2)
-		}
-		if err := ioutil.WriteFile(projectConfig, b, 0766); err != nil {
-			log.Fatalf("Could not write missionConfig config: %s", err)
-		}
-		if err := app.Start(); err != nil {
-			log.Errorf("Failed to shutdown cleanly: %v", err)
+		if err := app.ListenAndServe(); err != nil {
+			log.Errorf("Failed to cleanly shutdown: %v", err)
 		}
 	},
 }
